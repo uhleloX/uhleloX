@@ -110,10 +110,10 @@ class X_Functions {
 	public static function set_security_headers() {
 
 		// We would prefer only self, but CK Editor has an issue with this.
-		// header( "Content-Security-Policy: default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *; font-src 'self'" );
-		// header( "X-Frame-Options: DENY" );
-		// header( "Strict-Transport-Security: max-age=63072000; includeSubDomains; preload" );
-		// header( "X-XSS-Protection: 1; mode=block" );
+		header( "Content-Security-Policy: default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *; font-src 'self'" );
+		header( "X-Frame-Options: DENY" );
+		header( "Strict-Transport-Security: max-age=63072000; includeSubDomains; preload" );
+		header( "X-XSS-Protection: 1; mode=block" );
 
 	}
 

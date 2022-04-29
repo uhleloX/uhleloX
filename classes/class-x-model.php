@@ -74,8 +74,11 @@ class X_Model {
 	 */
 	protected function get( string $sql = '', array $params = array(), bool $single = true ) {
 
-		$method = true === $single ? 'fetch' : 'fetchAll';
-		$this->results = $this->db->$method( $sql, $params );
+		if ( true === $single ) {
+			$this->results = $this->db->fetch( $sql, $params );
+		} else {
+			$this->results = $this->db->fetchAll( $sql, $params );
+		}
 
 		return $this->results;
 
@@ -92,8 +95,11 @@ class X_Model {
 	 */
 	protected function post( string $sql = '', array $params = array(), $update = false ) {
 
-		$method = true === $update ? 'update' : 'insert';
-		$this->results = $this->db->$method( $sql, $params );
+		if ( true === $update ) {
+			$this->results = $this->db->update( $sql, $params );
+		} else {
+			$this->results = $this->db->insert( $sql, $params );
+		}
 
 		return $this->results;
 
