@@ -22,7 +22,7 @@
 						  	<div class="col">
 							    <div class="card h-100 alert alert-success">
 							      <div class="card-body">
-							        <h5 class="card-title"><a class="stretched-link" href="https://www.uhlelox.com/documentation" target="_blank">Documentation</a></h5>
+							        <h5 class="card-title"><a class="stretched-link" href="https://www.uhlelox.com/documentation" target="_blank" rel="noopener">Documentation</a></h5>
 							        <p class="card-text">Access all uhleloX Documentation in one place.</p>
 							      </div>
 							    </div>

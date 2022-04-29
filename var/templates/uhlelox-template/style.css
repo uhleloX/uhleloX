@@ -136,7 +136,6 @@ a:hover{text-decoration: none; cursor:pointer;}
 	left:auto}}@media (min-width:768px){
 	.navbar-expand-md .dropdown-menu .dropdown-menu{
 	border:1px solid rgba(0,0,0,.15);
-	border:1px solid rgba(0,0,0,.15);
 	position:absolute;
 	left:100%;
 	top:-7px}.navbar-expand-md .dropdown-menu .submenu-left{
@@ -239,7 +238,7 @@ button{
 -------------------------------------------------------------- */
 
 h1,h2,h3,h4,h5,h6,p,label,.btn,a{
-	font-family:"Helvetica";
+	font-family:Helvetica,sans-serif;
 }
 .container{
 	max-width:1140px;
@@ -253,7 +252,6 @@ h1,h2,h3,h4,h5,h6,p,label,.btn,a{
 	font-weight:normal;
 }
 .text-blue-gradient{
-	background-clip:text!important;
 	-webkit-background-clip:text!important;
 	background:linear-gradient(88deg, #61E1A3, #2F7DFF);
 	color:transparent!important;
