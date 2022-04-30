@@ -12,6 +12,7 @@ $response = array();
 $errors = array();
 $to_json = array();
 $functions = new X_Functions();
+$validate = new X_Validate();
 session_start();
 
 /**
@@ -49,20 +50,20 @@ try {
 				 */
 				foreach ( $_FILES as $inputname => $file_array ) {
 
-					$file = $handler->upload( $inputname );
+					$file = $handler->upload( $validate->str( $inputname ) );
 
 					if ( is_array( $file )
 						&& array_key_exists( 'error', $file )
 					) {
 						$errors[ $inputname ] = array(
 							'error' => array(
-								'message' => $file['error'],
+								'message' => $validate->str( $file['error'] ),
 							),
 						);
 					} else {
 						$functions = new X_Functions();
 						$response[ $inputname ] = array(
-							'url' => $functions->get_site_url() . '/var/uploads/' . $file_array['name'],
+							'url' => $functions->get_site_url() . '/var/uploads/' . $validate->str( $file_array['name'] ),
 						);
 					}
 				}
@@ -81,11 +82,6 @@ try {
 					);
 				} else {
 
-					// $data = $_POST['imgURL'];
-					// list( $type, $data ) = explode( ';', $data );
-					// list( $enc, $data)      = explode( ',', $data );
-					// $data = base64_decode($data);
-
 					$file = $handler->upload( $_POST['imgURL'], true );
 
 				}
@@ -93,7 +89,7 @@ try {
 		} elseif ( 'GET' === $_SERVER['REQUEST_METHOD'] ) {
 
 			$handler = new X_Get();
-			$results = $handler->get_items( $_GET['type'] );
+			$results = $handler->get_items( $validate->str( $_GET['type'] ) );
 			if ( is_array( $results ) && ! empty( $results ) ) {
 				$i = 0;
 				foreach ( $results as $media_object ) {

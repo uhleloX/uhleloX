@@ -65,13 +65,13 @@ class X_Router {
 
 		if ( true === $this->main_item ) {
 
-			if ( ! in_array( $this->segments[0], X_Setup::tables() ) ) {
+			if ( ! in_array( $this->segments[0], X_Setup::tables( 'public' ) ) ) {
 				return false;
 			}
 
 			$get = new X_Get();
-			$table = array_search( $this->segments[0], X_Setup::tables() );
-			$is_type = $get->check_if_exists( X_Setup::tables()[ $table ] );
+			$table = array_search( $this->segments[0], X_Setup::tables( 'public' ) );
+			$is_type = $get->check_if_exists( X_Setup::tables( 'public' )[ $table ] );
 
 			return $is_type;
 

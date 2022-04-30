@@ -24,7 +24,7 @@ class X_Get extends X_Model {
 	 */
 	public function get_item_by_id( string $type = '', int $id = 0 ) {
 
-		$sql = 'SELECT * FROM ' . $type . ' WHERE id = ?';
+		$sql = 'SELECT * FROM ' . $this->whitelist_tables( $type ) . ' WHERE id = ?';
 		$params = array( $id );
 
 		$this->get( $sql, $params, true );
@@ -43,7 +43,7 @@ class X_Get extends X_Model {
 	 */
 	public function get_item_by( string $type = '', string $where = 'id', string $val = '' ) {
 
-		$sql = 'SELECT * FROM ' . $type . ' WHERE ' . $where . ' = ?';
+		$sql = 'SELECT * FROM ' . $this->whitelist_tables( $type ) . ' WHERE ' . $where . ' = ?';
 		$params = array( $val );
 
 		$this->get( $sql, $params, true );
@@ -62,7 +62,7 @@ class X_Get extends X_Model {
 	public function get_items_in( string $type = '', array $where = array('id'), string $val = '' ) {
 
 		$where = implode(', ', $where);
-		$sql = 'SELECT * FROM ' . $type . ' WHERE ? IN (' . $where . ')';
+		$sql = 'SELECT * FROM ' . $this->whitelist_tables( $type ) . ' WHERE ? IN (' . $where . ')';
 		$params = array( $val );
 
 		$this->get( $sql, $params, false );
@@ -88,7 +88,7 @@ class X_Get extends X_Model {
 		$args = array_merge( $default_args, $args );
 		$limit = '-1' === $args['limit'] ? '' : ' limit ?';
 
-		$sql = 'SELECT * FROM ' . $type . ' ORDER BY ? ' . $args['order'] . $limit;
+		$sql = 'SELECT * FROM ' . $this->whitelist_tables( $type ) . ' ORDER BY ? ' . $args['order'] . $limit;
 		$params = empty( $limit ) ? array( $args['orderby'] ) : array( $args['orderby'], $args['limit'] );
 
 		$this->get( $sql, $params, false );
@@ -128,22 +128,22 @@ class X_Get extends X_Model {
 	 */
 	public function check_if_exists( string $type = '' ) {
 
-		$this->check( $type );
+		$this->check( $this->whitelist_tables( $type ) );
 
 		return $this->results;
 
 	}
 
 	/**
-	 * Checks if a table exists.
+	 * Show columns of table.
 	 *
 	 * @param string $type The Content Type (must match the DB Tablename).
-	 * @return bool|error Boolean true if exists, false if not, error if connection failure.
+	 * @param bool   $full Boolean tru for full information.
 	 */
 	public function show_columns( string $type = '', bool $full = false ) {
 
 		$full = false === $full ? '' : 'FULL';
-		$sql = 'SHOW ' . $full . ' COLUMNS FROM ' . $type;
+		$sql = 'SHOW ' . $full . ' COLUMNS FROM ' . $this->whitelist_tables( $type );
 		$this->get( $sql, array(), false );
 
 		return $this->results;

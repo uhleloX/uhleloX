@@ -206,18 +206,22 @@ class X_Setup {
 	 * Provide a list of registered Tables
 	 *
 	 * @since 1.0.0
-	 * @param bool $public To return public or private tables. Default True (public only).
+	 * @param string $visibility Return 'public', 'private' or 'all' tables.
 	 */
-	public static function tables( bool $public = true ) {
+	public static function tables( string $visibility = 'all' ) {
 
 		$x_hook = new X_Hooks();
 		$public_tables = $x_hook->apply_filters( 'x_public_tables', array( 'media', 'pages', 'users' ) );
-		$private_tables = $x_hook->apply_filters( 'x_private_tables', array( 'settings', 'roles', 'user_page', 'user_role', 'languages', 'language_translation', 'relationships', 'settings' ) );
+		$private_tables = $x_hook->apply_filters( 'x_private_tables', array( 'settings', 'roles', 'user_page', 'user_role', 'languages', 'language_translation', 'relationships', 'extensions', 'page_user' ) );
 
-		if ( true === $public ) {
+		if ( 'public' === $visibility ) {
 			return $public_tables;
-		} else {
+		} elseif ( 'private' === $visibility ) {
 			return $private_tables;
+		} elseif ( 'all' === $visibility ) {
+			return array_merge( $public_tables, $private_tables );
+		} else {
+			return array();
 		}
 
 	}

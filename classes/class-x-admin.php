@@ -409,7 +409,7 @@ class X_Admin {
 
 				if ( isset ( $_POST['page_user'] ) ) {
 					foreach ( $_POST['page_user'] as $partner ) {
-						$connection = $post->connect( 'page_user', $_POST['id'], $partner );
+						$connection = $post->connect( 'page_user', (int) $_POST['id'], (int) $partner );
 					}
 				}
 				/**

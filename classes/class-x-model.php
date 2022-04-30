@@ -53,13 +53,15 @@ class X_Model {
 	/**
 	 * Sets the object's properties using the values in the supplied array
 	 */
-	public function __construct($columns=array()) {
+	public function __construct( $columns = array() ) {
 
 		$this->db = new X_Db( HOST, DB_USERNAME, DB_PASSWORD, DB_NAME );
 
 		foreach ( $columns as $column ) {
 			$this->{$column->Field} = null;
 		}
+
+		$this->allowed_db_tables = X_Setup::tables( 'all' );
 		$this->results = array();
 
 	}
@@ -148,6 +150,31 @@ class X_Model {
 
 		return $this->results;
 
+	}
+
+	/**
+	 * Validate passed table to allowed tables
+	 *
+	 * @param string $table The table name to check.
+	 * @throws Exception $e The exception.
+	 */
+	protected function whitelist_tables( string $table = '' ) {
+
+		try {
+			error_log( print_r( $table, true ) );
+			error_log( print_r( $this->allowed_db_tables, true ) );
+			if ( in_array( $table, $this->allowed_db_tables ) ) {
+				return $table;
+			} else {
+				throw new Exception( 'Trying to access invalid Database Table.', 1 );
+			}
+		} catch ( Exception $e ) {
+
+			error_log( $e->getMessage() . print_r( $e, true ), 0 );
+			echo $e->getMessage();
+			exit();
+
+		}
 	}
 
 }
