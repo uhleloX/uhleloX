@@ -79,7 +79,7 @@ class X_Model {
 		if ( true === $single ) {
 			$this->results = $this->db->fetch( $sql, $params );
 		} else {
-			$this->results = $this->db->fetchAll( $sql, $params );
+			$this->results = $this->db->fetch_all( $sql, $params );
 		}
 
 		return $this->results;
@@ -146,7 +146,7 @@ class X_Model {
 	 */
 	protected function check( string $sql = '' ) {
 
-		$this->results = $this->db->tableExists( $sql );
+		$this->results = $this->db->table_exists( $sql );
 
 		return $this->results;
 
@@ -156,19 +156,18 @@ class X_Model {
 	 * Validate passed table to allowed tables
 	 *
 	 * @param string $table The table name to check.
-	 * @throws Exception $e The exception.
+	 * @throws DomainException $e The exception.
 	 */
 	protected function whitelist_tables( string $table = '' ) {
 
 		try {
-			error_log( print_r( $table, true ) );
-			error_log( print_r( $this->allowed_db_tables, true ) );
+
 			if ( in_array( $table, $this->allowed_db_tables ) ) {
 				return $table;
 			} else {
-				throw new Exception( 'Trying to access invalid Database Table.', 1 );
+				throw new DomainException( 'Trying to access invalid Database Table.', 1 );
 			}
-		} catch ( Exception $e ) {
+		} catch ( DomainException $e ) {
 
 			error_log( $e->getMessage() . print_r( $e, true ), 0 );
 			echo $e->getMessage();

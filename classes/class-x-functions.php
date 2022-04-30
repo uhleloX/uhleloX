@@ -41,7 +41,6 @@ class X_Functions {
 		$data = $key . $action . $referer;
 		$token = hash_hmac( 'sha256', $data, $seed );
 		$_SESSION[ $key ] = $token;
-		//setcookie( $key, $seed, 0, '/admin', 'https://uhlelo.mamp', true, false );
 
 		return $seed;
 
@@ -254,7 +253,7 @@ class X_Functions {
 			$type = 'pages';
 			$fragment = $type . '/';
 
-		} 
+		}
 
 		if ( is_numeric( $item ) ) {
 
@@ -268,9 +267,7 @@ class X_Functions {
 
 		}
 
-		$link = rtrim( $site_url, '/\\' ) . '/' . $fragment . $item;
-
-		return $link;
+		return rtrim( $site_url, '/\\' ) . '/' . $fragment . $item;
 
 	}
 
@@ -307,8 +304,8 @@ class X_Functions {
 
 	public function is_admin( ) {
 		
-		if ( isset( $_SERVER ) 
-			&& isset( $_SERVER['SCRIPT_NAME'] ) 
+		if ( isset( $_SERVER )
+			&& isset( $_SERVER['SCRIPT_NAME'] )
 			&& '/admin.php' === $_SERVER['SCRIPT_NAME']
 		) {
 			return true;

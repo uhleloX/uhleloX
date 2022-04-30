@@ -104,6 +104,8 @@ class X_Admin {
 			8 => 'A PHP extension stopped the file upload.',
 		);
 		$this->admin_loc = 'Location: admin.php';
+		$this->add_loc = '?action=add&type=';
+		$this->edit_loc = '?action=edit&id=';
 
 	}
 
@@ -161,10 +163,8 @@ class X_Admin {
 		}
 		$functions->add_link( 'bootstrap', 'styles/bootstrap.min.css', array(), '', 'stylesheet', 'head' );
 		$functions->add_link( 'bootstrap-icons', 'styles/bootstrap-icons.min.css', array(), '', 'stylesheet', 'head' );
-		//if ( $current_screen->is_request( 'setup' ) ) {
-			$functions->add_link( 'select2', 'styles/select2.min.css', array(), '', 'stylesheet', 'head' );
-			$functions->add_link( 'select2-bootstrap', 'styles/select2-bootstrap.min.css', array(), '', 'stylesheet', 'head' );
-		//}
+		$functions->add_link( 'select2', 'styles/select2.min.css', array(), '', 'stylesheet', 'head' );
+		$functions->add_link( 'select2-bootstrap', 'styles/select2-bootstrap.min.css', array(), '', 'stylesheet', 'head' );
 		$functions->add_link( 'style', 'admin/css/styles.css', array(), '', 'stylesheet', 'head' );
 
 	}
@@ -268,6 +268,71 @@ class X_Admin {
 	}
 
 	/**
+	 * Handle Relationships Post
+	 */
+	private function maybe_add_relationship_table() {
+		// This is a new relationship, create the table.
+		if ( 'relationships' === $this->type ) {
+
+			$relationships_db_table_config = 'id BIGINT UNSIGNED AUTO_INCREMENT, ' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . ' BIGINT UNSIGNED, ' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . ' BIGINT UNSIGNED, PRIMARY KEY (`id`, `' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . '`, `' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . '`)';
+			$this->item->add_table( X_Validate::str( stripslashes( $_POST['slug'] ) ), $relationships_db_table_config  );
+			// Relationships cannot be edited after creating them.
+			header( $this->admin_loc . '?action=list&type=' . $this->type );
+			return;
+
+		}
+	}
+
+	/**
+	 * Handle Relationships Edit
+	 */
+	private function maybe_edit_relationship_table( $relationships ) {
+		if ( ! empty( $relationships ) && isset( $relationships ) ) {
+			$get = new X_Get();
+
+			foreach ( $relationships as $relationship ) {
+
+				$related_entity = $relationship->entity_a === $this->type ? $relationship->entity_b : $relationship->entity_a;
+				$entity_candidates[ $relationship->slug ] = $get->get_items( $related_entity );
+
+				if ( isset( $_GET['id'] ) ) {
+					$current_thing = (int) $_GET['id'];
+				} elseif ( isset( $_POST['id'] ) ) {
+					$current_thing = (int) $_POST['id'];
+				} else {
+					$current_thing = null;
+				}
+
+				$related_things = array();
+				if (!is_null($current_thing)){
+					$related_things[ $relationship->slug ] = $get->get_items_in( $relationship->slug, array( rtrim( $this->type, 's' ) ), $current_thing );
+				}
+
+			}
+		}
+	}
+
+	/**
+	 * Hnadle media error
+	 *
+	 * @param array $media the uploaded media data.
+	 */
+	private function handle_media_error( $media ) {
+
+		if ( is_int( $media['error'] ) ) {
+
+			$_SESSION['error_message'] = $this->upload_errors[ $media['error'] ];
+
+		} else {
+
+			$_SESSION['error_message'] = $media['error'];
+
+		}
+		header( $this->admin_loc . $this->add_loc . $this->type );
+
+	}
+
+	/**
 	 * Inserts data to the datbase (of all kind).
 	 *
 	 * @todo do not hardcode the image $_POST[key].
@@ -280,14 +345,17 @@ class X_Admin {
 
 		$get = new X_Get();
 		$this->columns = $get->show_columns( $this->type, true );
-		$this->item = new X_Post( $this->columns );;
+		$this->item = new X_Post( $this->columns );
+
 		if ( isset( $_REQUEST['token'] )
 			&& X_Functions::verify_token( '_x_add', X_Validate::str( stripslashes( $_REQUEST['token'] ) ), 'add' )
 			&& ! empty( $_POST )
 		) {
 
 			if ( isset( $_POST['save'] ) ) {
-				if ( isset( $_FILES['mugshot'] ) && isset( $_FILES['mugshot']['name'] ) ) {
+
+				if ( isset( $_FILES['mugshot'] ) 
+					&& isset( $_FILES['mugshot']['name'] ) ) {
 					$_POST['mugshot'] = X_Validate::str( $_FILES['mugshot']['name'] );
 					$media = $this->item->upload( 'mugshot' );
 				}
@@ -298,38 +366,19 @@ class X_Admin {
 				// AFTER setting up post data, we handle media validation.
 				if ( is_array( $media ) && array_key_exists( 'error', $media ) ) {
 
-					if ( is_int( $media['error'] ) ) {
-
-						$_SESSION['error_message'] = $this->upload_errors[ $media['error'] ];
-
-					} else {
-
-						$_SESSION['error_message'] = $media['error'];
-
-					}
-
-					header( $this->admin_loc . '?action=add&type=' . $this->type );
+					$this->handle_media_error( $media );
 
 				} else {
 
 					$this->item->insert( $this->type );
 
-					// This is a new relationship, create the table.
-					if ( 'relationships' === $this->type ) {
-
-						$relationships_db_table_config = 'id BIGINT UNSIGNED AUTO_INCREMENT, ' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . ' BIGINT UNSIGNED, ' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . ' BIGINT UNSIGNED, PRIMARY KEY (`id`, `' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . '`, `' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . '`)';
-						$this->item->add_table( X_Validate::str( stripslashes( $_POST['slug'] ) ), $relationships_db_table_config  );
-						// Relationships cannot be edited after creating them.
-						header( $this->admin_loc . '?action=list&type=' . $this->type );
-						return;
-
-					}
+					// If this is is a new relationship, create the table.
+					$this->maybe_add_relationship_table();
 
 					// Load the edit screen after succesful insert.
-					header( $this->admin_loc . '?action=edit&id=' . intval( $this->item->id ) . 'status=saved&type=' . $this->type );
+					header( $this->admin_loc . $this->edit_loc . intval( $this->item->id ) . 'status=saved&type=' . $this->type );
 
 				}
-
 			} elseif ( isset( $_POST['cancel'] ) ) {
 
 				// User has cancelled their edits: return to the list.
@@ -340,11 +389,26 @@ class X_Admin {
 
 			$_SESSION['error_message'] = 'Invalid Form Submission';
 			// User has submitted the form but there is a Token mismatch. We do not disclose this error.
-			header( $this->admin_loc . '?action=add&type=' . $this->type );
+			header( $this->admin_loc . $this->add_loc . $this->type );
 		} else {
 
 			// User has not posted the article edit form yet: display the form.
 			require( ADMIN_PATH . '/partials/edit.php' );
+
+		}
+
+	}
+
+	/**
+	 * If item does not exist
+	 */
+	private function item_not_exists() {
+		$get = new X_Get();
+
+		if ( false === $get->get_item_by_id( $this->type, intval( $_POST['id'] ) ) ) {
+
+			header( $this->admin_loc . '?error_message=Item was not found' );
+			return;
 
 		}
 
@@ -371,20 +435,7 @@ class X_Admin {
 
 		$relationships = $get->get_items_in( 'relationships', array( 'entity_a', 'entity_b' ), $this->type );
 
-		if ( ! empty( $relationships ) && isset( $relationships ) ) {
-			foreach ( $relationships as $relationship ) {
-
-				$related_entity = $relationship->entity_a === $this->type ? $relationship->entity_b : $relationship->entity_a;
-				$entity_candidates[ $relationship->slug ] = $get->get_items( $related_entity );
-
-				$current_thing = isset( $_GET['id'] ) ? $_GET['id'] : ( isset( $_POST['id'] ) ? $_POST['id'] : null );
-				$related_things = array();
-				if (!is_null($current_thing)){
-					$related_things[ $relationship->slug ] = $get->get_items_in( $relationship->slug, array( rtrim( $this->type, 's' ) ), $current_thing );
-				}
-
-			}
-		}
+		$this->maybe_edit_relationship_table( $relationships );
 
 		if ( isset( $_REQUEST['token'] )
 			&& X_Functions::verify_token( '_x_add', X_Validate::str( stripslashes( $_REQUEST['token'] ) ), 'add' )
@@ -393,12 +444,7 @@ class X_Admin {
 			if ( isset( $_POST['save'] ) ) {
 
 				// User has posted the item edit form: save the item changes.
-				if ( false === $get->get_item_by_id( $this->type, intval( $_POST['id'] ) ) ) {
-
-					header( $this->admin_loc . '?error_message=Item was not found' );
-					return;
-
-				}
+				$this->item_not_exists();
 
 				if ( isset( $_FILES['mugshot'] ) && isset( $_FILES['mugshot']['name'] ) ) {
 
@@ -409,7 +455,7 @@ class X_Admin {
 
 				if ( isset ( $_POST['page_user'] ) ) {
 					foreach ( $_POST['page_user'] as $partner ) {
-						$connection = $post->connect( 'page_user', (int) $_POST['id'], (int) $partner );
+						$post->connect( 'page_user', (int) $_POST['id'], (int) $partner );
 					}
 				}
 				/**
@@ -435,14 +481,14 @@ class X_Admin {
 
 					}
 
-					header( $this->admin_loc . '?action=edit&id=' . intval( $_POST['id'] ) . '&status=error&type=' . $this->type );
+					header( $this->admin_loc . $this->edit_loc . intval( $_POST['id'] ) . '&status=error&type=' . $this->type );
 
 				} else {
 
 					// Everything is valid at this point, we can update.
 					$post->update( $this->type );
 
-					header( $this->admin_loc . '?action=edit&id=' . intval( $_POST['id'] ) . '&status=saved&type='. $this->type );
+					header( $this->admin_loc . $this->edit_loc . intval( $_POST['id'] ) . '&status=saved&type='. $this->type );
 
 				}
 			} elseif ( isset( $_POST['cancel'] ) ) {
@@ -454,7 +500,7 @@ class X_Admin {
 		} elseif ( ! empty( $_POST ) ) {
 			$_SESSION['error_message'] = 'Invalid Form Submission';
 			// User has submitted the form but there is a Token mismatch. We do not disclose this error.
-			header( $this->admin_loc . '?action=add&type=' . $this->type );
+			header( $this->admin_loc . $this->add_loc . $this->type );
 
 		} else {
 
@@ -528,8 +574,6 @@ class X_Admin {
 	private function dashboard() {
 
 		$this->results['title'] = 'Dashboard';
-		$hooks = new X_Hooks();
-		$setup = new X_Setup();
 
 		require( ADMIN_PATH . '/partials/dashboard.php' );
 

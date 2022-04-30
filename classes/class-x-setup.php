@@ -181,6 +181,8 @@ class X_Setup {
 		 * This does not fire the code in the extensions,
 		 * however it adds them to the extensions database table
 		 * and readies them for usage.
+		 *
+		 * This is a problem because it runs on setup. IT should run later, because on setup, we do not have any config yet, and thus also no autoloader nor constants, and anyway no extension.
 		 */
 		$this->load_extensions();
 

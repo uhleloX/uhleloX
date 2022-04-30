@@ -18,11 +18,11 @@
 try {
 
 	if ( ! file_exists( 'config.php' ) ) {
-
-		throw new ErrorException( 'The configuration file was not found. This install is incomplete.' );
+		require_once 'classes/exceptions/class-x-file-not-found.php';
+		throw new X_File_Not_Found( 'The configuration file was not found. This install is incomplete.' );
 
 	}
-} catch ( ErrorException $e ) {
+} catch ( X_File_Not_Found $e ) {
 
 	echo $e->getMessage();
 	error_log( $e->getMessage() . print_r( $e, true ), 0 );

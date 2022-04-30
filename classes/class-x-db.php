@@ -77,7 +77,7 @@ class X_Db {
 		}
 	}
 
-	public function fetchAll($query, $parameters = array()){
+	public function fetch_all($query, $parameters = array()){
 		if($this->connected === true){
 			try{
 				$query = $this->connection->prepare($query);
@@ -150,7 +150,7 @@ class X_Db {
 		}
 	}
 
-	public function tableExists($table){
+	public function table_exists($table){
 		if($this->connected === true){
 			try{
 				$query = $this->count("SHOW TABLES LIKE '$table'");

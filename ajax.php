@@ -108,15 +108,15 @@ try {
 			}
 		} else {
 
-			throw new Exception( 'Only POST and GET accepted.' );
+			throw new UnexpectedValueException( 'Only POST and GET accepted.' );
 
 		}
 	} else {
 
-		throw new Exception( 'File accessed in an unexpected way.' );
+		throw new UnexpectedValueException( 'File accessed in an unexpected way.' );
 
 	}
-} catch ( Exception $e ) {
+} catch ( UnexpectedValueException $e ) {
 
 	error_log( $e->getMessage() . print_r( $e, true ), 0 );
 	echo $e->getMessage();

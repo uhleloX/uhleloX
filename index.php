@@ -75,11 +75,12 @@ try {
 			 * Config File not found, but URL param bogus or not set.
 			 * Let the user know what the issue is.
 			 */
-			throw new Exception( 'The configuration file was not found. This install is incomplete.' );
+			require_once 'classes/exceptions/class-x-file-not-found.php';
+			throw new X_File_Not_Found( 'The configuration file was not found. This install is incomplete.' );
 
 		}
 	}
-} catch ( Exception $e ) {
+} catch ( X_File_Not_Found $e ) {
 
 	error_log( $e->getMessage() . print_r( $e, true ), 0 );
 	echo $e->getMessage();

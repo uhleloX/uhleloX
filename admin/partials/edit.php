@@ -53,7 +53,7 @@
 									case 'bigint(20) unsigned':
 										if ( 'auto_increment' !== $column->Extra ) {
 											?>
-											<div class="draggable" id="<?php echo X_Sanitize::out_html( $column->Field ); ?>_container">	
+											<div class="draggable" id="<?php echo X_Sanitize::out_html( $column->Field ); ?>_container">
 												<div class="input-group mb-3" id="<?php echo X_Sanitize::out_html( $field ); ?>_group">
 													<span class="input-group-text x_drag_handle" id="<?php echo X_Sanitize::out_html( $field ); ?>Hint"><?php echo strtoupper( X_Sanitize::out_html( $field ) ); ?></span>
 													<input type="number" class="form-control" name="<?php echo X_Sanitize::out_html( $field ); ?>" id="<?php echo X_Sanitize::out_html( $field ); ?>" placeholder="<?php echo strtoupper( X_Sanitize::out_html( $field ) ); ?>" aria-label="<?php echo strtoupper( X_Sanitize::out_html( $field ) ); ?>" aria-describedby="<?php echo X_Sanitize::out_html( $field ); ?>Hint" value="<?php echo X_Sanitize::out_html( $this->item->{$field} ); ?>" <?php echo X_Sanitize::out_html( $required ); ?>>
@@ -64,7 +64,7 @@
 										break;
 									case 'text':
 										?>
-										<div class="draggable" id="<?php echo X_Sanitize::out_html( $column->Field ); ?>_container">	
+										<div class="draggable" id="<?php echo X_Sanitize::out_html( $column->Field ); ?>_container">
 											<div class="input-group mb-3" id="<?php echo X_Sanitize::out_html( $field ); ?>_group">
 												<span class="input-group-text x_drag_handle" id="<?php echo X_Sanitize::out_html( $field ); ?>Hint"><?php echo strtoupper( X_Sanitize::out_html( $field ) ); ?></span>
 												<input type="text" class="form-control" name="<?php echo X_Sanitize::out_html( $field ); ?>" id="<?php echo X_Sanitize::out_html( $field ); ?>" placeholder="<?php echo strtoupper( X_Sanitize::out_html( $field ) ); ?>" aria-label="<?php echo strtoupper( X_Sanitize::out_html( $field ) ); ?>" aria-describedby="<?php echo X_Sanitize::out_html( $field ); ?>Hint" value="<?php echo X_Sanitize::out_html( $this->item->{$field} ); ?>" <?php echo X_Sanitize::out_html( $required ); ?>>
@@ -162,27 +162,29 @@
 							}
 						}
 
-						if( ! empty( $entity_candidates ) 
-							&& isset( $entity_candidates) 
-						){
+						if ( ! empty( $entity_candidates )
+							&& isset( $entity_candidates )
+						) {
 							// we have some potential related items of the other type.
 							foreach ( $entity_candidates as $relationship => $entity_objects ) {
 
 								?>
 								<div class="draggable" id="<?php echo X_Sanitize::out_html( $relationship ); ?>_container"><div class="mb-3 input-group" id=<?php echo X_Sanitize::out_html( $relationship ); ?>_group>
-									<label for="<?php echo $relationship;?>" class="input-group-text x_drag_handle"><?php echo $related_entity;?></label>
-									<select multiple name="<?php echo $relationship;?>[]" id="<?php echo $relationship;?>"   class="form-select" data-placeholder="Choose a <?php echo $related_entity;?>">
+									<label for="<?php echo $relationship; ?>" class="input-group-text x_drag_handle"><?php echo $related_entity; ?></label>
+									<select multiple name="<?php echo $relationship; ?>[]" id="<?php echo $relationship; ?>"   class="form-select" data-placeholder="Choose a <?php echo $related_entity; ?>">
 										<option></option>
 										<?php
 										$selected_things = array();
-										$s = rtrim($related_entity,'s');
+										$s = rtrim( $related_entity, 's' );
 										foreach ( $related_things[ $relationship ] as $related_object ) {
 											$selected_things[] = $related_object->$s;
 										}
 										foreach ( $entity_objects as $entity_object ) {
-											
+
 											$selected = in_array( $entity_object->id, $selected_things ) ? 'selected="selected"' : '';
-											?><option <?php echo $selected; ?>value="<?php echo $entity_object->id ?>"><?php echo $entity_object->id ?></option><?php
+											?>
+											<option <?php echo $selected; ?>value="<?php echo $entity_object->id; ?>"><?php echo $entity_object->id; ?></option>
+											<?php
 
 										}
 										?>
@@ -205,7 +207,7 @@
 							) {
 								?>
 								<a href="admin.php?action=delete&type=<?php echo X_Sanitize::out_html( $this->type ); ?>&id=<?php echo intval( $this->item->id ); ?>" class="btn btn-danger" onclick="return confirm('This will irrevocably delete the item. Proceed?')">Delete</a>
-								<a href="<?php echo $this->link;?>" class="btn btn-success">View <?php echo ucfirst( rtrim( X_Sanitize::out_html( $this->type ), 's' ) );?></a>
+								<a href="<?php echo $this->link; ?>" class="btn btn-success">View <?php echo ucfirst( rtrim( X_Sanitize::out_html( $this->type ), 's' ) ); ?></a>
 								<?php
 							}
 							?>
