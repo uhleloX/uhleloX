@@ -199,7 +199,7 @@ class X_Install {
 	 */
 	private function default_tables() {
 
-		$tables = array(
+		return array(
 			'settings' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'slug' => 'VARCHAR(255) NOT NULL',
@@ -287,8 +287,6 @@ class X_Install {
 				'entity_b' => 'VARCHAR(60) NOT NULL',
 			),
 		);
-
-		return $tables;
 
 	}
 

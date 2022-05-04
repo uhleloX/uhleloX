@@ -101,6 +101,14 @@ class X_Admin {
 	private $edit_loc;
 
 	/**
+	 * Location paths to partials.
+	 *
+	 * @since 1.0.0
+	 * @var object $paths The paths to single partials.
+	 */
+	private $paths;
+
+	/**
 	 * Single Item Object.
 	 *
 	 * @since 1.0.0
@@ -227,6 +235,17 @@ class X_Admin {
 		$this->edit_loc = '?x_action=edit&id=';
 
 		/**
+		 * Partials Paths
+		 */
+		$this->paths = array(
+			'login_path' => '/partials/login-form.php',
+			'edit_path' => '/partials/edit.php',
+			'list_path' => '/partials/list.php',
+			'dash_path' => '/partials/dashboard.php',
+			'error_path' => '/partials/dashboard.php',
+		);
+
+		/**
 		 * Results from queries
 		 */
 		$this->item = null;
@@ -255,7 +274,7 @@ class X_Admin {
 		if ( isset( $this->results['error_message'] )
 			&& ! empty( $this->results['error_message'] )
 		) {
-			include ADMIN_PATH . '/partials/error.php';
+			include ADMIN_PATH . $this->paths['error_path'];
 		}
 	}
 
@@ -379,7 +398,7 @@ class X_Admin {
 
 				$this->results['error_message'] = 'Login Failed. Please try again.';
 				$this->hooks->add_action( 'x_login_form_errors', array( $this, 'display_errors' ) );
-				require( PUBLIC_PATH . '/partials/login-form.php' );
+				require( PUBLIC_PATH . $this->paths['login_path'] );
 
 			}
 		} elseif ( ! empty( $_POST ) ) {
@@ -387,13 +406,13 @@ class X_Admin {
 			/**
 			 * Form was submitted with invalid token.
 			 */
-			$this->results['error_message'] = 'Invalid Form Submission.';
+			$this->results['error_message'] = 'Login Form Token Invalid.';
 			$this->hooks->add_action( 'x_login_form_errors', array( $this, 'display_errors' ) );
-			require( PUBLIC_PATH . '/partials/login-form.php' );
+			require( PUBLIC_PATH . $this->paths['login_path'] );
 
 		} else {
 
-			require( PUBLIC_PATH . '/partials/login-form.php' );
+			require( PUBLIC_PATH . $this->paths['login_path'] );
 
 		}
 
@@ -488,16 +507,16 @@ class X_Admin {
 			/**
 			 * The user submitted this form with invalid Tokens.
 			 */
-			$this->results['error_message'] = 'Invalid Form Submission.';
+			$this->results['error_message'] = 'Insert Form Token Invalid.';
 			$this->hooks->add_action( 'x_edit_screen_errors', array( $this, 'display_errors' ) );
-			require( ADMIN_PATH . '/partials/edit.php' );
+			require( ADMIN_PATH . $this->paths['edit_path'] );
 
 		} else {
 
 			/**
 			 * Require the Edit Template.
 			 */
-			require( ADMIN_PATH . '/partials/edit.php' );
+			require( ADMIN_PATH . $this->paths['edit_path'] );
 
 		}
 
@@ -557,9 +576,9 @@ class X_Admin {
 			/**
 			 * The user submitted this form with invalid Tokens.
 			 */
-			$this->results['error_message'] = 'Invalid Form Submission.';
+			$this->results['error_message'] = 'Edit Form Token Invalid.';
 			$this->hooks->add_action( 'x_edit_screen_errors', array( $this, 'display_errors' ) );
-			require_once ADMIN_PATH . '/partials/edit.php';
+			require_once ADMIN_PATH . $this->paths['edit_path'];
 
 		} else {
 
@@ -576,7 +595,7 @@ class X_Admin {
 
 			$this->item = $this->get->get_item_by_id( $this->type, (int) $_GET['id'] );
 			$this->link = $this->functions->get_url( $this->type, (int) $_GET['id'] );
-			require_once ADMIN_PATH . '/partials/edit.php';
+			require_once ADMIN_PATH . $this->paths['edit_path'];
 
 		}
 
@@ -653,7 +672,7 @@ class X_Admin {
 		$this->items = $this->get->get_items( $this->type );
 		$this->columns = $this->get->show_columns( $this->type );
 
-		require( ADMIN_PATH . '/partials/list.php' );
+		require( ADMIN_PATH . $this->paths['list_path'] );
 
 	}
 
@@ -672,7 +691,7 @@ class X_Admin {
 		 */
 		$this->hooks->add_action( 'x_dashboard_errors', array( $this, 'display_errors' ) );
 
-		require( ADMIN_PATH . '/partials/dashboard.php' );
+		require( ADMIN_PATH . $this->paths['dash_path'] );
 
 	}
 

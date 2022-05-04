@@ -34,8 +34,16 @@ class X_Model {
 
 	}
 
+	/**
+	 * This and the child function hve to be reviewed.
+	 * Something fishy here
+	 *
+	 * @param array $columns The columsn to setup.
+	 */
 	protected function set_columns( array $columns = array() ) {
-		return array();
+
+		return $columns;
+
 	}
 
 	/**

@@ -62,13 +62,15 @@
 				 * This will also fill the field with Title (slugified) on first typing (when creating an item)
 				 * Later the user is free to change the slug, but it will be keeping sluggiying.
 				 */
-				if ( $('input[name="slug"]') && $('input[name="title"]') ) {
-					if ( '' === $('input[name="slug"]').val() ) {
-						$('input[name="title"]').on('input', function() {
-							$('input[name="slug"]').val( slugify( $('input[name="title"]').val() ) );
+				const input_target = 'input[name="slug"]'
+				const input_source = 'input[name="title"]'
+				if ( $( input_target ) && $( input_source ) ) {
+					if ( '' === $( input_target ).val() ) {
+						$( input_source ).on('input', function() {
+							$( input_target ).val( slugify( $( input_source ).val() ) );
 						});
 					} else {
-						$('input[name="slug"]').on('keyup', function() {
+						$( input_target ).on('keyup', function() {
 							$(this).val( slugify( $(this).val() ) );
 						});
 					}

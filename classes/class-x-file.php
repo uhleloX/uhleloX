@@ -93,8 +93,7 @@ trait X_File {
 			require_once ADMIN_PATH . '/partials/edit.php';
 			exit();
 
-		} else {
-			return;
 		}
+
 	}
 }

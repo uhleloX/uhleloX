@@ -32,6 +32,12 @@ class X_Post extends X_Model {
 
 	}
 
+	/**
+	 * This and the parent function hve to be reviewed.
+	 * Something fishy here
+	 *
+	 * @param array $columns The columsn to setup.
+	 */
 	public function set_columns( array $columns = array() ) {
 
 		$item = new stdClass();
@@ -42,6 +48,13 @@ class X_Post extends X_Model {
 		return $item;
 	}
 
+	/**
+	 * Function to upload Files.
+	 * Needs to be reviewed for sanity and validation
+	 *
+	 * @param string $input_name the $_FILES['inputname'].
+	 * @param bool   $base_64 If the uploaded item is a base64 encoded media.
+	 */
 	public function upload( string $input_name = '', bool $base_64 = false ) {
 
 		$result = array();
