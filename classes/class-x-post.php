@@ -16,15 +16,6 @@
 class X_Post extends X_Model {
 
 	/**
-	 * Sets the object's properties using the values in the supplied array
-	 */
-	public function __construct($columns=array()) {
-
-		parent::__construct($columns);
-
-	}
-
-	/**
 	 * Sets the object's properties using the edit form post values in the supplied array
 	 *
 	 * @param array $data The form post values.
@@ -36,29 +27,24 @@ class X_Post extends X_Model {
 			$this->id = (int) $data['id'];
 		}
 
-		if ( isset( $data['title'] ) ) {
-			$this->title = preg_replace( "/[^\.\,\-\_\'\"\@\?\!\:\$ a-zA-Z0-9()]/", '', $data['title'] );
-		}
-
-		if ( isset( $data['slug'] ) ) {
-			$this->slug = strtolower( trim( preg_replace('/[^A-Za-z0-9-]+/', '-', $data['slug'] ) ) );
-		}
-
-		if ( isset( $data['summary'] ) ) {
-			$this->summary = preg_replace( "/[^\.\,\-\_\'\"\@\?\!\:\$ a-zA-Z0-9()]/", '', $data['summary'] );
-		}
-		if ( isset( $data['content'] ) ) {
-			$this->content = $data['content'];
-		}
-
 		$this->data = $data;
-		unset( $this->data['id'], $this->data['save'], $this->data['setup'], $this->data['token'] );
+		unset( $this->data['id'], $this->data['save'], $this->data['setup'], $this->data['x_token'] );
 
+	}
+
+	public function set_columns( array $columns = array() ) {
+
+		$item = new stdClass();
+		foreach ( $columns as $column ) {
+			$item->{$column->Field} = null;
+		}
+
+		return $item;
 	}
 
 	public function upload( string $input_name = '', bool $base_64 = false ) {
 
-		$error = array();
+		$result = array();
 		$upload_ok = false;
 		$target_dir = SITE_ROOT . '/var/uploads/';
 		$get = new X_Get();
@@ -77,15 +63,16 @@ class X_Post extends X_Model {
 				|| empty( $_FILES[ $input_name ] )
 			)
 		) {
-			return;
+			$result = false;
+			return $result;
 		}
 
 		if ( false === $base_64 
 			&& isset( $_FILES[ $input_name ]['error'] )
 			&& 0 !== $_FILES[ $input_name ]['error'] ) {
 
-			$error[ 'error' ] = $_FILES[ $input_name ]['error'];
-			return $error;
+			$result[ 'error' ] = $_FILES[ $input_name ]['error'];
+			return $result;
 
 		}
 
@@ -102,16 +89,14 @@ class X_Post extends X_Model {
 		if ( false !== $image_size ) {
 			$upload_ok = true;
 		} else {
-			$error['error'] = 'Could not analyse the item. Probably no image?';
-			return $error;
+			$result['error'] = 'Could not analyse the item. Probably no image?';
+			return $result;
 		}
 
 		// Check file size.
-		error_log( print_r( $image_size, true ) );
-		error_log( print_r( $upload_size->value, true ) );
 		if ( $image_size > intval( $upload_size->value ) ) {
-			$error[ 'error' ] = 'File size is too large.';
-		  	return $error;
+			$result[ 'error' ] = 'File size is too large.';
+		  	return $result;
 		}
 
 		/**
@@ -134,8 +119,8 @@ class X_Post extends X_Model {
 			&& 'jpeg' !== $image_file_type
 			&& 'gif' !== $image_file_type ) {
 
-			$error['error'] = 'Sorry, only JPG, JPEG, PNG & GIF files are allowed.';
-			return $error;
+			$result['error'] = 'Sorry, only JPG, JPEG, PNG & GIF files are allowed.';
+			return $result;
 
 		}
 
@@ -153,8 +138,8 @@ class X_Post extends X_Model {
 		// Check if $upload_ok is set to 0 by an error.
 		if ( true !== $upload_ok ) {
 
-			$error['error'] = 'Sorry, your file was not uploaded.';
-			return $error;
+			$result['error'] = 'Sorry, your file was not uploaded.';
+			return $result;
 
 		} else {
 
@@ -179,19 +164,24 @@ class X_Post extends X_Model {
 				);
 
 				$media->setup_data( $media_array );
-				$media->insert( 'media' );
+				$media_id = $media->insert( 'media' );
+				if ( false !== $media_id ) {
+					$result['success'] = $media_array;
+				} else {
+					$result['success'] = 'The File was uploaded, but not saved to the database.';
+				}
 
-				return true;
+				return $result;
 
 			} elseif ( file_put_contents( $target_file, $data ) ) {
-
-					return true;
+					$result = true;
+					return $result;
 
 				} else {
 
-				$error['error'] = 'Sorry, there was an error uploading your file.';
+				$result['error'] = 'Sorry, there was an error uploading your file.';
 
-				return $error;
+				return $result;
 
 			}
 		}
@@ -266,13 +256,23 @@ class X_Post extends X_Model {
 			trigger_error( 'Attempt to update an Article object that does not have its ID property set.', E_USER_ERROR );
 		}
 
+		/**
+		 * Note, `id = LAST_INSERT_ID(id)` is there to pass back the LastInsertId to the app.
+		 * PDO by default (well, SQL in general) does not pass back the UPDATED item, only the last(first)
+		 * INSERTED ID by default.
+		 * This is excused by saying "you might update several items at once". Fact thou is, you can also insert
+		 * several items at once, and yet still it will return at least one ID when inserting, so this is 
+		 * just garbage from developers trying to explain their omittances.
+		 * Found the solution here https://stackoverflow.com/questions/26498960/lastinsertid-for-update-in-prepared-statement#answer-26499145
+		 */
 		$what = implode( ' = ?, ', array_keys( $this->data ) );
-		$sql = 'UPDATE ' . $type . ' SET ' . $what . ' = ? WHERE id = ?';
+		$sql = 'UPDATE ' . $type . ' SET ' . $what . ' = ?, id = LAST_INSERT_ID(id) WHERE id = ?';
 		$params = array_values( $this->data );
 		$params[] = $this->id;
-
 		$this->change( $sql, $params, true );
 		$this->id = $this->results;
+
+		return $this->results;
 
 	}
 

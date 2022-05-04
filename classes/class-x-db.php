@@ -7,14 +7,6 @@
  * 1.1 - Added a constructor which allows multiple databases to be called on different variables.
  */
 class X_Db {
-	// Database host address, defined in construction.
-	protected $host;
-	// Username for authentication, defined in construction.
-	protected $username;
-	// Password for authentication, defined in construction.
-	protected $password;
-	// Database name, defined in construction.
-	protected $database;
 
 	// Connection variable. DO NOT CHANGE!
 	protected $connection;
@@ -25,16 +17,11 @@ class X_Db {
 	// @bool this controls if the errors are displayed. By default, this is set to true.
 	private $errors = true;
 
-	public function __construct( string $db_host = '', string $db_username = '', string $db_password = '', string $db_database = '' ){
-
+	public function __construct(){
 		try{
-			$this->host = $db_host;
-			$this->username = $db_username;
-			$this->password = $db_password;
-			$this->database = $db_database;
 			$this->connected = true;
 
-			$this->connection = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->database, $this->username, $this->password);
+			$this->connection = new PDO("mysql:host=" . HOST . ";dbname=" . DB_NAME, DB_USERNAME, DB_PASSWORD);
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 			$this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);

@@ -1,7 +1,7 @@
 /**
  * Implements CKFinder Customization
  *
- * @see 
+ * @see https://ckeditor.com/docs/ckeditor5/latest/api/adapter-ckfinder.html
  * @since 1.0.0
  * @package uhleloX\var\extensions\x-media-browser
  */
@@ -30,14 +30,18 @@
             /**
              * Declare URL to edit images.
              */
-            function x_edit_url( id ) {
-                var x_edit_url = window.location.origin + '/admin.php?action=edit&id=' + id + '&type=media';
-                return x_edit_url;
+            function x_edit_url_f( id ) {
+                return `${window.location.origin}/admin.php?action=edit&id=${id}&type=media`;
             }
             /**
              * Declare URL to get images
              */
-             var x_get_url = window.location.origin + '/ajax.php';
+             var x_get_url = `${window.location.origin}/ajax.php`;
+
+            /**
+             * HTML element to append Media Thumbs.
+             */
+            const x_media_container = '#x_media_browser';
 
             /**
              * Function to get all Media entries from the database.
@@ -54,21 +58,21 @@
                     data: { type: "media" },
                     cache: false,
                     headers: {
-                        'X-CSRF-TOKEN': '_x_add',
-                        Authorization: $( 'input[name=token]' ).val(),
+                        'X-CSRF-TOKEN': 'x_add',
+                        Authorization: $( 'input[name=x_token]' ).val(),
                         'X-REQUEST-SOURCE': 'x-browser',
                     }
                 }).done( function( data ) {
 
                     if( typeof $.parseJSON(data).failed !== "undefined" ) {
-                        $( "#x_media_browser" ).append( $.parseJSON(data).failed.error.message );
+                        $( x_media_container ).append( $.parseJSON(data).failed.error.message );
                     } else {
-                        $( "#x_media_browser" ).empty();
+                        $( x_media_container ).empty();
                         $.each( $.parseJSON(data), function(i, v){
-                            $( "#x_media_browser" ).append(
+                            $( x_media_container ).append(
                                 '<figure class="figure position-relative m-0 p-1" style="cursor:pointer;">' +
                                     '<span class="position-absolute top-50 start-50 translate-middle d-flex justify-content-center align-items-center">' +
-                                    '<a href="' + x_edit_url( v.id ) + '" target="_blank" class="p-2"><span class="p-1 bg-dark text-white bi bi-pencil-square"></span></a>' +
+                                    '<a href="' + x_edit_url_f( v.id ) + '" target="_blank" class="p-2"><span class="p-1 bg-dark text-white bi bi-pencil-square"></span></a>' +
                                     '<span class="p-2 x_view_media" style="cursor:pointer;"><span class="p-1 bg-dark text-white bi bi-eye"></span></span>' +
                                     '</span>' +
                                     '<img src="' + v.url + '" class="rounded img-thumbnail" width="123px" height="123px" style="width: 123px; height:123px">' +

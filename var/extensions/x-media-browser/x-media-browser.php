@@ -32,7 +32,7 @@ function add_media_browser() {
 					</div>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="p-2" id="x_loading">    
+				<div class="p-2" id="x_loading">  
 					<div class="progress">
 						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 					</div>
@@ -56,4 +56,3 @@ function add_media_browser() {
 	</div>
 	<?php
 }
-

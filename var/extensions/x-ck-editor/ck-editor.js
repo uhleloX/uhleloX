@@ -18,20 +18,27 @@
 		function() {
 
             /**
+             * If no adequate TextEditor Exists (currently #content single instance)
+             * backout immediately, don't waste resources.
+             */
+            if ( ! document.querySelector( '#content' ) ) {
+                return;
+            }
+
+            /**
              * Apply filters for plugins in toolbar.
              *
              * @todo this needs to be less hardcoded.
              */
-            if (typeof window.plugins_add_ck === "undefined" || window.plugins_add_ck !== "CKFinder" ) { 
+            if ( typeof window.plugins_add_ck === "undefined" || window.plugins_add_ck !== "CKFinder" ) {
                 window.plugins_ck = 'CKFinder';
-            } 
+            }
 
             /**
              * Declare Upload URL (AJAX)
              */
             var x_upload_url = window.location.origin + '/ajax.php';
 
-            
             const watchdog = new CKSource.EditorWatchdog();
 
             /**
@@ -133,8 +140,8 @@
                     // like authentication and CSRF protection. For instance, you can use
                     // XMLHttpRequest.setRequestHeader() to set the request headers containing
                     // the CSRF token generated earlier by your application.
-                    this.xhr.setRequestHeader('X-CSRF-TOKEN', '_x_add')
-                    this.xhr.setRequestHeader('Authorization', $( 'input[name=token]' ).val())
+                    this.xhr.setRequestHeader('X-CSRF-TOKEN', 'x_add')
+                    this.xhr.setRequestHeader('Authorization', $( 'input[name=x_token]' ).val())
                     this.xhr.setRequestHeader('X-REQUEST-SOURCE', 'ck-img-upl-editor')
 
                     // Send the request.

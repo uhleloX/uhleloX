@@ -19,7 +19,14 @@
 				<li class="breadcrumb-item active"><?php echo ucfirst( X_Sanitize::out_html( $this->type ) ); ?></li>
 				<li class="breadcrumb-item active"><?php echo ucfirst( X_Sanitize::out_html( $this->action ) ); ?> <?php echo ucfirst( rtrim( X_Sanitize::out_html( $this->type ), 's' ) ); ?></li>
 			</ol>
-			<form enctype="multipart/form-data" id="x_form_container" action="admin.php?action=<?php echo X_Sanitize::out_html( $this->results['action'] ); ?>&type=<?php echo X_Sanitize::out_html( $this->type ); ?>" method="post" name="x_form">
+			<?php 
+				/**
+				 * Add Hooks prior to main form
+				 */
+				$this->hooks->do_action( 'x_edit_screen_errors' );
+				$this->hooks->do_action( 'x_pre_edit_screen' );
+			?>
+			<form enctype="multipart/form-data" id="x_form_container" action="admin.php?x_action=<?php echo X_Sanitize::out_html( $this->results['action'] ); ?>&x_type=<?php echo X_Sanitize::out_html( $this->type ); ?>" method="post" name="x_form">
 				<div class="row">
 					<div class="col-sm-9 resizable" id="resizable_0">
 						<?php
@@ -44,9 +51,14 @@
 
 							$required = 'NO' === $column->Null ? 'required' : '';
 							$field = X_Sanitize::out_html( $column->Field );
-							$type = $get->get_item_by( 'settings', 'slug', 'x_field_type_' . $field );
+							$type = $this->get->get_item_by( 'settings', 'slug', 'x_field_type_' . $field );
 
-							if ( empty( $type ) || false === $type || 'img' !== $type->value ) {
+							if ( empty( $type )
+								|| false === $type
+								|| ( 'img' !== $type->value
+									&& 'owner' !== $type->value
+								)
+							) {
 
 								switch ( $column->Type ) {
 
@@ -109,21 +121,48 @@
 
 							$required = 'NO' === $column->Null ? 'required' : '';
 							$field = X_Sanitize::out_html( $column->Field );
-							$type = $get->get_item_by( 'settings', 'slug', 'x_field_type_' . $field );
+							$type = $this->get->get_item_by( 'settings', 'slug', 'x_field_type_' . $field );
 
-							if ( ! empty( $type ) && false !== $type && 'img' === $type->value ) {
-								?>
-								<div class="draggable" id="<?php echo X_Sanitize::out_html( $field ); ?>_container">
-									<?php
-									$imgt = null;
-									if ( $this->item->{$field} ) {
-										$imgt = 'var/uploads/' . $this->item->{$field};
-									}
+							if ( ! empty( $type )
+								&& false !== $type
+							) {
+								if ( 'img' === $type->value ) {
 									?>
-									<img src="<?php echo X_Sanitize::out_html( $imgt ); ?>" class="rounded mx-auto d-block w-100 mb-3 x_drag_handle" alt="..." id="<?php echo X_Sanitize::out_html( $field ); ?>_group">
-									<input type='file' id="<?php echo X_Sanitize::out_html( $field ); ?>_input" accept="image/*" class="d-none" name="<?php echo X_Sanitize::out_html( $field ); ?>"/>
-								</div>
-								<?php
+									<div class="draggable" id="<?php echo X_Sanitize::out_html( $field ); ?>_container">
+										<?php
+										$imgt = null;
+										if ( $this->item->{$field} ) {
+											$imgt = 'var/uploads/' . $this->item->{$field};
+										}
+										?>
+										<img src="<?php echo X_Sanitize::out_html( $imgt ); ?>" class="rounded mx-auto d-block w-100 mb-3 x_drag_handle" alt="..." id="<?php echo X_Sanitize::out_html( $field ); ?>_group">
+										<input type='file' id="<?php echo X_Sanitize::out_html( $field ); ?>_input" accept="image/*" class="d-none" name="<?php echo X_Sanitize::out_html( $field ); ?>"/>
+									</div>
+									<?php
+								} elseif ( 'owner' === $type->value ) {
+
+									$users = $this->get->get_items( 'users' );
+									?>
+									<div class="draggable" id="<?php echo X_Sanitize::out_html( $field ); ?>_container"><div class="mb-3 input-group" id=<?php echo X_Sanitize::out_html( $field ); ?>_group>
+										<label for="<?php echo $field; ?>" class="input-group-text x_drag_handle"><?php echo $field; ?></label>
+										<select required name="<?php echo $field ?>" id="<?php echo $field; ?>"   class="form-select x_select2" data-placeholder="Choose a <?php echo $field; ?>">
+											<option></option>
+											<?php
+											foreach ( $users as $user_object ) {
+
+												$selected = $user_object->id === $this->item->owner ? 'selected="selected"' : '';
+												?>
+												<option <?php echo $selected; ?> value="<?php echo $user_object->id; ?>"><?php echo $user_object->username; ?></option>
+												<?php
+
+											}
+											?>
+										</select>
+
+									</div></div>
+									
+									<?php
+								}
 							} else {
 								switch ( $column->Type ) {
 									case 'date':
@@ -162,34 +201,40 @@
 							}
 						}
 
-						if ( ! empty( $entity_candidates )
-							&& isset( $entity_candidates )
-						) {
-							// we have some potential related items of the other type.
-							foreach ( $entity_candidates as $relationship => $entity_objects ) {
+						if ( false !== $this->relationships ) {
+							// we have some relationships with this item type.
+							foreach ( $this->relationships as $relationship_object ) {
 
 								?>
-								<div class="draggable" id="<?php echo X_Sanitize::out_html( $relationship ); ?>_container"><div class="mb-3 input-group" id=<?php echo X_Sanitize::out_html( $relationship ); ?>_group>
-									<label for="<?php echo $relationship; ?>" class="input-group-text x_drag_handle"><?php echo $related_entity; ?></label>
-									<select multiple name="<?php echo $relationship; ?>[]" id="<?php echo $relationship; ?>"   class="form-select" data-placeholder="Choose a <?php echo $related_entity; ?>">
+								<div class="draggable" id="<?php echo X_Sanitize::out_html( $relationship_object->slug ); ?>_container"><div class="mb-3 input-group" id=<?php echo X_Sanitize::out_html( $relationship_object->slug ); ?>_group>
+
+									<?php if ( 'edit' === $this->results['action'] ) { ?>
+									<label for="<?php echo $relationship_object->slug; ?>" class="input-group-text x_drag_handle"><?php echo $this->related_entities[ $relationship_object->slug ]; ?></label>
+									<select multiple name="<?php echo $relationship_object->slug; ?>[]" id="<?php echo $relationship_object->slug; ?>"   class="x_select2 form-select" data-placeholder="Choose a <?php echo $this->related_entities[ $relationship_object->slug ]; ?>">
 										<option></option>
 										<?php
-										$selected_things = array();
-										$s = rtrim( $related_entity, 's' );
-										foreach ( $related_things[ $relationship ] as $related_object ) {
-											$selected_things[] = $related_object->$s;
+										$selected_partners = array();
+										foreach ( $this->partners[ $relationship_object->slug ] as $related_partner_object ) {
+											/**
+											 * Returns objects of each "couple" in the specific table
+											 */
+											$selected_partners[] = $related_partner_object->{rtrim( $this->related_entities[ $relationship_object->slug ], 's' )};
 										}
-										foreach ( $entity_objects as $entity_object ) {
+										foreach ( $this->parter_candidates[ $relationship_object->slug ] as $partner_candidate_object ) {
 
-											$selected = in_array( $entity_object->id, $selected_things ) ? 'selected="selected"' : '';
+											$selected = in_array( $partner_candidate_object->id, $selected_partners ) ? 'selected="selected"' : '';
 											?>
-											<option <?php echo $selected; ?>value="<?php echo $entity_object->id; ?>"><?php echo $entity_object->id; ?></option>
+											<option <?php echo $selected; ?>value="<?php echo $partner_candidate_object->id; ?>"><?php echo $partner_candidate_object->id; ?></option>
 											<?php
 
 										}
 										?>
 									</select>
-
+									<?php } else { ?>
+										<div class="alert alert-warning w-100">
+											<p class="m-0">To connect <?php echo ucfirst( $this->related_entities[ $relationship_object->slug ] ); ?>, save the <?php echo rtrim( ucfirst( $this->type ), 's' ); ?> first.</p>
+										</div>
+									<?php } ?>
 								</div></div>
 								
 								<?php
@@ -197,21 +242,32 @@
 						}
 						?>
 						<div class="d-flex justify-content-between">
-							<input type="hidden" name="token" value="<?php echo X_Functions::set_token( '_x_add', 'add' ); ?>">
-							<input type="submit" class="btn btn-success" name="save" value="Save"/>
-							<input type="submit" class="btn btn-warning" formnovalidate name="cancel" value="Cancel" />
+							<input type="hidden" name="x_token" value="<?php echo X_Functions::set_token( 'x_add', 'add' ); ?>">
 							<?php
 							if ( isset( $this->item )
 								&& property_exists( $this->item, 'id' )
 								&& ! is_null( $this->item->id )
 							) {
 								?>
-								<a href="admin.php?action=delete&type=<?php echo X_Sanitize::out_html( $this->type ); ?>&id=<?php echo intval( $this->item->id ); ?>" class="btn btn-danger" onclick="return confirm('This will irrevocably delete the item. Proceed?')">Delete</a>
-								<a href="<?php echo $this->link; ?>" class="btn btn-success">View <?php echo ucfirst( rtrim( X_Sanitize::out_html( $this->type ), 's' ) ); ?></a>
+								<a href="admin.php?x_action=delete&x_type=<?php echo X_Sanitize::out_html( $this->type ); ?>&id=<?php echo intval( $this->item->id ); ?>" class="x_confirm btn btn-danger" data-x_confirm="This will irrevocably delete the Item.">Delete</a>
 								<?php
 							}
 							?>
+							<a href="admin.php" class="btn btn-warning">Cancel</a>
+							<input type="submit" class="btn btn-success" name="save" value="Save"/>
 						</div>
+						<?php
+						if ( isset( $this->item )
+							&& property_exists( $this->item, 'id' )
+							&& ! is_null( $this->item->id )
+						) {
+							?>
+							<div class="d-flex justify-content-end align-items-center">
+								<a href="<?php echo $this->link; ?>" target="_blank" noopener class="text-decoration-none text-success pt-3">View <?php echo ucfirst( rtrim( X_Sanitize::out_html( $this->type ), 's' ) ); ?> <span class="bi bi-box-arrow-up-right"></span></a>
+							</div>
+							<?php
+						}
+						?>
 					</div>
 				</div>
 			</form>

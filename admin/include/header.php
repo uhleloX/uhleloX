@@ -38,12 +38,12 @@
 					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 						<?php
 						$x_get = new X_Get();
-						$x_user = $x_get->get_item_by( 'users', 'username', $_SESSION['username'] );
+						$x_user = $x_get->get_item_by( 'users', 'username', $_SESSION['x_username'] );
 						?>
-						<li><a class="dropdown-item" href="admin.php?action=edit&type=users&id=<?php echo intval( $x_user->id ); ?>">Edit User</a></li>
+						<li><a class="dropdown-item" href="admin.php?x_action=edit&x_type=users&id=<?php echo intval( $x_user->id ); ?>">Edit User</a></li>
 						<li><a class="dropdown-item" href="#!">Activity Log (@todo)</a></li>
 						<li><hr class="dropdown-divider" /></li>
-						<li><a class="dropdown-item" href="admin.php?action=logout">Log out</a></li>
+						<li><a class="dropdown-item" href="admin.php?x_action=logout">Log out</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -65,8 +65,8 @@
 							</a>
 							<div class="collapse" id="x_sidenav_collapse_settings" data-bs-parent="#x_sidenav_accordion">
 								<nav class="x-admin-sidebar__nav-nested nav" aria-label="Settings">
-									<a class="nav-link text-secondary" href="/admin.php?action=list&type=settings">All Settings</a>
-									<a class="nav-link text-secondary" href="/admin.php?action=add&type=settings">Add Setting</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=list&x_type=settings">All Settings</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=settings">Add Setting</a>
 								</nav>
 							</div>
 							<a class="nav-link text-secondary collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#x_sidenav_collapse_extensions" aria-expanded="false" aria-controls="x_sidenav_collapse_extensions">
@@ -76,8 +76,8 @@
 							</a>
 							<div class="collapse" id="x_sidenav_collapse_extensions" data-bs-parent="#x_sidenav_accordion">
 								<nav class="x-admin-sidebar__nav-nested nav" aria-label="Extensions">
-									<a class="nav-link text-secondary" href="/admin.php?action=list&type=extensions">All Extensions</a>
-									<a class="nav-link text-secondary" href="/admin.php?action=add&type=extensions">Add Extension</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=list&x_type=extensions">All Extensions</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=extensions">Add Extension</a>
 								</nav>
 							</div>
 
@@ -89,8 +89,8 @@
 							</a>
 							<div class="collapse" id="x_sidenav_collapse_media" data-bs-parent="#x_sidenav_accordion">
 								<nav class="x-admin-sidebar__nav-nested nav" aria-label="Media">
-									<a class="nav-link text-secondary" href="/admin.php?action=list&type=media">All Media</a>
-									<a class="nav-link text-secondary" href="/admin.php?action=add&type=media">Add Media</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=list&x_type=media">All Media</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=media">Add Media</a>
 								</nav>
 							</div>
 
@@ -102,8 +102,8 @@
 							</a>
 							<div class="collapse" id="x_sidenav_collapse_pages" data-bs-parent="#x_sidenav_accordion">
 								<nav class="x-admin-sidebar__nav-nested nav" aria-label="Pages">
-									<a class="nav-link text-secondary" href="/admin.php?action=list&type=pages">All Pages</a>
-									<a class="nav-link text-secondary" href="/admin.php?action=add&type=pages">Add Page</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=list&x_type=pages">All Pages</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=pages">Add Page</a>
 								</nav>
 							</div>
 							<a class="nav-link text-secondary collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#x_sidenav_collapse_relationships" aria-expanded="false" aria-controls="x_sidenav_collapse_relationships">
@@ -113,8 +113,8 @@
 							</a>
 							<div class="collapse" id="x_sidenav_collapse_relationships" data-bs-parent="#x_sidenav_accordion">
 								<nav class="x-admin-sidebar__nav-nested nav" aria-label="Relationships">
-									<a class="nav-link text-secondary" href="/admin.php?action=list&type=relationships">All Relationships</a>
-									<a class="nav-link text-secondary" href="/admin.php?action=add&type=relationships">Add Relationship</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=list&x_type=relationships">All Relationships</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=relationships">Add Relationship</a>
 								</nav>
 							</div>
 							<a class="nav-link text-secondary collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#x_sidenav_collapse_languages" aria-expanded="false" aria-controls="x_sidenav_collapse_languages">
@@ -124,8 +124,8 @@
 							</a>
 							<div class="collapse" id="x_sidenav_collapse_languages" data-bs-parent="#x_sidenav_accordion">
 								<nav class="x-admin-sidebar__nav-nested nav" aria-label="Languages">
-									<a class="nav-link text-secondary" href="/admin.php?action=list&type=languages">All Languages</a>
-									<a class="nav-link text-secondary" href="/admin.php?action=add&type=languages">Add Language</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=list&x_type=languages">All Languages</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=languages">Add Language</a>
 								</nav>
 							</div>
 							<div class="x-admin__sidebar-nav-heading">User Management</div>
@@ -136,8 +136,8 @@
 							</a>
 							<div class="collapse" id="x_sidenav_collapse_users" data-bs-parent="#x_sidenav_accordion">
 								<nav class="x-admin-sidebar__nav-nested nav" aria-label="Users">
-									<a class="nav-link text-secondary" href="/admin.php?action=list&type=users">All Users</a>
-									<a class="nav-link text-secondary" href="/admin.php?action=add&type=users">Add User</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=list&x_type=users">All Users</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=users">Add User</a>
 								</nav>
 							</div>
 							<a class="nav-link text-secondary collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#x_sidenav_collapse_roles" aria-expanded="false" aria-controls="x_sidenav_collapse_roles">
@@ -147,8 +147,8 @@
 							</a>
 							<div class="collapse" id="x_sidenav_collapse_roles" data-bs-parent="#x_sidenav_accordion">
 								<nav class="x-admin-sidebar__nav-nested nav" aria-label="Roles">
-									<a class="nav-link text-secondary" href="/admin.php?action=list&type=roles">All Roles</a>
-									<a class="nav-link text-secondary" href="/admin.php?action=add&type=roles">Add Role</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=list&x_type=roles">All Roles</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=roles">Add Role</a>
 								</nav>
 							</div>
 						</div>

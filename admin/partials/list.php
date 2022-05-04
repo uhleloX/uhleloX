@@ -16,7 +16,13 @@
 							<li class="breadcrumb-item">Dashboard</li>
 							<li class="breadcrumb-item active">Articles</li>
 						</ol>
-						<div id="filerobot-widget"></div>
+						<?php
+							/**
+							 * Add hooks prior to main List
+							 */
+							$this->hooks->do_action( 'x_list_errors' );
+							$this->hooks->do_action( 'x_pre_list' );
+						?>
 						<div class="card mb-4">
 							<div class="card-header">
 								<span id="<?php echo X_Sanitize::out_html( $this->type ); ?>_table_desc">Manage and Search <?php echo X_Sanitize::out_html( $this->results['title'] ); ?></span>
@@ -53,8 +59,20 @@
 												?>
 												<td class="x_table x_table__td">
 													<div class="x_table__td-actions d-flex justify-content-between align-items-center">
-														<a href="/admin.php?action=edit&id=<?php echo intval( $item->id ); ?>&type=<?php echo X_Sanitize::out_html( $this->type ); ?>"><span class="bi bi-pencil-square"></span></a>
-														<a href="/admin.php?action=delete&id=<?php echo intval( $item->id ); ?>&type=<?php echo X_Sanitize::out_html( $this->type ); ?>"><span class="bi bi-trash"></span></a>
+														<a href="/admin.php?x_action=delete&id=<?php echo intval( $item->id ); ?>&x_type=<?php echo X_Sanitize::out_html( $this->type ); ?>"><span class="bi bi-trash text-danger"></span></a>
+														<?php if ( 'extensions' === X_Sanitize::out_html( $this->type ) ) {
+															if ( 'active' === X_Sanitize::out_html( $item->status )  ) {
+																?>
+																<a href="/admin.php?x_action=change_status&id=<?php echo intval( $item->id ); ?>&x_type=<?php echo X_Sanitize::out_html( $this->type ); ?>&status=inactive"><span class="bi bi-toggle2-on text-success"></span></a>
+																<?php
+															} else {
+																?>
+																<a href="/admin.php?x_action=change_status&id=<?php echo intval( $item->id ); ?>&x_type=<?php echo X_Sanitize::out_html( $this->type ); ?>&status=active"><span class="bi bi-toggle2-off text-danger"></span></a>
+																<?php
+															}
+														}
+														?>
+														<a href="/admin.php?x_action=edit&id=<?php echo intval( $item->id ); ?>&x_type=<?php echo X_Sanitize::out_html( $this->type ); ?>"><span class="bi bi-pencil-square"></span></a>
 													</div>
 												</td>
 											</tr>

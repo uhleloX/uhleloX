@@ -12,7 +12,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-		<title><?php echo X_Sanitize::out_html( $this->results['page_title'] ); ?></title>
+		<title><?php echo X_Sanitize::out_html( $this->results['title'] ); ?></title>
 		<!-- Favicon-->
 
 		<?php

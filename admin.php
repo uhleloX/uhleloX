@@ -50,22 +50,18 @@ session_start(
 
 /**
  * Get and check $_GET param.
- * We expect `action` and `type` params.
+ * We allow `x_action` and `x_type` params.
  * No other params allowed
- *
- * @todo these params must all have x_ prefix
  */
-$x_action = isset( $_GET['action'] ) ? X_Validate::str( stripslashes( $_GET['action'] ) ) : '';
-$x_type = isset( $_GET['type'] ) ? X_Validate::str( stripslashes( $_GET['type'] ) ) : '';
+$x_action = isset( $_GET['x_action'] ) ? X_Validate::key( $_GET['x_action'] ) : '';
+$x_type = isset( $_GET['x_type'] ) ? X_Validate::key( $_GET['x_type'] ) : '';
 
 /**
  * Get and check $_SESSION param.
- * We expect `username` param
- * No other params allowed
- *
- * @todo these params must all have x_ prefix
+ * We expect `x_username` param.
+ * No other params allowed.
  */
-$x_username = isset( $_SESSION['username'] ) ? X_Validate::str( stripslashes( $_SESSION['username'] ) ) : '';
+$x_username = isset( $_SESSION['x_username'] ) ? X_Validate::key( $_SESSION['x_username'] ) : '';
 
 /**
  * Load uhleloX Admin

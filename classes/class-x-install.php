@@ -194,7 +194,6 @@ class X_Install {
 	 * @return array $tables The default Database Tables.
 	 * @todo use _ underscores for column names, it allwos oto later spearte the words beter
 	 * @todo use UUID insetad of slugs
-	 * @todo get this out of here. It should be loaded only once, in install.
 	 * @todo probably prefix all database tables.
 	 * @see https://treewebsolutions.com/articles/multilanguage-database-design-in-mysql-6 for translations
 	 */
@@ -231,20 +230,21 @@ class X_Install {
 				'owner' => 'BIGINT UNSIGNED NOT NULL',
 				'slug' => 'VARCHAR(255) NOT NULL',
 				'title' => 'TEXT NOT NULL',
-				'summary' => 'MEDIUMTEXT NOT NULL',
-				'content' => 'LONGTEXT NOT NULL',
-				'publicationdate' => 'DATE NOT NULL',
+				'summary' => 'MEDIUMTEXT',
+				'content' => 'LONGTEXT',
+				'publicationdate' => 'DATETIME NOT NULL',
+				'editdate' => 'DATETIME NOT NULL',
 			),
 			'users' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'username' => 'VARCHAR(60) NOT NULL',
 				'passwordhash' => 'VARCHAR(255) NOT NULL',
-				'firstname' => 'VARCHAR(255) NOT NULL',
-				'lastname' => 'VARCHAR(255) NOT NULL',
+				'firstname' => 'VARCHAR(255)',
+				'lastname' => 'VARCHAR(255)',
 				'email' => 'VARCHAR(100) NOT NULL',
 				'joindate' => 'DATE NOT NULL',
-				'description' => 'LONGTEXT NOT NULL',
-				'mugshot' => 'VARCHAR(255) NOT NULL',
+				'description' => 'LONGTEXT',
+				'mugshot' => 'VARCHAR(255)',
 			),
 			'roles' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
@@ -255,14 +255,14 @@ class X_Install {
 			),
 			'user_page' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
-				'pageid' => 'BIGINT UNSIGNED',
-				'userid' => 'VARCHAR(20) NOT NULL',
-				'PRIMARY KEY' => '(`id`, `pageid`, `userid`)',
+				'user' => 'BIGINT UNSIGNED',
+				'page' => 'BIGINT UNSIGNED',
+				'PRIMARY KEY' => '(`id`, `userid`, `pageid`)',
 			),
 			'user_role' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
-				'userid' => 'BIGINT UNSIGNED',
-				'role' => 'VARCHAR(20) NOT NULL',
+				'user' => 'BIGINT UNSIGNED',
+				'role' => 'BIGINT UNSIGNED',
 				'PRIMARY KEY' => '(`id`, `userid`, `role`)',
 			),
 			'languages' => array(

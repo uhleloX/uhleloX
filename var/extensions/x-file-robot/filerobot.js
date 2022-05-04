@@ -22,7 +22,7 @@
 					method: 'POST',
 				  	url: window.location.origin + '/ajax.php',
 				  	data: { 'imgURL' : imageData.imageBase64, 'imgFullName' : imageData.fullName, 'mimeType' : imageData.mimeType },
-				  	headers: { 'X-CSRF-TOKEN': '_x_add', Authorization: $( 'input[name=token]' ).val(), 'X-REQUEST-SOURCE': 'filerobot-img-upl-editor', },
+				  	headers: { 'X-CSRF-TOKEN': 'x_add', Authorization: $( 'input[name=token]' ).val(), 'X-REQUEST-SOURCE': 'filerobot-img-upl-editor', },
 				}).done( function( msg ) {
 				    console.log( 'file was saved (Custom AJAX)' );
 				});

@@ -14,6 +14,7 @@
 		$( window ).on(
 			'DOMContentLoaded',
 			function() {
+
 				// Local storage for the Columns Layout.
 				var x_grid = JSON.parse( localStorage.x_grid || '{}' );
 				var x_draggable_class_name = '.draggable';

@@ -1,11 +1,11 @@
-<?php 
+<?php
 include TEMPLATE_PATH . '/' . $this->template->value . '/header.php';
 ?>
 <!-- bloc-3 -->
 <div class="bloc l-bloc bloc-bg-texture texture-paper" id="bloc-3">
 	<div class="container bloc-lg bloc-xxl-lg ">
 		<div class="row">
-				<?php 
+				<?php
 					foreach ( $this->x_list as $item ) {
 						$link = $functions->get_url( $this->request['archive'], $item->id );
 						?>

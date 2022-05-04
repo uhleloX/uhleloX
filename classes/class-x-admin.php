@@ -10,11 +10,23 @@
  * Template loading in the backend,
  * Loads Admin scripts and styles,
  * Handles Login and logout attempts,
- * Content management
+ * Content management.
+ *
+ * Provides a $this->item object which holds either empty or populated properties
+ * matching the row's columns.
+ *
+ * Do not confuse $this->post with a post as a content type. 'post' in uhleloX refers to the POST method.
  *
  * @since 1.0.0
  */
 class X_Admin {
+
+	/**
+	 * Load X_File trait and X_Relationship trait.
+	 * Merely done to re-use the File upload and erro handling logic out of the Admin class,
+	 * and reuse it elsewhere.
+	 */
+	use X_File, X_Relationship;
 
 	/**
 	 * Action being performed
@@ -22,7 +34,7 @@ class X_Admin {
 	 * @since 1.0.0
 	 * @var string $action The Action GET param.
 	 */
-	private $action = '';
+	private $action;
 
 	/**
 	 * Type of content.
@@ -30,7 +42,7 @@ class X_Admin {
 	 * @since 1.0.0
 	 * @var string $type Type of content being edited or added.
 	 */
-	private $type = '';
+	private $type;
 
 	/**
 	 * User trying to login.
@@ -38,7 +50,7 @@ class X_Admin {
 	 * @since 1.0.0
 	 * @var string $user The username tryng to login.
 	 */
-	private $username = '';
+	private $username;
 
 	/**
 	 * Results of action.
@@ -46,7 +58,7 @@ class X_Admin {
 	 * @since 1.0.0
 	 * @var array $results The results of the action being performed.
 	 */
-	private $results = '';
+	private $results;
 
 	/**
 	 * Columns to display.
@@ -68,31 +80,134 @@ class X_Admin {
 	 * Location Redirect Admin.
 	 *
 	 * @since 1.0.0
-	 * @var object $admin_url The Admin PHP Header Location redirect value.
+	 * @var object $admin_loc The Admin PHP Header Location redirect value.
 	 */
 	private $admin_loc;
 
+	/**
+	 * Location Redirect for Add Items.
+	 *
+	 * @since 1.0.0
+	 * @var object $add_loc The Admin Add Items PHP Header Location redirect value.
+	 */
+	private $add_loc;
+
+	/**
+	 * Location Redirect for Edit Items.
+	 *
+	 * @since 1.0.0
+	 * @var object $edit_loc The Admin Edit Items PHP Header Location redirect value.
+	 */
+	private $edit_loc;
+
+	/**
+	 * Single Item Object.
+	 *
+	 * @since 1.0.0
+	 * @var object $item The Single Item Object retrieved from the database (a row).
+	 */
 	private $item;
+
+	/**
+	 * All Items Objects.
+	 *
+	 * @since 1.0.0
+	 * @var array $items Array of item objects retrieved (rows).
+	 */
 	private $items;
+
+	/**
+	 * Media Objects.
+	 *
+	 * @since 1.0.0
+	 * @var array $media Array of media items.
+	 */
+	private $media;
+
+	/**
+	 * All X_Functions.
+	 *
+	 * @since 1.0.0
+	 * @var X_Functions $functions X_Functions Class Object to make all functions accessible.
+	 */
+	private $functions;
+
+	/**
+	 * The Current View.
+	 *
+	 * @since 1.0.0
+	 * @var X_Current_View $current_screen X_Current_View Class Object to access current screen data.
+	 */
+	private $current_screen;
+
+	/**
+	 * GET Handler.
+	 *
+	 * @since 1.0.0
+	 * @var X_Get $get X_Get Class Object to handle all GET requests.
+	 */
+	private $get;
+
+	/**
+	 * POST Handler.
+	 *
+	 * @since 1.0.0
+	 * @var X_Post $post X_Post Class Object to handle all POST requests.
+	 */
+	private $post;
+
+	/**
+	 * DELETE Handler.
+	 *
+	 * @since 1.0.0
+	 * @var X_Delete $delete X_Delete Class Object to handle all Delete requests.
+	 */
+	private $delete;
+
+	/**
+	 * Hooks Handler.
+	 *
+	 * @since 1.0.0
+	 * @var X_Hooks $hooks X_Hooks Class Object to handle all hooks.
+	 */
+	private $hooks;
 
 	/**
 	 * Construct object.
 	 *
 	 * @since 1.0.0
-	 * @param string $action The Action GET param.
-	 * @param string $type The Type GET param.
-	 * @param string $username The user trying to login.
+	 * @param string $action The Action to be performed (Usually from $_GET param x_action).
+	 * @param string $type The Type (db table) requested (usually from $_GET param x_type).
+	 * @param string $username The Current User ( usually from $_SESSION x_username).
 	 */
 	public function __construct( string $action = '', string $type = '', string $username = '' ) {
 
+		/**
+		 * Class Constructor arguments
+		 */
 		$this->action = $action;
 		$this->type = $type;
 		$this->username = $username;
+
+		/**
+		 * Result/data of current operation
+		 */
 		$this->results = array(
 			'title' => '',
+			'action' => '',
 			'error_message' => '',
+			'not_found' => 'The Item was not found',
+			'invalid_submission' => 'Invalid Form submission. Try refreshing the page.',
 		);
+
+		/**
+		 * Available row columns (used as "fields" to output/populate)
+		 */
 		$this->columns = array();
+
+		/**
+		 * Possible upload errors
+		 */
 		$this->upload_errors = array(
 			0 => 'There is no error, the file uploaded with success',
 			1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
@@ -103,10 +218,45 @@ class X_Admin {
 			7 => 'Failed to write file to disk.',
 			8 => 'A PHP extension stopped the file upload.',
 		);
-		$this->admin_loc = 'Location: admin.php';
-		$this->add_loc = '?action=add&type=';
-		$this->edit_loc = '?action=edit&id=';
 
+		/**
+		 * Location redirects.
+		 */
+		$this->admin_loc = 'Location: admin.php';
+		$this->add_loc = '?x_action=add&x_type=';
+		$this->edit_loc = '?x_action=edit&id=';
+
+		/**
+		 * Results from queries
+		 */
+		$this->item = null;
+		$this->items = array();
+		$this->media = array();
+
+		/**
+		 * Dependencies
+		 */
+		$this->functions = new X_Functions();
+		$this->current_screen = new X_Current_View();
+		$this->get = new X_Get();
+		$this->post = new X_Post();
+		$this->delete = new X_Delete();
+		$this->hooks = new X_Hooks();
+
+	}
+
+	/**
+	 * Add a callback to x_dashboard_errors for displaying eventual errors.
+	 *
+	 * Error has to be passed in URL parameter (key) and will match $this->results[key]
+	 */
+	public function display_errors() {
+
+		if ( isset( $this->results['error_message'] )
+			&& ! empty( $this->results['error_message'] )
+		) {
+			include ADMIN_PATH . '/partials/error.php';
+		}
 	}
 
 	/**
@@ -117,34 +267,17 @@ class X_Admin {
 	 */
 	public function load_scripts() {
 
-		$functions = new X_Functions();
-		$current_screen = new X_Current_View();
+		$this->functions->add_script( 'jquery', 'scripts/jquery.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'jquery-ui', 'scripts/jquery-ui.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'bootstrap', 'scripts/bootstrap.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'datatables', 'scripts/simple-datatables.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'select2', 'scripts/select2.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'bootstrap-select-2', 'admin/js/bootstrap-select-2.js', array(), '', 'footer' );
+		$this->functions->add_script( 'datatables-simple', 'admin/js/datatables-simple.js', array(), '', 'footer' );
+		$this->functions->add_script( 'image-upload', 'admin/js/image-upload.js', array(), '', 'footer' );
+		$this->functions->add_script( 'add-edit-layout', 'admin/js/add-edit-layout.js', array(), '', 'footer' );
+		$this->functions->add_script( 'admin-js', 'admin/js/admin-js.js', array(), '', 'footer' );
 
-		$functions->add_script( 'jquery', 'scripts/jquery.min.js', array(), '', 'footer' );
-		$functions->add_script( 'jquery-ui', 'scripts/jquery-ui.min.js', array(), '', 'footer' );
-
-		if ( $current_screen->is_request( 'setup' ) ) {
-			$functions->add_script( 'select2', 'scripts/select2.min.js', array(), '', 'footer' );
-			$functions->add_script( 'bootstrap-select-2', 'admin/js/bootstrap-select-2.js', array(), '', 'footer' );
-		}
-
-		$functions->add_script( 'bootstrap', 'scripts/bootstrap.min.js', array(), '', 'footer' );
-
-		if ( $current_screen->is_request( 'list' ) ) {
-			$functions->add_script( 'datatables', 'scripts/simple-datatables.min.js', array(), '', 'footer' );
-			$functions->add_script( 'datatables-simple', 'admin/js/datatables-simple.js', array(), '', 'footer' );
-		}
-
-		if ( $current_screen->is_request( 'edit' ) || $current_screen->is_request( 'add' ) ) {
-			if ( ! $current_screen->is_request( 'media' ) ) {
-				$functions->add_script( 'select2', 'scripts/select2.min.js', array(), '', 'footer' );
-				$functions->add_script( 'bootstrap-select-2', 'admin/js/bootstrap-select-2.js', array(), '', 'footer' );
-				$functions->add_script( 'image-upload', 'admin/js/image-upload.js', array(), '', 'footer' );
-			}
-			$functions->add_script( 'add-edit-layout', 'admin/js/add-edit-layout.js', array(), '', 'footer' );
-		}
-
-		$functions->add_script( 'sidebar-toggle', 'admin/js/sidebar-toggle.js', array(), '', 'footer' );
 	}
 
 	/**
@@ -155,29 +288,23 @@ class X_Admin {
 	 */
 	public function load_styles() {
 
-		$functions = new X_Functions();
-		$current_screen = new X_Current_View();
-
-		if ( $current_screen->is_request( 'edit' ) || $current_screen->is_request( 'add' ) ) {
-			$functions->add_link( 'jquery', 'styles/jquery-ui.min.css', array(), '', 'stylesheet', 'head' );
-		}
-		$functions->add_link( 'bootstrap', 'styles/bootstrap.min.css', array(), '', 'stylesheet', 'head' );
-		$functions->add_link( 'bootstrap-icons', 'styles/bootstrap-icons.min.css', array(), '', 'stylesheet', 'head' );
-		$functions->add_link( 'select2', 'styles/select2.min.css', array(), '', 'stylesheet', 'head' );
-		$functions->add_link( 'select2-bootstrap', 'styles/select2-bootstrap.min.css', array(), '', 'stylesheet', 'head' );
-		$functions->add_link( 'style', 'admin/css/styles.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'jquery', 'styles/jquery-ui.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'bootstrap', 'styles/bootstrap.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'bootstrap-icons', 'styles/bootstrap-icons.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'select2', 'styles/select2.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'select2-bootstrap', 'styles/select2-bootstrap.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'style', 'admin/css/styles.css', array(), '', 'stylesheet', 'head' );
 
 	}
 
 	/**
-	 * Load all Admin Templates
+	 * Route to respective Admin Templates
 	 *
 	 * @since 1.0.0
 	 */
 	public function load_template() {
 
-		$get = new X_Get();
-		$user = $get->get_item_by( 'users', 'username', $this->username );
+		$user = $this->get->get_item_by( 'users', 'username', $this->username );
 
 		if ( empty( $this->username ) || false === $user ) {
 
@@ -203,6 +330,9 @@ class X_Admin {
 				case 'delete':
 					$this->delete();
 					break;
+				case 'change_status':
+					$this->change_status();
+					break;
 				case 'list':
 					$this->list();
 					break;
@@ -221,34 +351,49 @@ class X_Admin {
 	 */
 	private function login() {
 
-		$this->results['page_title'] = 'Admin Login | ' . X_NAME;
+		/**
+		 * Set page Title.
+		 */
+		$this->results['title'] = 'Admin Login | ' . X_NAME;
 
-		if ( isset( $_REQUEST['token'] )
-			&& X_Functions::verify_token( '_x_login', stripslashes( $_REQUEST['token'] ), 'login' )
-			&& isset( $_POST['login'] )
+		/**
+		 * If POSTed, verify token
+		 */
+		if ( isset( $_POST['login'] )
+			&& isset( $_REQUEST['x_token'] )
+			&& X_Functions::verify_token( 'x_login', X_Validate::key( $_REQUEST['x_token'] ), 'login' )
 		) {
 
-			$posted_username = X_Validate::str( $_POST['username'] );
-			$get = new X_Get();
-			$user = $get->get_item_by( 'users', 'username', $posted_username );
+			$user = $this->get->get_item_by( 'users', 'username', X_Validate::key( $_POST['username'] ) );
 
 			if ( false !== $user
 				&& isset( $user->passwordhash )
 				&& true === password_verify( X_Validate::str( $_POST['password'] ), $user->passwordhash )
 			) {
 
-				$_SESSION['username'] = $user->username;
+				$_SESSION['x_username'] = $user->username;
 				header( $this->admin_loc );
+				exit();
 
 			} else {
 
 				$this->results['error_message'] = 'Login Failed. Please try again.';
+				$this->hooks->add_action( 'x_login_form_errors', array( $this, 'display_errors' ) );
 				require( PUBLIC_PATH . '/partials/login-form.php' );
 
 			}
+		} elseif ( ! empty( $_POST ) ) {
+
+			/**
+			 * Form was submitted with invalid token.
+			 */
+			$this->results['error_message'] = 'Invalid Form Submission.';
+			$this->hooks->add_action( 'x_login_form_errors', array( $this, 'display_errors' ) );
+			require( PUBLIC_PATH . '/partials/login-form.php' );
+
 		} else {
 
-			  require( PUBLIC_PATH . '/partials/login-form.php' );
+			require( PUBLIC_PATH . '/partials/login-form.php' );
 
 		}
 
@@ -264,71 +409,7 @@ class X_Admin {
 		session_unset();
 		session_destroy();
 		header( $this->admin_loc );
-
-	}
-
-	/**
-	 * Handle Relationships Post
-	 */
-	private function maybe_add_relationship_table() {
-		// This is a new relationship, create the table.
-		if ( 'relationships' === $this->type ) {
-
-			$relationships_db_table_config = 'id BIGINT UNSIGNED AUTO_INCREMENT, ' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . ' BIGINT UNSIGNED, ' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . ' BIGINT UNSIGNED, PRIMARY KEY (`id`, `' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . '`, `' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . '`)';
-			$this->item->add_table( X_Validate::str( stripslashes( $_POST['slug'] ) ), $relationships_db_table_config  );
-			// Relationships cannot be edited after creating them.
-			header( $this->admin_loc . '?action=list&type=' . $this->type );
-			return;
-
-		}
-	}
-
-	/**
-	 * Handle Relationships Edit
-	 */
-	private function maybe_edit_relationship_table( $relationships ) {
-		if ( ! empty( $relationships ) && isset( $relationships ) ) {
-			$get = new X_Get();
-
-			foreach ( $relationships as $relationship ) {
-
-				$related_entity = $relationship->entity_a === $this->type ? $relationship->entity_b : $relationship->entity_a;
-				$entity_candidates[ $relationship->slug ] = $get->get_items( $related_entity );
-
-				if ( isset( $_GET['id'] ) ) {
-					$current_thing = (int) $_GET['id'];
-				} elseif ( isset( $_POST['id'] ) ) {
-					$current_thing = (int) $_POST['id'];
-				} else {
-					$current_thing = null;
-				}
-
-				$related_things = array();
-				if (!is_null($current_thing)){
-					$related_things[ $relationship->slug ] = $get->get_items_in( $relationship->slug, array( rtrim( $this->type, 's' ) ), $current_thing );
-				}
-
-			}
-		}
-	}
-
-	/**
-	 * Hnadle media error
-	 *
-	 * @param array $media the uploaded media data.
-	 */
-	private function handle_media_error( $media ) {
-
-		if ( is_int( $media['error'] ) ) {
-
-			$_SESSION['error_message'] = $this->upload_errors[ $media['error'] ];
-
-		} else {
-
-			$_SESSION['error_message'] = $media['error'];
-
-		}
-		header( $this->admin_loc . $this->add_loc . $this->type );
+		exit();
 
 	}
 
@@ -343,72 +424,80 @@ class X_Admin {
 		$this->results['title'] = 'New ' . rtrim( ucfirst( $this->type ), 's' );
 		$this->results['action'] = 'add';
 
-		$get = new X_Get();
-		$this->columns = $get->show_columns( $this->type, true );
-		$this->item = new X_Post( $this->columns );
+		/**
+		 * Create an empty object for the item since it does not exist yet.
+		 *
+		 * Since each edit or add process is based on the columns of a table,
+		 * we use the available columns to generate the item's object.
+		 */
+		$this->columns = $this->get->show_columns( $this->type, true );
+		$this->item = $this->post->set_columns( $this->columns );
 
-		if ( isset( $_REQUEST['token'] )
-			&& X_Functions::verify_token( '_x_add', X_Validate::str( stripslashes( $_REQUEST['token'] ) ), 'add' )
-			&& ! empty( $_POST )
+		/**
+		 * We need to gather potential relations and their entities,
+		 * even if in ADD process, we cannot connect items (due to ID not existing).
+		 * We use that information to display a smart warning instead.
+		 *
+		 * @todo if we want to allow connecting items at the point of creating,
+		 * we would need to store the $_POST[relationship] into a temporary variable,
+		 * so we can use it _after_ the post is submitted, by which point naturally the $_POST[relationship]
+		 * is already unset.
+		 * This is possible, but it requires more work and shouln't be too big of an issue,
+		 * strictly speaking, why would you want to connect something that does techincally not yet exist?
+		 */
+		$this->relationships = $this->get->get_items_in( 'relationships', array( 'entity_a', 'entity_b' ), $this->type );
+		$this->gather_parter_candidates();
+
+		/**
+		 * If POSTed, verify Token.
+		 */
+		if ( ! empty( $_POST )
+			&& isset( $_REQUEST['x_token'] )
+			&& X_Functions::verify_token( 'x_add', X_Validate::key( $_REQUEST['x_token'] ), 'add' )
 		) {
 
-			if ( isset( $_POST['save'] ) ) {
+			/**
+			 * Upload eventual files, abort on eventual errors.
+			 *
+			 * @see X_Admin::upload_files()
+			 */
+			$this->upload_files();
 
-				if ( isset( $_FILES['mugshot'] ) 
-					&& isset( $_FILES['mugshot']['name'] ) ) {
-					$_POST['mugshot'] = X_Validate::str( $_FILES['mugshot']['name'] );
-					$media = $this->item->upload( 'mugshot' );
-				}
+			/**
+			 * If we reach this point, was no media error, setup and insert the POSTed data.
+			 *
+			 * @see X_Admin::handle_media_error()
+			 */
+			$this->post->setup_data( $_POST );
+			$this->post->insert( $this->type );
 
-				// User has posted the item edit form: save the new item.
-				$this->item->setup_data( $_POST );
+			/**
+			 * If this is a new Relationship, create a new table as well.
+			 */
+			$this->maybe_add_relationship_table();
 
-				// AFTER setting up post data, we handle media validation.
-				if ( is_array( $media ) && array_key_exists( 'error', $media ) ) {
+			/**
+			 * After succesful POST, reload the edit screen with POSTed data.
+			 */
+			header( $this->admin_loc . $this->edit_loc . (int) $this->post->id . '?status=saved&x_type=' . $this->type );
+			exit();
 
-					$this->handle_media_error( $media );
 
-				} else {
-
-					$this->item->insert( $this->type );
-
-					// If this is is a new relationship, create the table.
-					$this->maybe_add_relationship_table();
-
-					// Load the edit screen after succesful insert.
-					header( $this->admin_loc . $this->edit_loc . intval( $this->item->id ) . 'status=saved&type=' . $this->type );
-
-				}
-			} elseif ( isset( $_POST['cancel'] ) ) {
-
-				// User has cancelled their edits: return to the list.
-				header( $this->admin_loc . '?action=list&type=' . $this->type );
-
-			}
 		} elseif ( ! empty( $_POST ) ) {
 
-			$_SESSION['error_message'] = 'Invalid Form Submission';
-			// User has submitted the form but there is a Token mismatch. We do not disclose this error.
-			header( $this->admin_loc . $this->add_loc . $this->type );
-		} else {
-
-			// User has not posted the article edit form yet: display the form.
+			/**
+			 * The user submitted this form with invalid Tokens.
+			 */
+			$this->results['error_message'] = 'Invalid Form Submission.';
+			$this->hooks->add_action( 'x_edit_screen_errors', array( $this, 'display_errors' ) );
 			require( ADMIN_PATH . '/partials/edit.php' );
 
-		}
+		} else {
 
-	}
-
-	/**
-	 * If item does not exist
-	 */
-	private function item_not_exists() {
-		$get = new X_Get();
-
-		if ( false === $get->get_item_by_id( $this->type, intval( $_POST['id'] ) ) ) {
-
-			header( $this->admin_loc . '?error_message=Item was not found' );
-			return;
+			/**
+			 * Require the Edit Template.
+			 */
+			require( ADMIN_PATH . '/partials/edit.php' );
 
 		}
 
@@ -417,9 +506,7 @@ class X_Admin {
 	/**
 	 * Update data to the datbase (of all kind).
 	 *
-	 * @todo relationships need to be implemented to be saved, as well their respective Select2.
-	 * @todo these relationships are currently partially hardcoded, which needs to be resolved.
-	 * @todo fazit, relationships not fully functional at this point.
+	 * @todo relationships not fully functional at this point.
 	 * @todo do not hardcode the image $_POST[key].
 	 * @todo file uploads are repeated in the edit() function. Unify.
 	 * @todo the relationship stuff ... :mute:
@@ -429,100 +516,68 @@ class X_Admin {
 		$this->results['title'] = 'Edit ' . rtrim( ucfirst( $this->type ), 's' );
 		$this->results['action'] = 'edit';
 
-		$get = new X_Get();
-		$this->columns = $get->show_columns( $this->type, true );
-		$post = new X_Post();
-
-		$relationships = $get->get_items_in( 'relationships', array( 'entity_a', 'entity_b' ), $this->type );
-
-		$this->maybe_edit_relationship_table( $relationships );
-
-		if ( isset( $_REQUEST['token'] )
-			&& X_Functions::verify_token( '_x_add', X_Validate::str( stripslashes( $_REQUEST['token'] ) ), 'add' )
-			&& ! empty( $_POST )
+		$this->columns = $this->get->show_columns( $this->type, true );
+		$this->relationships = $this->get->get_items_in( 'relationships', array( 'entity_a', 'entity_b' ), $this->type );
+		$this->gather_parter_candidates();
+		/**
+		 * If POSTed, verify token.
+		 */
+		if ( ! empty( $_POST )
+			&& isset( $_REQUEST['x_token'] )
+			&& X_Functions::verify_token( 'x_add', X_Validate::str( stripslashes( $_REQUEST['x_token'] ) ), 'add' )
 		) {
-			if ( isset( $_POST['save'] ) ) {
 
-				// User has posted the item edit form: save the item changes.
-				$this->item_not_exists();
+			/**
+			 * Upload eventual files, abort on eventual errors.
+			 *
+			 * @see X_Admin::upload_files()
+			 */
+			$this->upload_files();
 
-				if ( isset( $_FILES['mugshot'] ) && isset( $_FILES['mugshot']['name'] ) ) {
+			/**
+			 * If we reach this point, was no media error.
+			 * Setup the POSTed data, connect related items, and post the item.
+			 *
+			 * @see X_Admin::handle_media_error()
+			 */
+			$this->post->setup_data( $_POST );
+			$this->maybe_disconnect_partners();
+			$this->maybe_connect_partners();
+			$this->post->update( $this->type );
 
-					$_POST['mugshot'] = X_Validate::str( stripslashes( $_FILES['mugshot']['name'] ) );
-					$media = $post->upload( 'mugshot' );
+			/**
+			 * After succesful POST, reload the edit screen with POSTed data.
+			 */
+			header( $this->admin_loc . $this->edit_loc . (int) $this->post->id . '&status=saved&x_type='. $this->type );
+			exit();
 
-				}
 
-				if ( isset ( $_POST['page_user'] ) ) {
-					foreach ( $_POST['page_user'] as $partner ) {
-						$post->connect( 'page_user', (int) $_POST['id'], (int) $partner );
-					}
-				}
-				/**
-				 * We do not need the relationship data anymore.
-				 */
-				unset($_POST['page_user']);
-
-				$post->setup_data( $_POST );
-
-				// AFTER setting up post data, we handle media validation.
-				if ( isset( $media )
-					&& is_array( $media )
-					&& array_key_exists( 'error', $media )
-				) {
-
-					if ( is_int( $media['error'] ) ) {
-
-						$_SESSION['error_message'] = $this->upload_errors[ $media['error'] ];
-
-					} else {
-
-						$_SESSION['error_message'] = $media['error'];
-
-					}
-
-					header( $this->admin_loc . $this->edit_loc . intval( $_POST['id'] ) . '&status=error&type=' . $this->type );
-
-				} else {
-
-					// Everything is valid at this point, we can update.
-					$post->update( $this->type );
-
-					header( $this->admin_loc . $this->edit_loc . intval( $_POST['id'] ) . '&status=saved&type='. $this->type );
-
-				}
-			} elseif ( isset( $_POST['cancel'] ) ) {
-
-				// User has cancelled their edits: return to the article list.
-				header( $this->admin_loc );
-
-			}
 		} elseif ( ! empty( $_POST ) ) {
-			$_SESSION['error_message'] = 'Invalid Form Submission';
-			// User has submitted the form but there is a Token mismatch. We do not disclose this error.
-			header( $this->admin_loc . $this->add_loc . $this->type );
+
+			/**
+			 * The user submitted this form with invalid Tokens.
+			 */
+			$this->results['error_message'] = 'Invalid Form Submission.';
+			$this->hooks->add_action( 'x_edit_screen_errors', array( $this, 'display_errors' ) );
+			require_once ADMIN_PATH . '/partials/edit.php';
 
 		} else {
 
-			// User has not posted the item edit form yet: display the form.
-			if ( ! isset( $_GET['id'] ) || empty( $_GET ) ) {
-
-				$_SESSION['error_message'] = 'Invalid or Missing ID';
+			/**
+			 * Perhaps accidentaly ID in GET is invalid or not set.
+			 * Redirect to dashboard.
+			 */
+			if ( ! isset( $_GET['id'] )
+				|| false === $this->get->get_item_by_id( $this->type, (int) $_GET['id'] )
+			) {
 				header( $this->admin_loc );
-
-			} elseif ( false === $get->get_item_by_id( $this->type, intval( $_GET['id'] ) ) ) {
-
-				$_SESSION['error_message'] = 'Item was not found';
-				header( $this->admin_loc );
-
-			} else {
-
-				$functions = new X_Functions();
-				$this->item = $get->get_item_by_id( $this->type, intval( $_GET['id'] ) );
-				$this->link = $functions->get_url( $this->type, intval( $_GET['id'] ) );
-				require( ADMIN_PATH . '/partials/edit.php' );
-
+				exit();
 			}
+
+			$this->item = $this->get->get_item_by_id( $this->type, (int) $_GET['id'] );
+			$this->link = $this->functions->get_url( $this->type, (int) $_GET['id'] );
+			require_once ADMIN_PATH . '/partials/edit.php';
+
 		}
 
 	}
@@ -532,23 +587,51 @@ class X_Admin {
 	 */
 	private function delete() {
 
-		$get = new X_Get();
-		$delete = new X_Delete();
-
-		if ( ! isset( $_GET['id'] ) || empty( $_GET ) ) {
-
-			$_SESSION['error_message'] = 'Invalid or Missing ID';
+		if ( ! isset( $_GET['id'] )
+			|| false === $this->get->get_item_by_id( $this->type, (int) $_GET['id'] )
+		) {
 			header( $this->admin_loc );
+			exit();
+		} else {
 
-		} elseif ( false === $get->get_item_by_id( $this->type, intval( $_GET['id'] ) ) ) {
+			$this->delete->delete_by_id( $this->type, (int) $_GET['id'] );
+			header( $this->admin_loc . '?x_action=list&x_type=' . $this->type );
+			exit();
 
-			$_SESSION['error_message'] = 'Item was not found';
-			header( $this->admin_loc );
+		}
+	}
+
+	/**
+	 * Used to change extension stauts
+	 * But probably this could just be used to POST with GET variables?
+	 */
+	private function change_status() {
+
+		/**
+		 * Unlikely case where the ID is not set in the link
+		 */
+		if ( ! isset( $_GET['id'] )
+			|| false === $this->get->get_item_by_id( $this->type, (int) $_GET['id'] )
+		) {
+
+			header( 'Location:' . X_Validate::url( $_SERVER['HTTP_REFERER'] ) );
+			exit();
 
 		} else {
 
-			$delete->delete_by_id( $this->type, intval( $_GET['id'] ) );
-			header( $this->admin_loc . '?action=list&status=deleted&type=' . $this->type );
+			/**
+			 * Unset data we cannot use to POST
+			 */
+			unset( $_GET['x_action'], $_GET['x_type'] );
+			/**
+			 * Setup POST data.
+			 * Update item.
+			 * Redirect to referer.
+			 */
+			$this->post->setup_data( $_GET );
+			$this->post->update( $this->type );
+			header( 'Location:' . X_Validate::url( $_SERVER['HTTP_REFERER'] ) );
+			exit();
 
 		}
 	}
@@ -558,11 +641,17 @@ class X_Admin {
 	 */
 	private function list() {
 
+		/**
+		 * Setup Page title
+		 */
 		$this->results['title'] = 'All ' . ucfirst( $this->type );
 
-		$get = new X_Get();
-		$this->items = $get->get_items( $this->type );
-		$this->columns = $get->show_columns( $this->type );
+		/**
+		 * Get all items and columns.
+		 * (Note, by default gets only 100)
+		 */
+		$this->items = $this->get->get_items( $this->type );
+		$this->columns = $this->get->show_columns( $this->type );
 
 		require( ADMIN_PATH . '/partials/list.php' );
 
@@ -573,10 +662,36 @@ class X_Admin {
 	 */
 	private function dashboard() {
 
+		/**
+		 * Setup Page title
+		 */
 		$this->results['title'] = 'Dashboard';
+
+		/**
+		 * Add action to x_dashboard_errors
+		 */
+		$this->hooks->add_action( 'x_dashboard_errors', array( $this, 'display_errors' ) );
 
 		require( ADMIN_PATH . '/partials/dashboard.php' );
 
+	}
+
+
+
+	/**
+	 * Handle Relationships Post
+	 */
+	private function maybe_add_relationship_table() {
+		// This is a new relationship, create the table.
+		if ( 'relationships' === $this->type ) {
+
+			$relationships_db_table_config = 'id BIGINT UNSIGNED AUTO_INCREMENT, ' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . ' BIGINT UNSIGNED, ' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . ' BIGINT UNSIGNED, PRIMARY KEY (`id`, `' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . '`, `' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . '`)';
+			$this->post->add_table( X_Validate::str( stripslashes( $_POST['slug'] ) ), $relationships_db_table_config  );
+			// Relationships cannot be edited after creating them.
+			header( $this->admin_loc . '?x_action=list&x_type=' . $this->type );
+			exit();
+
+		}
 	}
 
 }

@@ -21,49 +21,21 @@ class X_Model {
 	 */
 	public $id = null;
 
-	/**
-	 * The Publication Date of the item.
-	 *
-	 * @var int $publicationdate When the article was published.
-	 */
-	public $publicationdate = null;
-
-	/**
-	 * The Title of the item.
-	 *
-	 * @var string $title Full title of the article.
-	 */
-	public $title = null;
-
-	/**
-	 * The Summary of the item.
-	 *
-	 * @var string $summary A short summary of the article.
-	 */
-	public $summary = null;
-
-	/**
-	 * The Content of the item.
-	 *
-	 * @var $content string The HTML content of the article.
-	 */
-	public $content = null;
-
 
 	/**
 	 * Sets the object's properties using the values in the supplied array
 	 */
-	public function __construct( $columns = array() ) {
+	public function __construct() {
 
-		$this->db = new X_Db( HOST, DB_USERNAME, DB_PASSWORD, DB_NAME );
-
-		foreach ( $columns as $column ) {
-			$this->{$column->Field} = null;
-		}
+		$this->db = new X_Db();
 
 		$this->allowed_db_tables = X_Setup::tables( 'all' );
 		$this->results = array();
 
+	}
+
+	protected function set_columns( array $columns = array() ) {
+		return array();
 	}
 
 	/**
@@ -170,6 +142,7 @@ class X_Model {
 		} catch ( DomainException $e ) {
 
 			error_log( $e->getMessage() . print_r( $e, true ), 0 );
+			error_log( 'Table attempted to access: ' . $table );
 			echo $e->getMessage();
 			exit();
 

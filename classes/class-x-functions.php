@@ -259,7 +259,8 @@ class X_Functions {
 
 			$item = $get->get_item_by_id( $type, $item );
 
-			if ( property_exists( $item, 'slug' ) ) {
+			if ( is_object( $item )
+				&& property_exists( $item, 'slug' ) ) {
 				$item = $item->slug;
 			} else {
 				$item = '';

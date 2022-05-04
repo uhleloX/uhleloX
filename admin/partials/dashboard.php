@@ -7,11 +7,7 @@
  */
 
 ?>
-<?php
-$hooks = new X_Hooks();
-$setup = new X_Setup();
-include ADMIN_PATH . '/include/header.php';
-?>
+<?php include ADMIN_PATH . '/include/header.php'; ?>
 
 			<div class="x-admin-content">
 				<main>
@@ -20,9 +16,15 @@ include ADMIN_PATH . '/include/header.php';
 						<ol class="breadcrumb mb-4">
 							<li class="breadcrumb-item active">Dashboard</li>
 						</ol>
-						<?php $hooks->do_action( 'x_pre_dashboard' ); ?>
+						<?php
+							/**
+							 * Add hooks prior to main Dashboard
+							 */
+							$this->hooks->do_action( 'x_dashboard_errors' );
+							$this->hooks->do_action( 'x_pre_dashboard' );
+						?>
 						<div class="row row-cols-1 row-cols-md-3 g-3">
-							<?php $hooks->do_action( 'x_start_dashboard' ); ?>
+							<?php $this->hooks->do_action( 'x_start_dashboard' ); ?>
 							  <div class="col">
 								<div class="card h-100 alert alert-success">
 								  <div class="card-body">
@@ -52,6 +54,7 @@ include ADMIN_PATH . '/include/header.php';
 									<p class="card-text">
 										<ul>
 											<?php
+											$setup = new X_Setup();
 											$props = (array) $setup;
 											$garbage = array_shift( $props );
 											foreach ( $props as $key => $value ) {
@@ -63,9 +66,9 @@ include ADMIN_PATH . '/include/header.php';
 								  </div>
 								</div>
 							  </div>
-							<?php $hooks->do_action( 'x_end_dashboard' ); ?>
+							<?php $this->hooks->do_action( 'x_end_dashboard' ); ?>
 						</div>
-						<?php $hooks->do_action( 'x_after_dashboard' ); ?>
+						<?php $this->hooks->do_action( 'x_after_dashboard' ); ?>
 					</div>
 				</main>
 
