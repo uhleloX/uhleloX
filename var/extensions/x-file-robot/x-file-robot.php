@@ -43,7 +43,7 @@ function add_filerobot_media_editor( $media_object ) {
 		<div class="mb-3 position-relative" id="media_item_container_group">
 			<span class="position-absolute top-0 left-0 m-1 x_drag_handle x_drag_handle-editor" id="media_item_containerHint"></span>
 			<div  class="trigger_hover">
-			  <img src="<?php echo $functions->get_site_url() . '/var/uploads/' . $media_object->slug; ?>">
+			  <img src="<?php echo $functions->get_site_url() . '/var/uploads/' . $media_object->slug; ?>" alt="<?php echo $media_object->title; ?>">
 			  <span class="btn btn-lg btn-success position-absolute top-50 start-50 translate-middle show_on_hover" data-bs-toggle="modal" data-bs-target="#x_filerobot_modal">Edit</span>
 			</div>
 		</div>
