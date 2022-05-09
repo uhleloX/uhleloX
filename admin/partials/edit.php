@@ -102,15 +102,9 @@
 							}
 						}
 						if ( 'media' === $this->type ) {
-							?>
-							<div class="draggable" id="media_item_container">
-								<div class="mb-3 position-relative" id="media_item_container_group">
-									<span class="position-absolute top-0 left-0 m-1 x_drag_handle x_drag_handle-editor" id="media_item_containerHint"></span>
-									<div id="media_item_containerEditor" style="height: 666px;position:relative;">
-									</div>
-								</div>
-							</div>
-							<?php
+
+							$this->hooks->do_action( 'x_media_screen_media_editor_area', $this->item );
+
 						}
 						?>
 					

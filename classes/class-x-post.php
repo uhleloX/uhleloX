@@ -279,6 +279,7 @@ class X_Post extends X_Model {
 		 * Found the solution here https://stackoverflow.com/questions/26498960/lastinsertid-for-update-in-prepared-statement#answer-26499145
 		 */
 		$what = implode( ' = ?, ', array_keys( $this->data ) );
+		error_log( print_r( $what, true ) );
 		$sql = 'UPDATE ' . $type . ' SET ' . $what . ' = ?, id = LAST_INSERT_ID(id) WHERE id = ?';
 		$params = array_values( $this->data );
 		$params[] = $this->id;

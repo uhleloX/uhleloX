@@ -32,7 +32,7 @@ trait X_Relationship {
 	private function x_post() {
 
 		try {
-			if ( empty( $this->post ) ) {
+			if ( ! isset( $this->post ) ) {
 				throw new Exception( '$post must be defined in ' . __CLASS__ );
 			}
 		} catch ( Exception $e ) {
@@ -51,7 +51,7 @@ trait X_Relationship {
 	private function x_get() {
 
 		try {
-			if ( empty( $this->get ) ) {
+			if ( ! isset( $this->get ) ) {
 				throw new Exception( '$get must be defined in ' . __CLASS__ );
 			}
 		} catch ( Exception $e ) {
@@ -70,7 +70,7 @@ trait X_Relationship {
 	private function x_delete() {
 
 		try {
-			if ( empty( $this->delete ) ) {
+			if ( ! isset( $this->delete ) ) {
 				throw new Exception( '$get must be defined in ' . __CLASS__ );
 			}
 		} catch ( Exception $e ) {
@@ -89,7 +89,7 @@ trait X_Relationship {
 	private function x_relationships() {
 
 		try {
-			if ( empty( $this->relationships ) ) {
+			if ( ! isset( $this->relationships ) ) {
 				throw new Exception( '$relationships must be defined in ' . __CLASS__ );
 			}
 		} catch ( Exception $e ) {
@@ -109,7 +109,7 @@ trait X_Relationship {
 	private function x_type() {
 
 		try {
-			if ( empty( $this->type ) ) {
+			if ( ! isset( $this->type ) ) {
 				throw new Exception( '$relationships must be defined in ' . __CLASS__ );
 			}
 		} catch ( Exception $e ) {
