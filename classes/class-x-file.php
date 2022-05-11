@@ -1,20 +1,13 @@
 <?php
 /**
- * Registers a File handler Trait.
+ * X_File trait
  *
+ * @package uhleloX\classes\presenters
  * @since 1.0.0
- * @package uhleloX\classes\traits
  */
 
 /**
- * This trait provides methods to initiate $_FILE uploads and error handling.
- * It can be used anwywhere in the /admin.php area.
- *
- * Any class using it must:
- * - instantiate the X_Post object in a $post property.
- * - instantiate the X_Hooks object in a $hooks property.
- * - declare a non-static $media property (array).
- * - declare a non-staic $results property (array).
+ * Trait to provide methods to initiate $_FILE uploads and related error handling.
  *
  * @since 1.0.0
  */
@@ -63,6 +56,14 @@ trait X_File {
 				 * This then references the uploaded mugshot for this user.
 				 */
 				$_POST['mugshot'] = X_Validate::str( $this->media[ $inputname ]['success']['slug'] );
+
+			} elseif ( 'media_asset' === $inputname ) {
+
+				/**
+				 * Pass the name of the file to the POSTed data column 'slug'
+				 * This then references the uploaded media for this media item.
+				 */
+				$_POST['slug'] = X_Validate::str( $this->media[ $inputname ]['success']['slug'] );
 
 			} else {
 				/**

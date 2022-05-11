@@ -1,15 +1,16 @@
 <?php
 /**
- * Handles template loading.
+ * X_Template_Loader class
  *
  * @since 1.0.0
- * @package uhleloX\classes\views
+ * @package uhleloX\classes\presenters
  */
 
 /**
- * Class to load the correct front end Template.
+ * Class to handle front end area
  *
- * Implements single view, list view and index data and loads appropriate template.
+ * Loads adequate front end templates,
+ * Passes Database operations from partials to models and returns results to partials.
  *
  * @since 1.0.0
  */
@@ -22,10 +23,25 @@ class X_Template_Loader {
 	 * @see X_Router()
 	 * @var array $request The requested resource ID and type.
 	 */
-	private $request = '';
+	private $request = array();
 
-	private $x_list = false;
-	private $x_item = false;
+	/**
+	 * The requested list of items.
+	 *
+	 * @since 1.0.0
+	 * @see X_Router()
+	 * @var array $x_list The requested list of items to display.
+	 */
+	private $x_list = array();
+
+	/**
+	 * The requested item object.
+	 *
+	 * @since 1.0.0
+	 * @see X_Router()
+	 * @var obj $x_item The requested object item.
+	 */
+	private $x_item = null;
 
 	/**
 	 * Construct the request array.
@@ -85,6 +101,7 @@ class X_Template_Loader {
 	 * Load the Data and Template for single views.
 	 *
 	 * @since 1.0.0
+	 * @throws Exception Throws exception if item does not exist.
 	 */
 	private function view_single() {
 
@@ -131,6 +148,9 @@ class X_Template_Loader {
 
 	}
 
+	/**
+	 * Load main index
+	 */
 	private function index() {
 
 		$get = new X_Get();

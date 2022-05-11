@@ -1,18 +1,22 @@
 <?php
 /**
- * In this file the Router Class is defined.
+ * X_Router class
  *
  * @since 1.0.0
- * @package uhleloX\classes\views
+ * @package uhleloX\classes\presenter
  */
 
 /**
- * This Class allows "pretty" URLs such as /type/item instead of ?type=my-type&item=8
+ * Class to create routes based on request
+ * and build base for "pretty" URLs such as /type/item instead of ?type=my-type&item=8
  *
  * @since 1.0.0
  */
 class X_Router {
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 
 		$this->request = $_SERVER['REQUEST_URI'];
@@ -23,12 +27,22 @@ class X_Router {
 
 	}
 
+	/**
+	 * Get the segments of the request.
+	 *
+	 * @return array $request An array with request segments.
+	 */
 	private function get_segments() {
 
 		return explode( '/', ltrim( trim( trim( $this->request ), '/' ), '/' ) );
 
 	}
 
+	/**
+	 * Check if it is a main index request.
+	 *
+	 * @return bool True if it is a main index request. Default false.
+	 */
 	private function is_main_index() {
 
 		if ( is_array( $this->segments )
@@ -42,6 +56,11 @@ class X_Router {
 
 	}
 
+	/**
+	 * Check if it is a main item
+	 *
+	 * @return bool True if is a main item. Default false.
+	 */
 	private function is_main_item() {
 
 		if ( false === $this->main_index
@@ -60,6 +79,7 @@ class X_Router {
 	 * Checks if the main item requested is a valid "archive"
 	 *
 	 * @since 1.0.0
+	 * @return bool True if is archive, false if not.
 	 */
 	private function is_archive() {
 
@@ -80,9 +100,10 @@ class X_Router {
 	}
 
 	/**
-	 * This should probably be renamed to $request when returned
+	 * Create route and pass segments
 	 *
-	 * @todo above.
+	 * @return array $item Associative array with route and segment.
+	 * @todo This should probably be renamed to $request when returned.
 	 */
 	public function route() {
 

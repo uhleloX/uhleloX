@@ -83,11 +83,10 @@ try {
 				} else {
 
 					$file = $handler->upload( $_POST['imgURL'], true );
-
+					$response = $file;
 				}
 			}
 		} elseif ( 'GET' === $_SERVER['REQUEST_METHOD'] ) {
-
 			$handler = new X_Get();
 			$results = $handler->get_items( $validate->str( $_GET['type'] ) );
 			if ( is_array( $results ) && ! empty( $results ) ) {

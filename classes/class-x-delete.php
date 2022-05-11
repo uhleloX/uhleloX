@@ -1,26 +1,27 @@
 <?php
 /**
- * Delete data from the database.
+ * X_Delete class
  *
- * @since 1.0.0
  * @package uhleloX\classes\models
+ * @since 1.0.0
  */
 
 /**
- * The Class to Delete data from the Database.
- *
- * Implements all methods to delete content.
+ * Class to delete items from the Database.
  *
  * @since 1.0.0
  */
 class X_Delete extends X_Model {
 
 	/**
-	 * Deletes the current Article object from the database.
+	 * Deletes an item by ID from the database.
+	 *
+	 * @param string $type The Database Table.
+	 * @param int    $id   The row ID to delete.
 	 */
 	public function delete_by_id( string $type = '', int $id = 0 ) {
 
-		$sql = 'DELETE FROM ' . $type . ' WHERE id = ?';
+		$sql = 'DELETE FROM ' . $this->whitelist_tables( $type ) . ' WHERE id = ?';
 		$this->delete( $sql, array( $id ) );
 
 		return $this->results;

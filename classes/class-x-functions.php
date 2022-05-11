@@ -1,29 +1,55 @@
 <?php
 /**
- * Implements util functions class.
+ * X_Functions class
  *
+ * @package uhleloX\classes\presenters
  * @since 1.0.0
- * @package uhleloX\classes\functions
  */
 
 /**
- * Implements several functions for global usage.
+ * Class to provide several methods used overall the project.
  *
- * @todo bring scripts and styles global and object out of this class into its own.
+ * @since 1.0.0
  */
 class X_Functions {
 
-	static $errors = true;
-
+	/**
+	 * Toke Key name
+	 *
+	 * @var const KEY The name of the toke key  to listen to.
+	 */
 	const KEY = '_x_token';
 
+	/**
+	 * Search tag
+	 *
+	 * @var string $src The Search tag of link/script passed.
+	 */
+	private $src;
+
+	/**
+	 * Script version
+	 *
+	 * @var string $version The Version of script passed.
+	 */
 	private $version;
+
+	/**
+	 * Rel tag
+	 *
+	 * @var string $rel The Rel tag of link passed.
+	 */
 	private $rel;
 
-	public function __construct(){
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+
 		$this->src = '';
 		$this->version = '';
 		$this->rel = '';
+
 	}
 
 	/**
@@ -91,6 +117,11 @@ class X_Functions {
 
 	}
 
+	/**
+	 * Helper to enforce HTTPS everywhere.
+	 *
+	 * The uhleloX CMS does NOT permit install without HTTPS.
+	 */
 	public static function enforce_https() {
 
 		$is_https = false;
@@ -106,13 +137,18 @@ class X_Functions {
 
 	}
 
+	/**
+	 * Set CSP
+	 *
+	 * The uhleloX CMS enforces strong CSP natively.
+	 */
 	public static function set_security_headers() {
 
 		// We would prefer only self, but CK Editor has an issue with this.
 		header( "Content-Security-Policy: default-src 'none'; connect-src 'self'; script-src 'self'; img-src * data:; style-src 'self' 'unsafe-inline'; frame-src *; font-src 'self'" );
-		header( "X-Frame-Options: DENY" );
-		header( "Strict-Transport-Security: max-age=63072000; includeSubDomains; preload" );
-		header( "X-XSS-Protection: 1; mode=block" );
+		header( 'X-Frame-Options: DENY' );
+		header( 'Strict-Transport-Security: max-age=63072000; includeSubDomains; preload' );
+		header( 'X-XSS-Protection: 1; mode=block' );
 
 	}
 
@@ -158,18 +194,34 @@ class X_Functions {
 	}
 
 	/**
+	 * Echo the script tag
+	 */
+	public function render_script() {
+		echo '<script src="' . $this->src . $this->version . '"></script>';
+	}
+
+	/**
+	 * Echo the link tag
+	 */
+	public function render_link() {
+		echo '<link href="' . $this->src . $this->version . '" rel="' . $this->rel . '"></script>';
+	}
+
+	/**
 	 * Add Scripts.
 	 *
-	 * @param string $handle The Name of the script
-	 * @param string $src The Location of the script
-	 * @param array $dep The dependencies (array of handles)
-	 * @param string $version A PHP valid version string
+	 * @param string $handle The Name of the script.
+	 * @param string $src The Location of the script.
+	 * @param array  $dep The dependencies (array of handles).
+	 * @param string $version A PHP valid version string.
+	 * @param string $loc uhleloX location of script (head, footer).
+	 * @param int    $priority Priority of the hook (-PHP_INT_MAX to +PHP_INT_MAX).
 	 * @todo check to include most of these options https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script
 	 */
-	public function add_script( string $handle = '', string $src = '', array $dep = array(), string $version = '', string $loc = '', int $priority = 10  ) {
+	public function add_script( string $handle = '', string $src = '', array $dep = array(), string $version = '', string $loc = '', int $priority = 10 ) {
 
 		$GLOBALS['x_scripts'] = array();
-		$scriptss = new self;
+		$scriptss = new self();
 
 		if ( ! array_key_exists( $handle, $GLOBALS['x_scripts'] ) ) {
 			$GLOBALS['x_scripts'] = array( $handle => $src );
@@ -177,10 +229,10 @@ class X_Functions {
 			return;
 		}
 
-		if( version_compare( $version, '0.0.1', '>=' ) !== false ) {
-		    $scriptss->version = '?v=' . $version;
+		if ( version_compare( $version, '0.0.1', '>=' ) !== false ) {
+			$scriptss->version = '?v=' . $version;
 		} else {
-		    $scriptss->version = '';
+			$scriptss->version = '';
 		}
 
 		if ( ! empty( $dep ) ) {
@@ -195,27 +247,22 @@ class X_Functions {
 
 	}
 
-	public function render_script() {
-		echo '<script src="' . $this->src . $this->version . '"></script>';
-	}
-
-	public function render_link() {
-		echo '<link href="' . $this->src . $this->version . '" rel="' . $this->rel . '"></script>';
-	}
-
 	/**
 	 * Add Styles.
 	 *
-	 * @param string $handle The Name of the script
-	 * @param string $src The Location of the script
-	 * @param array $dep The dependencies (array of handles)
-	 * @param string $version A PHP valid version string
+	 * @param string $handle The Name of the script.
+	 * @param string $src The Location of the script.
+	 * @param array  $dep The dependencies (array of handles).
+	 * @param string $version A PHP valid version string.
+	 * @param string $rel Rel attribute of link tag.
+	 * @param string $loc uhleloX location of script (head, footer).
+	 * @param int    $priority Priority of the hook (-PHP_INT_MAX to +PHP_INT_MAX).
 	 * @todo check to include most of these options https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script
 	 */
-	public function add_link( string $handle = '', string $src = '', array $dep = array(), string $version = '', string $rel = 'stylesheet' , string $loc = '', int $priority = 10 ) {
+	public function add_link( string $handle = '', string $src = '', array $dep = array(), string $version = '', string $rel = 'stylesheet', string $loc = '', int $priority = 10 ) {
 
 		$GLOBALS['x_links'] = array();
-		$scriptss = new self;
+		$scriptss = new self();
 
 		if ( ! array_key_exists( $handle, $GLOBALS['x_links'] ) ) {
 			$GLOBALS['x_links'] = array( $handle => $src );
@@ -223,10 +270,10 @@ class X_Functions {
 			return;
 		}
 
-		if( version_compare( $version, '0.0.1', '>=' ) !== false ) {
-		    $scriptss->version = '?v=' . $version;
+		if ( version_compare( $version, '0.0.1', '>=' ) !== false ) {
+			$scriptss->version = '?v=' . $version;
 		} else {
-		    $scriptss->version = '';
+			$scriptss->version = '';
 		}
 
 		if ( ! empty( $dep ) ) {
@@ -242,17 +289,25 @@ class X_Functions {
 
 	}
 
-	public function get_url( string $type = null, $item = null  ) {
+	/**
+	 * Get absolute URL of any item.
+	 *
+	 * @param string $type The Database table (item type).
+	 * @param mixed  $item The item to get URL of (int or string).
+	 * @return string $url The Absolute URL to the item, without trailing slash.
+	 */
+	public function get_url( string $type = null, $item = null ) {
 
 		$get = new X_Get();
 		$site_url = $this->get_site_url();
 		$fragment = '';
 
-		if ( is_null( $type ) ) {
+		if ( is_null( $type ) || 'pages' === $type ) {
 
-			$type = 'pages';
+			$fragment = '/';
+
+		} else {
 			$fragment = $type . '/';
-
 		}
 
 		if ( is_numeric( $item ) ) {
@@ -265,14 +320,19 @@ class X_Functions {
 			} else {
 				$item = '';
 			}
-
 		}
 
 		return rtrim( $site_url, '/\\' ) . '/' . $fragment . $item;
 
 	}
 
-	public function get_domain( string $subdomain = ''  ) {
+	/**
+	 * Get Domain of install
+	 *
+	 * @param string $subdomain The Subdomain to pass (usually www).
+	 * @return string $domain The Domain trailing slash.
+	 */
+	public function get_domain( string $subdomain = '' ) {
 
 		$get = new X_Get();
 		$site_url = $get->get_item_by( 'settings', 'slug', 'x_site_url' );
@@ -281,13 +341,18 @@ class X_Functions {
 		if ( false === $site_url ) {
 			$site_url = $_SERVER['SERVER_NAME'];
 		} else {
-			$site_url = str_replace( array( 'https://', 'www.' ), '', $site_url->value);
+			$site_url = str_replace( array( 'https://', 'www.' ), '', $site_url->value );
 		}
-		
-		return rtrim(  $subdomain . $site_url, '\\/' );
+
+		return rtrim( $subdomain . $site_url, '\\/' );
 
 	}
 
+	/**
+	 * The Install URL (settings)
+	 *
+	 * @return string $url the Install URL from settings.
+	 */
 	public function get_site_url() {
 
 		$get = new X_Get();
@@ -298,13 +363,22 @@ class X_Functions {
 		} else {
 			$site_url = $site_url->value;
 		}
-		
+
 		return rtrim( $site_url, '\\/' );
 
 	}
 
-	public function is_admin( ) {
-		
+	/**
+	 * Check if is admin area
+	 *
+	 * This truly checks if we are in the admin.php area.
+	 * While this is not intended for secuerity, it DOES provide a safe way to check where
+	 * the user is located at this moment, no matter what.
+	 *
+	 * @return bool false|true True if server script name contains admin.php, default false.
+	 */
+	public function is_admin() {
+
 		if ( isset( $_SERVER )
 			&& isset( $_SERVER['SCRIPT_NAME'] )
 			&& '/admin.php' === $_SERVER['SCRIPT_NAME']
@@ -317,7 +391,9 @@ class X_Functions {
 	}
 
 	/**
-	 * Setup constants.
+	 * Helper to setup constants.
+	 *
+	 * @param array $constants An associative array of constants 'CONSTANT' => 'value' to define.
 	 */
 	public static function set_constants( array $constants = array() ) {
 

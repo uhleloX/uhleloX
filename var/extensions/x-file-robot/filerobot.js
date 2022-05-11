@@ -27,8 +27,11 @@
 					}
 				).done(
 					function( msg ) {
-						console.log( 'file was saved (Custom AJAX)' );
-						$( '#x_filerobot_loading' ).hide();
+						if ( 'true' === msg ) {
+							var d = new Date();
+							$( '#x_media_item_still' ).attr( 'src', window.location.origin + '/var/uploads/' + $( 'input[name=slug]' ).val() + '?' + d )
+							$( '#x_filerobot_loading' ).hide();
+						}
 					}
 				);
 

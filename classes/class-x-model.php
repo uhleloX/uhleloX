@@ -1,9 +1,9 @@
 <?php
 /**
- * Implements the structures necessary to post, delete and get.
+ * X_Model class
  *
- * @since 1.0.0
  * @package uhleloX\classes\models
+ * @since 1.0.0
  */
 
 /**
@@ -14,21 +14,44 @@
 class X_Model {
 
 	/**
+	 * The DB PDO Object
+	 *
+	 * @since 1.0.0
+	 * @var obj $db The new PDO Object.
+	 */
+	private $db = null;
+
+	/**
+	 * The Allowed DB tables.
+	 *
+	 * @since 1.0.0
+	 * @var array $allowed_db_tables Allowed DB tables of uhleloX.
+	 */
+	private $allowed_db_tables = array();
+
+	/**
+	 * The Results of any query operation.
+	 *
+	 * @since 1.0.0
+	 * @var array|bool $results array of objects or false as result of any query.
+	 */
+	public $results = false;
+
+	/**
 	 * The ID of the item.
 	 *
 	 * @since 1.0.0
-	 * @var int $id The article ID from the database.
+	 * @var int $id The object ID from the database.
 	 */
 	public $id = null;
 
 
 	/**
-	 * Sets the object's properties using the values in the supplied array
+	 * Constructor
 	 */
 	public function __construct() {
 
 		$this->db = new X_Db();
-
 		$this->allowed_db_tables = X_Setup::tables( 'all' );
 		$this->results = array();
 
@@ -141,11 +164,14 @@ class X_Model {
 	protected function whitelist_tables( string $table = '' ) {
 
 		try {
-
 			if ( in_array( $table, $this->allowed_db_tables ) ) {
+
 				return $table;
+
 			} else {
+
 				throw new DomainException( 'Trying to access invalid Database Table.', 1 );
+
 			}
 		} catch ( DomainException $e ) {
 

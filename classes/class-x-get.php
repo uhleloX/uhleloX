@@ -1,15 +1,16 @@
 <?php
 /**
- * Get data from the database.
+ * X_Get class
  *
- * @since 1.0.0
  * @package uhleloX\classes\models
+ * @since 1.0.0
  */
 
 /**
- * The Class to Get data from the Database.
+ * Class to Get data from the Database.
  *
  * Implements all methods to retrieve content.
+ * Acts as an orchestrator between X_Db and presenters to GET data.
  *
  * @since 1.0.0
  */
@@ -20,7 +21,7 @@ class X_Get extends X_Model {
 	 *
 	 * @param string $type The Content Type (must match the DB Tablename).
 	 * @param int    $id The Item ID to retrieve.
-	 * @return object The article object, or false if the record was not found or there was a problem
+	 * @return object|false The item object, or false if the record was not found or there was a problem
 	 */
 	public function get_item_by_id( string $type = '', int $id = 0 ) {
 
@@ -39,7 +40,7 @@ class X_Get extends X_Model {
 	 * @param string $type The Content Type (must match the DB Tablename).
 	 * @param string $where The Column to query.
 	 * @param string $val The value to fetch by.
-	 * @return object The article object, or false if the record was not found or there was a problem
+	 * @return object|false The item object, or false if the record was not found or there was a problem
 	 */
 	public function get_item_by( string $type = '', string $where = 'id', string $val = '' ) {
 
@@ -55,13 +56,13 @@ class X_Get extends X_Model {
 	 * Returns objects of any Type of Content where value is in either columns.
 	 *
 	 * @param string $type The Content Type (must match the DB Tablename).
-	 * @param string $where The Column to query.
+	 * @param array  $where The Column to query.
 	 * @param string $val The value to fetch by.
-	 * @return object The article object, or false if the record was not found or there was a problem
+	 * @return array|false An array of item objects, or false if the record was not found or there was a problem
 	 */
-	public function get_items_in( string $type = '', array $where = array('id'), string $val = '' ) {
+	public function get_items_in( string $type = '', array $where = array( 'id' ), string $val = '' ) {
 
-		$where = implode(', ', $where);
+		$where = implode( ', ', $where );
 		$sql = 'SELECT * FROM ' . $this->whitelist_tables( $type ) . ' WHERE ? IN (' . $where . ')';
 		$params = array( $val );
 
@@ -75,7 +76,7 @@ class X_Get extends X_Model {
 	 *
 	 * @param string $type The Content Type (must match the DB Tablename).
 	 * @param array  $args Associative array of arguments to pass to the query.
-	 * @return Array|false Array of Objects or false if none.
+	 * @return array|false An Array of Objects or false if none.
 	 */
 	public function get_items( string $type = '', array $args = array() ) {
 
@@ -100,18 +101,15 @@ class X_Get extends X_Model {
 	/**
 	 * Returns an object of any Type of Content by any column name
 	 *
-	 * @param string $type The Content Type (must match the DB Tablename).
-	 * @param string $where The Column to query.
-	 * @param string $val The value to fetch by.
-	 * @return object The article object, or false if the record was not found or there was a problem
+	 * @todo while this might be useful, it needs massive revision.
 	 */
 	public function get_related_items( string $from = '', string $relation = '', string $on = '', string $from_on = '', string $what = '', string $result = '' ) {
-	//public function get_related_items( $from, $relation, $on, $from_on, $what, $result, $return_a, $return_b, $where_side, $where_col, $value ) {
+		// public function get_related_items( $from, $relation, $on, $from_on, $what, $result, $return_a, $return_b, $where_side, $where_col, $value ) {
 		// SELECT a.*, b.* FROM users a INNER JOIN user_role ab ON ab.userid = a.id INNER JOIN roles b ON b.id = ab.role
 		// 'users', 'user_role', 'userid', 'id', 'roles', 'id', '*','*'
 		$sql = 'SELECT a.*, b.* FROM ' . $from . ' a INNER JOIN ' . $relation . ' ab ON ab.' . $on . ' = a.' . $from_on . ' INNER JOIN ' . $what . ' b ON b.' . $result . ' = ab.' . $result;
 		// $sql = 'SELECT a.' . $return_a . ', b.' . $return_b . ' FROM ' . $from . ' a INNER JOIN ' . $relation . ' ab ON ab.' . $on . '= a.' . $from_on . ' INNER JOIN ' . $what . ' b ON b.' . $result . '= ab.' . $result . ' WHERE ' . $where_side . '.' . $where_col . ' = ' . $value;
-		//$sql = 'SELECT * FROM ' . $relation . ' WHERE ' . $by . ' = ' . $what;
+		// $sql = 'SELECT * FROM ' . $relation . ' WHERE ' . $by . ' = ' . $what;
 		$params = array();
 
 		$this->get( $sql, $params, false );
@@ -124,7 +122,7 @@ class X_Get extends X_Model {
 	 * Checks if a table exists.
 	 *
 	 * @param string $type The Content Type (must match the DB Tablename).
-	 * @return bool|error Boolean true if exists, false if not, error if connection failure.
+	 * @return bool|string True if exists, false if not, error string if connection failure.
 	 */
 	public function check_if_exists( string $type = '' ) {
 
@@ -139,6 +137,7 @@ class X_Get extends X_Model {
 	 *
 	 * @param string $type The Content Type (must match the DB Tablename).
 	 * @param bool   $full Boolean tru for full information.
+	 * @return array|bool An array of column names or false if none.
 	 */
 	public function show_columns( string $type = '', bool $full = false ) {
 

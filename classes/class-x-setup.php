@@ -1,17 +1,22 @@
 <?php
 /**
- * Setup uhleloX CMS.
+ * X_Setup class
  *
  * @since 1.0.0
- * @package uhleloX
+ * @package uhleloX\classes\presenter
  */
 
 /**
- * Autoloads uhleloX Classes.
- * Enfroces globally HTTPS.
+ * Class to handle setup (run on each config call)
+ *
+ * Registers autoloader,
+ * Enfroces globally HTTPS,
+ * Sets CSPs,
+ * Sets up timezone,
+ * Loads extensions,
+ * Registers default tables
  *
  * @since 1.0.0
- * @package uhleloX
  */
 class X_Setup {
 
@@ -38,36 +43,6 @@ class X_Setup {
 	 * @var string $db_version The Databse Version number. Follows Semver.
 	 */
 	public $db_version;
-
-	/**
-	 * The CKEditor version
-	 *
-	 * @see https://ckeditor.com/ckeditor-5/
-	 *
-	 * @since 1.0.0
-	 * @var string $ck_version The CKEditor Version number used by uhleloX
-	 */
-	public $ck_version;
-
-	/**
-	 * The CKEditor build number
-	 *
-	 * @see https://ckeditor.com/ckeditor-5/
-	 *
-	 * @since 1.0.0
-	 * @var string $ck_version The CKEditor Build number used by uhleloX
-	 */
-	public $ck_build;
-
-	/**
-	 * The uhleloX FileRobot Version number
-	 *
-	 * @see https://github.com/scaleflex/filerobot-image-editor
-	 *
-	 * @since 1.0.0
-	 * @var string $fr_version The FileRobot Version number used by uhleloX
-	 */
-	public $fr_version;
 
 	/**
 	 * The uhleloX Boostrap Version number
@@ -130,9 +105,6 @@ class X_Setup {
 		$this->name = $name;
 		$this->version = '1.0.0'; // Core version.
 		$this->db_version = '1.0.0';// Database Version.
-		$this->ck_version = '5.0.0'; // CKEditor Version.
-		$this->ck_build = '1qzcnkqn6t3b-zb9fodomu0rf'; // CKEditor Build.
-		$this->fr_version = '4.1.1'; // FileRobot Version.
 		$this->bs_version = '5.0.2'; // Bootstrap Version.
 		$this->s2_version = '4.1.0-rc.0'; // Select2 Version.
 		$this->jq_version = '3.6.0'; // jQuery Version.
@@ -214,7 +186,7 @@ class X_Setup {
 
 		$x_hook = new X_Hooks();
 		$public_tables = $x_hook->apply_filters( 'x_public_tables', array( 'media', 'pages', 'users' ) );
-		$private_tables = $x_hook->apply_filters( 'x_private_tables', array( 'settings', 'roles', 'user_page', 'user_role', 'languages', 'language_translation', 'relationships', 'extensions', 'page_user' ) );
+		$private_tables = $x_hook->apply_filters( 'x_private_tables', array( 'settings', 'roles', 'languages', 'language_translation', 'relationships', 'extensions', 'templates', 'user_page', 'user_role' ) );
 
 		if ( 'public' === $visibility ) {
 			return $public_tables;

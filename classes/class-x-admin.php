@@ -1,21 +1,18 @@
 <?php
 /**
- * Registers the Admin Class.
+ * X_Admin class
  *
+ * @package uhleloX\classes\presenters
  * @since 1.0.0
- * @package uhleloX\classes\admin
  */
 
 /**
- * Template loading in the backend,
+ * Class to handle admin area
+ *
+ * Loads adequate backend templates,
  * Loads Admin scripts and styles,
  * Handles Login and logout attempts,
- * Content management.
- *
- * Provides a $this->item object which holds either empty or populated properties
- * matching the row's columns.
- *
- * Do not confuse $this->post with a post as a content type. 'post' in uhleloX refers to the POST method.
+ * Passes Database operations from partials to models and returns results to partials.
  *
  * @since 1.0.0
  */
@@ -181,7 +178,7 @@ class X_Admin {
 	private $hooks;
 
 	/**
-	 * Construct object.
+	 * Constructor.
 	 *
 	 * @since 1.0.0
 	 * @param string $action The Action to be performed (Usually from $_GET param x_action).
@@ -242,7 +239,7 @@ class X_Admin {
 			'edit_path' => '/partials/edit.php',
 			'list_path' => '/partials/list.php',
 			'dash_path' => '/partials/dashboard.php',
-			'error_path' => '/partials/dashboard.php',
+			'error_path' => '/partials/error.php',
 		);
 
 		/**
@@ -265,20 +262,6 @@ class X_Admin {
 	}
 
 	/**
-	 * Add a callback to x_dashboard_errors for displaying eventual errors.
-	 *
-	 * Error has to be passed in URL parameter (key) and will match $this->results[key]
-	 */
-	public function display_errors() {
-
-		if ( isset( $this->results['error_message'] )
-			&& ! empty( $this->results['error_message'] )
-		) {
-			include ADMIN_PATH . $this->paths['error_path'];
-		}
-	}
-
-	/**
 	 * Load all Admin scripts
 	 *
 	 * @since 1.0.0
@@ -286,16 +269,16 @@ class X_Admin {
 	 */
 	public function load_scripts() {
 
-		$this->functions->add_script( 'jquery', 'scripts/jquery.min.js', array(), '', 'footer' );
-		$this->functions->add_script( 'jquery-ui', 'scripts/jquery-ui.min.js', array(), '', 'footer' );
-		$this->functions->add_script( 'bootstrap', 'scripts/bootstrap.min.js', array(), '', 'footer' );
-		$this->functions->add_script( 'datatables', 'scripts/simple-datatables.min.js', array(), '', 'footer' );
-		$this->functions->add_script( 'select2', 'scripts/select2.min.js', array(), '', 'footer' );
-		$this->functions->add_script( 'bootstrap-select-2', 'admin/js/bootstrap-select-2.js', array(), '', 'footer' );
-		$this->functions->add_script( 'datatables-simple', 'admin/js/datatables-simple.js', array(), '', 'footer' );
-		$this->functions->add_script( 'image-upload', 'admin/js/image-upload.js', array(), '', 'footer' );
-		$this->functions->add_script( 'add-edit-layout', 'admin/js/add-edit-layout.js', array(), '', 'footer' );
-		$this->functions->add_script( 'admin-js', 'admin/js/admin-js.js', array(), '', 'footer' );
+		$this->functions->add_script( 'jquery', $this->functions->get_site_url() . '/scripts/jquery.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'jquery-ui', $this->functions->get_site_url() . '/scripts/jquery-ui.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'bootstrap', $this->functions->get_site_url() . '/scripts/bootstrap.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'datatables', $this->functions->get_site_url() . '/scripts/simple-datatables.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'select2', $this->functions->get_site_url() . '/scripts/select2.min.js', array(), '', 'footer' );
+		$this->functions->add_script( 'bootstrap-select-2', $this->functions->get_site_url() . '/admin/js/bootstrap-select-2.js', array(), '', 'footer' );
+		$this->functions->add_script( 'datatables-simple', $this->functions->get_site_url() . '/admin/js/datatables-simple.js', array(), '', 'footer' );
+		$this->functions->add_script( 'image-upload', $this->functions->get_site_url() . '/admin/js/image-upload.js', array(), '', 'footer' );
+		$this->functions->add_script( 'add-edit-layout', $this->functions->get_site_url() . '/admin/js/add-edit-layout.js', array(), '', 'footer' );
+		$this->functions->add_script( 'admin-js', $this->functions->get_site_url() . '/admin/js/admin-js.js', array(), '', 'footer' );
 
 	}
 
@@ -307,12 +290,12 @@ class X_Admin {
 	 */
 	public function load_styles() {
 
-		$this->functions->add_link( 'jquery', 'styles/jquery-ui.min.css', array(), '', 'stylesheet', 'head' );
-		$this->functions->add_link( 'bootstrap', 'styles/bootstrap.min.css', array(), '', 'stylesheet', 'head' );
-		$this->functions->add_link( 'bootstrap-icons', 'styles/bootstrap-icons.min.css', array(), '', 'stylesheet', 'head' );
-		$this->functions->add_link( 'select2', 'styles/select2.min.css', array(), '', 'stylesheet', 'head' );
-		$this->functions->add_link( 'select2-bootstrap', 'styles/select2-bootstrap.min.css', array(), '', 'stylesheet', 'head' );
-		$this->functions->add_link( 'style', 'admin/css/styles.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'jquery', $this->functions->get_site_url() . '/styles/jquery-ui.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'bootstrap', $this->functions->get_site_url() . '/styles/bootstrap.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'bootstrap-icons', $this->functions->get_site_url() . '/styles/bootstrap-icons.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'select2', $this->functions->get_site_url() . '/styles/select2.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'select2-bootstrap', $this->functions->get_site_url() . '/styles/select2-bootstrap.min.css', array(), '', 'stylesheet', 'head' );
+		$this->functions->add_link( 'style', $this->functions->get_site_url() . '/admin/css/styles.css', array(), '', 'stylesheet', 'head' );
 
 	}
 
@@ -361,6 +344,20 @@ class X_Admin {
 			}
 		}
 
+	}
+
+	/**
+	 * Add a callback to x_dashboard_errors for displaying eventual errors.
+	 *
+	 * Error has to be passed in URL parameter (key) and will match $this->results[key]
+	 */
+	public function display_errors() {
+
+		if ( isset( $this->results['error_message'] )
+			&& ! empty( $this->results['error_message'] )
+		) {
+			include ADMIN_PATH . $this->paths['error_path'];
+		}
 	}
 
 	/**
@@ -501,7 +498,6 @@ class X_Admin {
 			header( $this->admin_loc . $this->edit_loc . (int) $this->post->id . '?status=saved&x_type=' . $this->type );
 			exit();
 
-
 		} elseif ( ! empty( $_POST ) ) {
 
 			/**
@@ -567,9 +563,8 @@ class X_Admin {
 			/**
 			 * After succesful POST, reload the edit screen with POSTed data.
 			 */
-			header( $this->admin_loc . $this->edit_loc . (int) $this->post->id . '&status=saved&x_type='. $this->type );
+			header( $this->admin_loc . $this->edit_loc . (int) $this->post->id . '&status=saved&x_type=' . $this->type );
 			exit();
-
 
 		} elseif ( ! empty( $_POST ) ) {
 
@@ -693,24 +688,6 @@ class X_Admin {
 
 		require( ADMIN_PATH . $this->paths['dash_path'] );
 
-	}
-
-
-
-	/**
-	 * Handle Relationships Post
-	 */
-	private function maybe_add_relationship_table() {
-		// This is a new relationship, create the table.
-		if ( 'relationships' === $this->type ) {
-
-			$relationships_db_table_config = 'id BIGINT UNSIGNED AUTO_INCREMENT, ' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . ' BIGINT UNSIGNED, ' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . ' BIGINT UNSIGNED, PRIMARY KEY (`id`, `' . X_Validate::str( stripslashes( $_POST['entity_a'] ) ) . '`, `' . X_Validate::str( stripslashes( $_POST['entity_b'] ) ) . '`)';
-			$this->post->add_table( X_Validate::str( stripslashes( $_POST['slug'] ) ), $relationships_db_table_config  );
-			// Relationships cannot be edited after creating them.
-			header( $this->admin_loc . '?x_action=list&x_type=' . $this->type );
-			exit();
-
-		}
 	}
 
 }

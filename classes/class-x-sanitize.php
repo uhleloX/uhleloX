@@ -1,13 +1,13 @@
 <?php
 /**
- * Instantiates Validation Class.
+ * X_Sanitize class
  *
  * @since 1.0.0
- * @package uhleloX\classes\security
+ * @package uhleloX\classes\presenter
  */
 
 /**
- * Loads functions to validate data.
+ * Class to sanitise output in all kind of ways and formats.
  *
  * @since 1.0.0
  */

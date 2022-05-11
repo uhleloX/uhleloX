@@ -35,12 +35,14 @@
 			 * Declare URL to edit images.
 			 */
 			function x_edit_url_f( id ) {
-				return `${window.location.origin} / admin.php ? x_action = edit & id = ${id} & x_type = media`;
+				// ignore the WPCS telling you nonsense here.
+				return `${window.location.origin}/admin.php?x_action=edit&id=${id}&x_type=media`;
 			}
 			/**
 			 * Declare URL to get images
 			 */
-			 var x_get_url = `${window.location.origin} / ajax.php`;
+			 // ignore the WPCS telling you nonsense here.
+			 var x_get_url = `${window.location.origin}/ajax.php`;
 
 			/**
 			 * HTML element to append Media Thumbs.
@@ -79,14 +81,20 @@
 								$.parseJSON( data ),
 								function(i, v){
 									$( x_media_container ).append(
-										'<figure class="figure position-relative m-0 p-1" style="cursor:pointer;">' +
-										'<span class="position-absolute top-50 start-50 translate-middle d-flex justify-content-center align-items-center">' +
+										'<div class="col">' +
+										'<div class="card h-100">' +
+										'<img src="' + v.url + '" class="card-img-top p-1 x_pointer_handle" alt="' + v.name + '" style="width: 100%;height: 123px;object-fit: cover;">' +
+										'<div class="card-body p-0">' +
+										'<span class="d-flex justify-content-center align-items-center">' +
 										'<a href="' + x_edit_url_f( v.id ) + '" target="_blank" class="p-2"><span class="p-1 bg-dark text-white bi bi-pencil-square"></span></a>' +
 										'<span class="p-2 x_view_media" style="cursor:pointer;"><span class="p-1 bg-dark text-white bi bi-eye"></span></span>' +
 										'</span>' +
-										'<img src="' + v.url + '" class="rounded img-thumbnail" width="123px" height="123px" style="width: 123px; height:123px">' +
-										'<figcaption class="figure-caption text-center">' + v.name + '</figcaption>' +
-										'</figure>'
+										'</div>' +
+										'<div class="card-footer border-0 py-0 px-1">' +
+      									'<small class="text-muted">' + v.name + '</small>' +
+    									'</div>' +
+										'</div>' +
+										'</div>'
 									);
 									$( '#x_media_browser span.x_view_media' ).each(
 										function(i){
@@ -120,7 +128,7 @@
 					}
 				).fail(
 					function() {
-						alert( "Something went wrong" );
+						alert( 'Something went wrong' );
 					}
 				);
 			}

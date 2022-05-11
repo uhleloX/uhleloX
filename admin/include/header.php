@@ -80,6 +80,17 @@
 									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=extensions">Add Extension</a>
 								</nav>
 							</div>
+							<a class="nav-link text-secondary collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#x_sidenav_collapse_templates" aria-expanded="false" aria-controls="x_sidenav_collapse_templates">
+								<div class="x-admin__sidebar-nav-icon"><span class="bi bi-sliders2-vertical"></span></div>
+								Templates
+								<div class="x-admin__sidebar-nav-collapse-arrow"><span class="bi bi-chevron-down"></span></div>
+							</a>
+							<div class="collapse" id="x_sidenav_collapse_templates" data-bs-parent="#x_sidenav_accordion">
+								<nav class="x-admin-sidebar__nav-nested nav" aria-label="Templates">
+									<a class="nav-link text-secondary" href="/admin.php?x_action=list&x_type=templates">All Templates</a>
+									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=templates">Add Template</a>
+								</nav>
+							</div>
 
 							<div class="x-admin__sidebar-nav-heading">Media Management</div>
 							<a class="nav-link text-secondary collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#x_sidenav_collapse_media" aria-expanded="false" aria-controls="x_sidenav_collapse_media">

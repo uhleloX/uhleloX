@@ -37,7 +37,7 @@ function add_media_browser() {
 						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 					</div>
 				</div>
-				<div class="modal-body" id="x_media_browser">
+				<div class="modal-body row row-cols-1 row-cols-sm-3 row-cols-lg-6 g-4" id="x_media_browser">
 				</div>
 			</div>
 		</div>

@@ -1,23 +1,13 @@
 <?php
 /**
- * Registers a Relationships Trait.
+ * X_Relationship trait
  *
  * @since 1.0.0
- * @package uhleloX\classes\traits
+ * @package uhleloX\classes\presenters
  */
 
 /**
- * This trait allows to connnect, disconnect and gather partners in a relationship and its entities.
- *
- * Any class using it must:
- * - instantiate the X_Post object in a $post property.
- * - instantiate the X_Get object in a $get property.
- * - instantiate the X_Delete object in a $delete property.
- * - declare a non-static $relationships property (array).
- * - declare a non-staic $type property (string that equals to the current edited item type).
- * - Pass the relationship partners as IDs in a $_POST[ $relationship_slug ] array(int,int) where:
- * -- $relationship_slug the slug of the relationship, also matching the table where the related items are
- * -- array(int,int) each array member describes an ID of a related partner item
+ * Trait to connect, disconnect, gather partners in a relationship and add (new) relationship tables.
  *
  * @since 1.0.0
  */
@@ -32,15 +22,22 @@ trait X_Relationship {
 	private function x_post() {
 
 		try {
+
 			if ( ! isset( $this->post ) ) {
+
 				throw new Exception( '$post must be defined in ' . __CLASS__ );
+
 			}
 		} catch ( Exception $e ) {
+
 			echo $e->getMessage();
 			error_log( $e->getMessage() . print_r( $e, true ), 0 );
 			exit();
+
 		}
+
 		return $this->post;
+
 	}
 
 	/**
@@ -51,15 +48,22 @@ trait X_Relationship {
 	private function x_get() {
 
 		try {
+
 			if ( ! isset( $this->get ) ) {
+
 				throw new Exception( '$get must be defined in ' . __CLASS__ );
+
 			}
 		} catch ( Exception $e ) {
+
 			echo $e->getMessage();
 			error_log( $e->getMessage() . print_r( $e, true ), 0 );
 			exit();
+
 		}
+
 		return $this->get;
+
 	}
 
 	/**
@@ -70,15 +74,22 @@ trait X_Relationship {
 	private function x_delete() {
 
 		try {
+
 			if ( ! isset( $this->delete ) ) {
+
 				throw new Exception( '$get must be defined in ' . __CLASS__ );
+
 			}
 		} catch ( Exception $e ) {
+
 			echo $e->getMessage();
 			error_log( $e->getMessage() . print_r( $e, true ), 0 );
 			exit();
+
 		}
+
 		return $this->delete;
+
 	}
 
 	/**
@@ -89,16 +100,22 @@ trait X_Relationship {
 	private function x_relationships() {
 
 		try {
+
 			if ( ! isset( $this->relationships ) ) {
+
 				throw new Exception( '$relationships must be defined in ' . __CLASS__ );
+
 			}
 		} catch ( Exception $e ) {
+
 			echo $e->getMessage();
 			error_log( $e->getMessage() . print_r( $e, true ), 0 );
 			exit();
+
 		}
 
 		return $this->relationships;
+
 	}
 
 	/**
@@ -109,16 +126,22 @@ trait X_Relationship {
 	private function x_type() {
 
 		try {
+
 			if ( ! isset( $this->type ) ) {
+
 				throw new Exception( '$relationships must be defined in ' . __CLASS__ );
+
 			}
 		} catch ( Exception $e ) {
+
 			echo $e->getMessage();
 			error_log( $e->getMessage() . print_r( $e, true ), 0 );
 			exit();
+
 		}
 
 		return $this->type;
+
 	}
 
 	/**
@@ -146,7 +169,9 @@ trait X_Relationship {
 
 					$persisting_partners = array();
 					if ( isset( $_POST[ $relationship->slug ] ) ) {
+
 						$persisting_partners = $_POST[ $relationship->slug ];
+
 					}
 
 					$type = $is_entity_a ? $relationship->entity_b : $relationship->entity_a;
@@ -170,7 +195,9 @@ trait X_Relationship {
 					 * If $_POST is empty (all partners deleted or none set), skip.
 					 */
 					if ( isset( $_POST[ $relationship->slug ] ) ) {
+
 						$_POST[ $relationship->slug ] = array_diff( $_POST[ $relationship->slug ], $divorced_partners );
+
 					}
 				}
 			}
@@ -279,5 +306,19 @@ trait X_Relationship {
 			}
 		}
 
+	}
+
+	/**
+	 * Create new relationship table, if adding new relationship.
+	 */
+	private function maybe_add_relationship_table() {
+
+		if ( 'relationships' === $this->type ) {
+
+			$entity_a = rtrim( X_Validate::str( stripslashes( $_POST['entity_a'] ) ), 's' );
+			$entity_b = rtrim( X_Validate::str( stripslashes( $_POST['entity_b'] ) ), 's' );
+			$this->post->add_table( X_Validate::str( stripslashes( $_POST['slug'] ) ), $entity_a, $entity_b  );
+
+		}
 	}
 }

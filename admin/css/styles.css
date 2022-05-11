@@ -892,6 +892,9 @@
 .x_drag_handle {
 	cursor: move !important;
 }
+.x_pointer_handle {
+	cursor: pointer !important;
+}
 .x_drag_handle-editor {
 	min-height: 30px;
 	min-width: 30px;

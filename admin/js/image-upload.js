@@ -20,13 +20,20 @@
 	$( document ).ready(
 		function() {
 
-			var img_id = '#mugshot_group';
-			var img_inp = '#mugshot_input';
+			if ( $( '#mugshot_group' ).length > 0 ) {
+				var img_id = '#mugshot_group';
+				var img_inp = '#mugshot_input';
+				var plchldr = 'https://via.placeholder.com/300.png?text=To+upload+mugshot,+click+here.';
+			} else if ( $( '#media_asset_group' ).length > 0 ) {
+				var img_id = '#media_asset_group';
+				var img_inp = '#media_asset_input';
+				var plchldr = 'https://via.placeholder.com/1200x675.png?text=To+upload+a+media+asset,+click+here.';
+			}
 			var current_src = $( img_id ).attr( 'src' );
 
 			// If no image, add placeholder.
 			if ( current_src === null || current_src === '' ) {
-				$( img_id ).attr( 'src', 'https://via.placeholder.com/300' );
+				$( img_id ).attr( 'src', plchldr );
 			}
 
 			// On click on existing image, trigger click on actual input.
@@ -43,7 +50,7 @@
 					var reader = new FileReader();
 					reader.onload = function ( e ) {
 						$( img_id ).attr( 'src', e.target.result );
-					}
+					};
 					reader.readAsDataURL( input.files[0] );
 				}
 			}

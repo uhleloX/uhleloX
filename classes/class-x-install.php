@@ -1,16 +1,18 @@
 <?php
 /**
- * Handle Installation Flow
+ * X_Install class
  *
+ * @package uhleloX\classes\presenters
  * @since 1.0.0
- * @package uhleloX\classes\install
  */
 
 /**
- * Create config.php file
- * Setup account
- * Setup Database
- * Redirect to respective Templates
+ * Class to handle install flow
+ *
+ * Create config.php file,
+ * Setup account,
+ * Setup Database,
+ * Passes Database operations from partials to models and returns results to partials.
  *
  * @since 1.0.0
  */
@@ -33,12 +35,12 @@ class X_Install {
 	private $results;
 
 	/**
-	 * Fire main object.
+	 * Constructor
 	 *
 	 * @since 1.0.0
 	 * @param string $action The Action GET param.
 	 */
-	public function __construct( $action = '' ) {
+	public function __construct( string $action = '' ) {
 
 		$this->action = $action;
 		$this->results = array(
@@ -210,6 +212,13 @@ class X_Install {
 				'editdate' => 'DATETIME NOT NULL',
 			),
 			'extensions' => array(
+				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+				'slug' => 'VARCHAR(255) NOT NULL',
+				'title' => 'TEXT NOT NULL',
+				'description' => 'LONGTEXT NOT NULL',
+				'status' => 'TINYTEXT NOT NULL',
+			),
+			'templates' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'slug' => 'VARCHAR(255) NOT NULL',
 				'title' => 'TEXT NOT NULL',

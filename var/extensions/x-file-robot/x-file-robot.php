@@ -25,10 +25,6 @@ if ( $current_screen->is_request( 'edit' ) && $current_screen->is_request( 'medi
 
 }
 
-if ( $current_screen->is_request( 'add' ) && $current_screen->is_request( 'media' ) ) {
-	$hooks->add_action( 'x_media_screen_media_editor_area', 'add_media_uploader' );
-}
-
 /**
  * Add Media File Editor Button and image.
  *
@@ -43,7 +39,7 @@ function add_filerobot_media_editor( $media_object ) {
 		<div class="mb-3 position-relative" id="media_item_container_group">
 			<span class="position-absolute top-0 left-0 m-1 x_drag_handle x_drag_handle-editor" id="media_item_containerHint"></span>
 			<div  class="trigger_hover">
-			  <img src="<?php echo $functions->get_site_url() . '/var/uploads/' . $media_object->slug; ?>" alt="<?php echo $media_object->title; ?>">
+			  <img src="<?php echo $functions->get_site_url() . '/var/uploads/' . $media_object->slug; ?>" alt="<?php echo $media_object->title; ?>" id="x_media_item_still" class="img-fluid">
 			  <span class="btn btn-lg btn-success position-absolute top-50 start-50 translate-middle show_on_hover" data-bs-toggle="modal" data-bs-target="#x_filerobot_modal">Edit</span>
 			</div>
 		</div>
@@ -70,11 +66,4 @@ function add_filerobot_modal() {
 	  </div>
 	</div>
 	<?php
-}
-
-/**
- * Add media upload mechanism
- */
-function add_media_uploader() {
-	echo 'Add media uploader';
 }

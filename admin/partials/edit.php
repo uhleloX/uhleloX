@@ -19,7 +19,7 @@
 				<li class="breadcrumb-item active"><?php echo ucfirst( X_Sanitize::out_html( $this->type ) ); ?></li>
 				<li class="breadcrumb-item active"><?php echo ucfirst( X_Sanitize::out_html( $this->action ) ); ?> <?php echo ucfirst( rtrim( X_Sanitize::out_html( $this->type ), 's' ) ); ?></li>
 			</ol>
-			<?php 
+			<?php
 				/**
 				 * Add Hooks prior to main form
 				 */
@@ -105,6 +105,14 @@
 
 							$this->hooks->do_action( 'x_media_screen_media_editor_area', $this->item );
 
+							if ( 'add' === $this->action ) {
+								?>
+								<div class="d-flex justify-content-start" id="media_asset_container">
+									<img src="" class="rounded d-block mb-3 x_pointer_handle w-100" alt="..." id="media_asset_group">
+									<input type='file' id="media_asset_input" accept="image/*" class="d-none" name="media_asset"/>
+								</div>
+								<?php
+							}
 						}
 						?>
 					
@@ -247,7 +255,7 @@
 								<?php
 							}
 							?>
-							<a href="admin.php" class="btn btn-warning">Cancel</a>
+							<a href="admin.php?x_type=<?php echo $this->type; ?>&x_action=list" class="btn btn-warning">Cancel</a>
 							<input type="submit" class="btn btn-success" name="save" value="Save"/>
 						</div>
 						<?php

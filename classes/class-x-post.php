@@ -1,15 +1,16 @@
 <?php
 /**
- * Post data to the database.
+ * X_Post class
  *
  * @since 1.0.0
  * @package uhleloX\classes\models
  */
 
 /**
- * The Class to Post data to the Database.
+ * Class to Post data to the Database.
  *
- * Implements all methods to post content.
+ * Implements all methods to send content.
+ * Acts as an orchestrator between X_Db and presenters to POST data.
  *
  * @since 1.0.0
  */
@@ -36,13 +37,19 @@ class X_Post extends X_Model {
 	 * This and the parent function hve to be reviewed.
 	 * Something fishy here
 	 *
-	 * @param array $columns The columsn to setup.
+	 * @param array $columns The columns to setup.
+	 * @return obj Object with properties matching the columns.
 	 */
 	public function set_columns( array $columns = array() ) {
 
 		$item = new stdClass();
 		foreach ( $columns as $column ) {
+
+			/**
+			 * Ignore invalid SnakeCase.
+			 */
 			$item->{$column->Field} = null;
+
 		}
 
 		return $item;
@@ -80,11 +87,11 @@ class X_Post extends X_Model {
 			return $result;
 		}
 
-		if ( false === $base_64 
+		if ( false === $base_64
 			&& isset( $_FILES[ $input_name ]['error'] )
 			&& 0 !== $_FILES[ $input_name ]['error'] ) {
 
-			$result[ 'error' ] = $_FILES[ $input_name ]['error'];
+			$result['error'] = $_FILES[ $input_name ]['error'];
 			return $result;
 
 		}
@@ -96,8 +103,8 @@ class X_Post extends X_Model {
 			$data = $_POST['imgURL'];
 			list( $type, $data ) = explode( ';', $data );
 			list( $enc, $data)      = explode( ',', $data );
-			$image_size = (int)(strlen(rtrim($data, '=')) * 0.75); // in byte
-			$data = base64_decode($data);
+			$image_size = (int) ( strlen( rtrim( $data, '=' ) ) * 0.75 ); // in byte.
+			$data = base64_decode( $data );
 		}
 		if ( false !== $image_size ) {
 			$upload_ok = true;
@@ -108,8 +115,8 @@ class X_Post extends X_Model {
 
 		// Check file size.
 		if ( $image_size > intval( $upload_size->value ) ) {
-			$result[ 'error' ] = 'File size is too large.';
-		  	return $result;
+			$result['error'] = 'File size is too large.';
+			return $result;
 		}
 
 		/**
@@ -190,7 +197,7 @@ class X_Post extends X_Model {
 					$result = true;
 					return $result;
 
-				} else {
+			} else {
 
 				$result['error'] = 'Sorry, there was an error uploading your file.';
 
@@ -204,6 +211,7 @@ class X_Post extends X_Model {
 	 * Inserts the current object into the database, and sets its ID property.
 	 *
 	 * @param string $type The Type of content to insert (must match the table name).
+	 * @return mixed ID of inserted item or false.
 	 */
 	public function insert( string $type = '' ) {
 
@@ -213,7 +221,7 @@ class X_Post extends X_Model {
 
 		$what = implode( ', ', array_keys( $this->data ) );
 		$values = implode( ', ', array_fill( 0, count( $this->data ), '?' ) );
-		$sql = 'INSERT INTO ' . $type . ' ( ' . $what . ' ) VALUES ( ' . $values . ' )';
+		$sql = 'INSERT INTO ' . $this->whitelist_tables( $type ) . ' ( ' . $what . ' ) VALUES ( ' . $values . ' )';
 		$params = array_values( $this->data );
 		$this->post( $sql, $params, false );
 		$this->id = $this->results;
@@ -228,6 +236,7 @@ class X_Post extends X_Model {
 	 * @param string $type The Relationship.
 	 * @param int    $left The left entity.
 	 * @param int    $right The right entity.
+	 * @return mixed ID of connected item or false.
 	 */
 	public function connect( string $type = '', int $left = null, int $right = null ) {
 
@@ -235,9 +244,9 @@ class X_Post extends X_Model {
 			trigger_error( 'Attempt to connect one or more items with ID NULL. You must pass a relationship slug, a "left" and "right" item to connect.', E_USER_ERROR );
 		}
 
-		$entities = explode( '_', $type );
+		$entities = explode( '_', $this->whitelist_tables( $type ) );
 
-		$sql = 'INSERT INTO ' . $type . ' ( ' . $entities[0] . ', ' . $entities[1] . ' ) VALUES ( ?, ? )';
+		$sql = 'INSERT INTO ' . $this->whitelist_tables( $type ) . ' ( ' . $entities[0] . ', ' . $entities[1] . ' ) VALUES ( ?, ? )';
 		$params = array( $left, $right );
 		$this->post( $sql, $params, false );
 
@@ -248,9 +257,13 @@ class X_Post extends X_Model {
 	/**
 	 * Inserts the current object into the database, and sets its ID property.
 	 *
-	 * @param string $type The Type of content to insert (must match the table name).
+	 * @param string $name The new database table name insert.
+	 * @param string $entity_a The "left" part of the relationship.
+	 * @param string $entity_b The "left" part of the relationship.
 	 */
-	public function add_table( string $name = '', string $config = '' ) {
+	public function add_table( string $name = '', string $entity_a = '', string $entity_b = '' ) {
+
+		$config = 'id BIGINT UNSIGNED AUTO_INCREMENT, ' . $entity_a . ' BIGINT UNSIGNED, ' . $entity_b . ' BIGINT UNSIGNED, PRIMARY KEY (`id`, `' . $entity_a . '`, `' . $entity_b . '`)';
 
 		$sql = 'CREATE TABLE IF NOT EXISTS ' . $name . '( ' . $config . ' ) ENGINE=InnoDB ROW_FORMAT=COMPRESSED;';
 		$this->post( $sql, array(), false );
@@ -262,6 +275,7 @@ class X_Post extends X_Model {
 	 * Updates the current Article object in the database.
 	 *
 	 * @param string $type The Type of content to insert (must match the table name).
+	 * @return mixed ID of updated item or false.
 	 */
 	public function update( string $type = '' ) {
 
@@ -274,13 +288,12 @@ class X_Post extends X_Model {
 		 * PDO by default (well, SQL in general) does not pass back the UPDATED item, only the last(first)
 		 * INSERTED ID by default.
 		 * This is excused by saying "you might update several items at once". Fact thou is, you can also insert
-		 * several items at once, and yet still it will return at least one ID when inserting, so this is 
+		 * several items at once, and yet still it will return at least one ID when inserting, so this is
 		 * just garbage from developers trying to explain their omittances.
 		 * Found the solution here https://stackoverflow.com/questions/26498960/lastinsertid-for-update-in-prepared-statement#answer-26499145
 		 */
 		$what = implode( ' = ?, ', array_keys( $this->data ) );
-		error_log( print_r( $what, true ) );
-		$sql = 'UPDATE ' . $type . ' SET ' . $what . ' = ?, id = LAST_INSERT_ID(id) WHERE id = ?';
+		$sql = 'UPDATE ' . $this->whitelist_tables( $type ) . ' SET ' . $what . ' = ?, id = LAST_INSERT_ID(id) WHERE id = ?';
 		$params = array_values( $this->data );
 		$params[] = $this->id;
 		$this->change( $sql, $params, true );
@@ -293,16 +306,13 @@ class X_Post extends X_Model {
 	/**
 	 * Insert Column.
 	 *
-	 * @param string $sql The SQL Query.
-	 * @param array  $params The values to query by.
-	 * @param bool   $update Whether to update or insert an item. Default True.
+	 * @todo review @params
 	 * @see $this->post()
 	 */
 	public function alter( string $type = '', string $name = '', string $definition = '', string $position = '' ) {
 
 		$after = empty( $position ) ? '' : 'AFTER ';
-		$sql = 'ALTER TABLE ' . $type . ' ADD ' . $name . ' ' . $definition . ' ' . $after . $position;
-		//$sql = 'ALTER TABLE ' . $type . ' ADD ' . $name . ' ? ' . $after . '?';
+		$sql = 'ALTER TABLE ' . $this->whitelist_tables( $type ) . ' ADD ' . $name . ' ' . $definition . ' ' . $after . $position;
 
 		$this->post( $sql, array(), false );
 

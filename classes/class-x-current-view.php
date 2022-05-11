@@ -1,9 +1,9 @@
 <?php
 /**
- * Get current View data.
+ * X_Current_View class
  *
  * @since 1.0.0
- * @package uhleloX\classes\views
+ * @package uhleloX\classes\presenters
  */
 
 /**
