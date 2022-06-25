@@ -34,6 +34,13 @@ Add new relationships in `/admin.php?x_action=add&x_type=relationships`
 - Entity_b: `database table name` (the "right" partner in a relationship, MUST be database table name)
 You can now connect any item of "left" database table to any item of "right" database table name.
 
+# Todo and Future Plans
+*A lot, and many*
+- finalise front end display, routing, templating, paginating
+- finalise user management and role/capabilities
+- finalise API (`event()`, currently `add_action` and `add_filter`)
+- ... + ...
+
 # Changelog
 
 ### 25-06-2022
