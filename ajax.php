@@ -23,10 +23,11 @@ session_start();
  * Check on HTTPS?
  * Check on REQUEST_TIME?
  */
+error_log( print_r( $_SERVER, true ) );
 if ( ! isset( $_SERVER )
 	|| ! isset( $_SERVER['HTTP_X_CSRF_TOKEN'] )
-	|| ! isset( $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] )
-	|| true !== $functions->verify_token( $_SERVER['HTTP_X_CSRF_TOKEN'], $_SERVER['REDIRECT_HTTP_AUTHORIZATION'], 'add' )
+	|| ! isset( $_SERVER['HTTP_X_CSRF_SEED'] )
+	|| true !== $functions->verify_token( $_SERVER['HTTP_X_CSRF_TOKEN'], $_SERVER['HTTP_X_CSRF_SEED'], 'add' )
 ) {
 	$errors['auth_error'] = array(
 		'error' => array(

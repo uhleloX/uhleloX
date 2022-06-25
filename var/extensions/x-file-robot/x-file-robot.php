@@ -16,9 +16,9 @@ $current_screen = new X_Current_View();
 
 if ( $current_screen->is_request( 'edit' ) && $current_screen->is_request( 'media' ) ) {
 
-	$functions->add_link( 'file-robot', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . 'var/extensions/x-file-robot/filerobot.css', array(), '', 'stylesheet', 'head' );
-	$functions->add_script( 'file-robot', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . 'var/extensions/x-file-robot/filerobot.min.js', array(), '', 'footer', 11 );
-	$functions->add_script( 'x-filerobot', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . 'var/extensions/x-file-robot/filerobot.js', array(), '', 'footer', 11 );
+	$functions->add_link( 'file-robot', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . '/var/extensions/x-file-robot/filerobot.css', array(), '', 'stylesheet', 'head' );
+	$functions->add_script( 'file-robot', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . '/var/extensions/x-file-robot/filerobot.min.js', array(), '', 'footer', 11 );
+	$functions->add_script( 'x-filerobot', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . '/var/extensions/x-file-robot/filerobot.js', array(), '', 'footer', 11 );
 
 	$hooks->add_action( 'x_media_screen_media_editor_area', 'add_filerobot_media_editor' );
 	$hooks->add_action( 'x_footer', 'add_filerobot_modal' );

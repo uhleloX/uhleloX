@@ -66,7 +66,7 @@
 						cache: false,
 						headers: {
 							'X-CSRF-TOKEN': 'x_add',
-							Authorization: $( 'input[name=x_token]' ).val(),
+							'X-CSRF-SEED': $( 'input[name=x_token]' ).val(),
 							'X-REQUEST-SOURCE': 'x-browser',
 						}
 					}

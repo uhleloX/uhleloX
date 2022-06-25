@@ -45,6 +45,7 @@ try {
         define( 'UPLOAD_PATH', htmlspecialchars( stripslashes( $_SERVER['DOCUMENT_ROOT'] ) ) . '/var/uploads' );
 		define( 'ADMIN_PATH', htmlspecialchars( stripslashes( $_SERVER['DOCUMENT_ROOT'] ) ) . '/admin' );
 		define( 'PUBLIC_PATH', htmlspecialchars( stripslashes( $_SERVER['DOCUMENT_ROOT'] ) ) . '/public' );
+        define( 'SITE_ROOT', htmlspecialchars( stripslashes(  dirname(__FILE__) ) ) );
 
 	}
 } catch ( Exception $e ) {

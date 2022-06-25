@@ -141,7 +141,7 @@
                     // XMLHttpRequest.setRequestHeader() to set the request headers containing
                     // the CSRF token generated earlier by your application.
                     this.xhr.setRequestHeader('X-CSRF-TOKEN', 'x_add')
-                    this.xhr.setRequestHeader('Authorization', $( 'input[name=x_token]' ).val())
+                    this.xhr.setRequestHeader('X-CSRF-SEED', $( 'input[name=x_token]' ).val())
                     this.xhr.setRequestHeader('X-REQUEST-SOURCE', 'ck-img-upl-editor')
 
                     // Send the request.

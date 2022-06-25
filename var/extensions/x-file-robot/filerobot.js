@@ -23,7 +23,11 @@
 						method: 'POST',
 						url: window.location.origin + '/ajax.php',
 						data: { 'imgURL' : imageData.imageBase64, 'imgFullName' : imageData.fullName, 'mimeType' : imageData.mimeType },
-						headers: { 'X-CSRF-TOKEN': 'x_add', Authorization: $( 'input[name=x_token]' ).val(), 'X-REQUEST-SOURCE': 'filerobot-img-upl-editor', },
+						headers: { 
+							'X-CSRF-TOKEN': 'x_add', 
+							'HTTP-X-CSRF-SEED': $( 'input[name=x_token]' ).val(), 
+							'X-REQUEST-SOURCE': 'filerobot-img-upl-editor', 
+						},
 					}
 				).done(
 					function( msg ) {

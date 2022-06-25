@@ -16,7 +16,7 @@ $get = new X_Get();
 $current_screen = new X_Current_View();
 
 if ( $current_screen->is_request( 'edit' ) || $current_screen->is_request( 'add' ) ) {
-	$functions->add_script( 'x-media-browser', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . 'var/extensions/x-media-browser/x-media-browser.js', array(), '', 'footer', 12 );
+	$functions->add_script( 'x-media-browser', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . '/var/extensions/x-media-browser/x-media-browser.js', array(), '', 'footer', 12 );
 	$hooks->add_action( 'x_footer', 'add_media_browser' );
 }
 
