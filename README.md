@@ -6,7 +6,7 @@ Build on PHP 8, jQuery 3 and Bootstrap, it provides a lightweight and powerful C
 A number of core plugins available add features such as Media Editor, Text Editor and Media Upload.
 
 # Install
-- Prepare an Apache server with PHP 8 and a MySQL Database
+- Prepare an Apache or nginX server with PHP 8 and a MySQL Database. Note
 - Download and unzip the latest Release
 - Place the unzipped folder's *contents* in your webservers *root*
 - Visit your website (i.g. https://domain.tld)
