@@ -6,7 +6,13 @@ Build on PHP 8, jQuery 3 and Bootstrap, it provides a lightweight and powerful C
 A number of core plugins available add features such as Media Editor, Text Editor and Media Upload.
 
 # Install
-- Prepare an Apache or nginX server with PHP 8 and a MySQL Database. Note
+- Prepare an Apache or nginX server with PHP 8 and a MySQL Database. 
+Note, in nginX you have to ensure pretty url rewrites on your own. Try something like below in your `server` block. On Apache, uhleloX already includes an .htaccess rewrite rule.
+```
+location / {
+	try_files $uri $uri/ /index.php?$args; 
+}
+```
 - Download and unzip the latest Release
 - Place the unzipped folder's *contents* in your webservers *root*
 - Visit your website (i.g. https://domain.tld)
