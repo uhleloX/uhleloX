@@ -20,6 +20,7 @@ Add new settings in `/admin.php?x_action=add&x_type=settings`
 - Slug: `x_upload_max_size`, Value: `999999999` (value in bites defining max upload file size)
 - Slug: `x_active_template`, Value: `uhlelox-template` (unless you have a custom template, use that temlate's slug)
 - Slug: `x_field_type_mugshot`, Value: `img` (this is a dynamic setting defining the input type of a field in edit scree. Setting slug can be `x_field_type_{field_slug}`, value can be `img` [image input], `owner` [select2 with users])
+
 Activate extensions in `/admin.php?x_action=add&x_type=extensions`
 - Slug: `x-ck-editor`, Status: `active` (activates the CK Editor on edit screens)
 - Slug: `x-media-browser`, Status: `active` (activates a media browser in the Editors)
