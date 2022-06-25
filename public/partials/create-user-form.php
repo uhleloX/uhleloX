@@ -42,7 +42,7 @@
 		<input type="email" class="form-control" name="email" id="email" placeholder="Email" aria-label="Email" aria-describedby="emailHint" required>
 	</div>
 
-	<input type="hidden" name="token" value="<?php echo X_Functions::set_token( '_x_newuser', 'newuser' ); ?>">
+	<input type="hidden" name="x_token" value="<?php echo X_Functions::set_token( '_x_newuser', 'newuser' ); ?>">
 
 	<div class="d-flex">
 		<input type="submit" class="btn btn-dark w-100" name="setup" value="Create User"/>

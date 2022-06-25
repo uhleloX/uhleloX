@@ -73,7 +73,7 @@ include dirname( __DIR__, 1 ) . '/include/header.php';
 		<input type="text" class="form-control" name="db_port" id="db_port" placeholder="Database Port" aria-label="Database Port" aria-describedby="databaseportHint" required>
 	</div>
 
-	<input type="hidden" name="token" value="<?php echo X_Functions::set_token( '_x_setup', 'setup' ); ?>">
+	<input type="hidden" name="x_token" value="<?php echo X_Functions::set_token( '_x_setup', 'setup' ); ?>">
 
 	<div class="d-flex">
 		<input type="submit" class="btn btn-dark w-100" name="setup" value="Setup"/>

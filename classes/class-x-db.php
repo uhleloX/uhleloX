@@ -43,6 +43,9 @@ class X_Db {
 	 */
 	public function __construct() {
 
+		if ( ! defined( 'HOST' ) || ! defined( 'DB_NAME' ) || ! defined( 'DB_USERNAME' ) || ! defined( 'DB_PASSWORD' ) ) {
+			return;
+		}
 		try {
 
 			$this->connected = true;

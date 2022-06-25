@@ -29,6 +29,14 @@ class X_Setup {
 	public $name;
 
 	/**
+	 * Installing?
+	 *
+	 * @since 1.0.0
+	 * @var bool $install If we are in an install process.
+	 */
+	public $install;
+
+	/**
 	 * The uhleloX Version number
 	 *
 	 * @since 1.0.0
@@ -99,10 +107,12 @@ class X_Setup {
 	 *
 	 * @since 1.0.0
 	 * @param string $name The Human Name of the uhleloX CMS.
+	 * @param bool   $install If it is during install.
 	 */
-	public function __construct( string $name = 'uhleloX' ) {
+	public function __construct( string $name = 'uhleloX', bool $install = false ) {
 
 		$this->name = $name;
+		$this->install = $install;
 		$this->version = '1.0.0'; // Core version.
 		$this->db_version = '1.0.0';// Database Version.
 		$this->bs_version = '5.0.2'; // Bootstrap Version.
@@ -130,6 +140,12 @@ class X_Setup {
 		 */
 		spl_autoload_register( array( $this, 'load_dependencies' ) );
 
+		$x_action = isset( $_GET ) && isset( $_GET['x_action'] ) ? htmlspecialchars( stripslashes( $_GET['x_action'] ) ) : '';
+		if ( 'create_account' === $x_action || 'setup' === $x_action ) {
+			$this->install = true;
+			$this->name = 'uhleloX';
+		}
+
 		/**
 		 * Setup a few constants.
 		 */
@@ -153,10 +169,10 @@ class X_Setup {
 		 * This does not fire the code in the extensions,
 		 * however it adds them to the extensions database table
 		 * and readies them for usage.
-		 *
-		 * This is a problem because it runs on setup. IT should run later, because on setup, we do not have any config yet, and thus also no autoloader nor constants, and anyway no extension.
 		 */
-		$this->load_extensions();
+		if ( true !== $this->install ) {
+			$this->load_extensions();
+		}
 
 	}
 

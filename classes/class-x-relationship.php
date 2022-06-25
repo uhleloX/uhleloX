@@ -317,7 +317,7 @@ trait X_Relationship {
 
 			$entity_a = rtrim( X_Validate::str( stripslashes( $_POST['entity_a'] ) ), 's' );
 			$entity_b = rtrim( X_Validate::str( stripslashes( $_POST['entity_b'] ) ), 's' );
-			$this->post->add_table( X_Validate::str( stripslashes( $_POST['slug'] ) ), $entity_a, $entity_b  );
+			$this->post->add_rel_table( X_Validate::str( stripslashes( $_POST['slug'] ) ), $entity_a, $entity_b  );
 
 		}
 	}

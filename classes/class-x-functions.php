@@ -351,6 +351,7 @@ class X_Functions {
 	/**
 	 * The Install URL (settings)
 	 *
+	 * @todo check if HTTPS_HOST is safe to use here.
 	 * @return string $url the Install URL from settings.
 	 */
 	public function get_site_url() {
@@ -358,9 +359,10 @@ class X_Functions {
 		$get = new X_Get();
 		$site_url = $get->get_item_by( 'settings', 'slug', 'x_site_url' );
 
-		if ( false === $site_url ) {
-			$site_url = $_SERVER['SERVER_NAME'];
+		if ( ! $site_url ) {
+			$site_url = 'https://' . $_SERVER['HTTP_HOST'];
 		} else {
+			error_log( print_r( $site_url, true ) );
 			$site_url = $site_url->value;
 		}
 
@@ -399,8 +401,9 @@ class X_Functions {
 
 		foreach ( $constants as $key => $value ) {
 
-			define( $key, $value );
-
+			if ( ! defined( $key ) ) {
+				define( $key, $value );
+			}
 		}
 
 	}

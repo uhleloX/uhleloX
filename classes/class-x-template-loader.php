@@ -155,6 +155,18 @@ class X_Template_Loader {
 
 		$get = new X_Get();
 		$this->template = $get->get_item_by( 'settings', 'slug', 'x_active_template' );
+
+		/**
+		 * If for some reason the template setting is missing (during setup for example)
+		 *
+		 * @todo rather move this to a set of default settings, so the user can later edit it.
+		 */
+		if ( ! $this->template ) {
+			$temp_template = new stdClass();
+			$temp_template->value = 'uhlelox-template';
+			$this->template = $temp_template;
+		}
+
 		require_once TEMPLATE_PATH . '/' . $this->template->value . '/index.php';
 
 	}

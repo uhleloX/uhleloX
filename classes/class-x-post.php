@@ -255,13 +255,26 @@ class X_Post extends X_Model {
 	}
 
 	/**
-	 * Inserts the current object into the database, and sets its ID property.
+	 * Inserts an arbitrary table.
+	 *
+	 * @param string $name The new database table name insert.
+	 * @param string $config The new table configuration.
+	 */
+	public function add_table( string $name = '', string $config = '' ) {
+
+		$sql = 'CREATE TABLE IF NOT EXISTS ' . $name . '( ' . $config . ' ) ENGINE=InnoDB ROW_FORMAT=COMPRESSED;';
+		$this->post( $sql, array(), false );
+
+	}
+
+	/**
+	 * Inserts a relationship table.
 	 *
 	 * @param string $name The new database table name insert.
 	 * @param string $entity_a The "left" part of the relationship.
 	 * @param string $entity_b The "left" part of the relationship.
 	 */
-	public function add_table( string $name = '', string $entity_a = '', string $entity_b = '' ) {
+	public function add_rel_table( string $name = '', string $entity_a = '', string $entity_b = '' ) {
 
 		$config = 'id BIGINT UNSIGNED AUTO_INCREMENT, ' . $entity_a . ' BIGINT UNSIGNED, ' . $entity_b . ' BIGINT UNSIGNED, PRIMARY KEY (`id`, `' . $entity_a . '`, `' . $entity_b . '`)';
 

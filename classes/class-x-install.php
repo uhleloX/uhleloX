@@ -44,7 +44,7 @@ class X_Install {
 
 		$this->action = $action;
 		$this->results = array(
-			'page_title' => '',
+			'title' => '',
 			'error_message' => '',
 		);
 
@@ -85,11 +85,11 @@ class X_Install {
 	 */
 	private function setup() {
 
-		$this->results['page_title'] = 'Database Connection | ' . X_NAME;
+		$this->results['title'] = 'Database Connection | ' . X_NAME;
 
-		if ( isset( $_REQUEST['token'] )
-			&& ! empty( $_REQUEST['token'] )
-			&& X_Functions::verify_token( '_x_setup', htmlspecialchars( stripslashes( $_REQUEST['token'] ) ), 'setup' )
+		if ( isset( $_REQUEST['x_token'] )
+			&& ! empty( $_REQUEST['x_token'] )
+			&& X_Functions::verify_token( '_x_setup', htmlspecialchars( stripslashes( $_REQUEST['x_token'] ) ), 'setup' )
 			&& isset( $_POST['timezone'] )
 			&& isset( $_POST['host'] )
 			&& isset( $_POST['db'] )
@@ -146,11 +146,11 @@ class X_Install {
 	 */
 	private function create_account() {
 
-		$this->results['page_title'] = 'Create Admin User | ' . X_NAME;
+		$this->results['title'] = 'Create Admin User | ' . X_NAME;
 
-		if ( isset( $_REQUEST['token'] )
-			&& ! empty( $_REQUEST['token'] )
-			&& X_Functions::verify_token( '_x_newuser', htmlspecialchars( stripslashes( $_REQUEST['token'] ) ), 'newuser' )
+		if ( isset( $_REQUEST['x_token'] )
+			&& ! empty( $_REQUEST['x_token'] )
+			&& X_Functions::verify_token( '_x_newuser', htmlspecialchars( stripslashes( $_REQUEST['x_token'] ) ), 'newuser' )
 			&& isset( $_POST['username'] )
 			&& isset( $_POST['password'] )
 			&& isset( $_POST['firstname'] )
@@ -266,13 +266,13 @@ class X_Install {
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
 				'user' => 'BIGINT UNSIGNED',
 				'page' => 'BIGINT UNSIGNED',
-				'PRIMARY KEY' => '(`id`, `userid`, `pageid`)',
+				'PRIMARY KEY' => '(`id`, `user`, `page`)',
 			),
 			'user_role' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
 				'user' => 'BIGINT UNSIGNED',
 				'role' => 'BIGINT UNSIGNED',
-				'PRIMARY KEY' => '(`id`, `userid`, `role`)',
+				'PRIMARY KEY' => '(`id`, `user`, `role`)',
 			),
 			'languages' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',

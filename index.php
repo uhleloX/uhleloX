@@ -37,7 +37,7 @@ try {
 		 * Run uhleloX Setup (autoloader, enforce https)
 		 */
 		require_once( __DIR__ . '/classes/class-x-setup.php' );
-		$x_setup = new X_Setup();
+		$x_setup = new X_Setup( 'uhleloX', true );
 		$x_setup->run();
 
 		/**
