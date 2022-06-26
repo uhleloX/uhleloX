@@ -23,7 +23,6 @@ session_start();
  * Check on HTTPS?
  * Check on REQUEST_TIME?
  */
-error_log( print_r( $_SERVER, true ) );
 if ( ! isset( $_SERVER )
 	|| ! isset( $_SERVER['HTTP_X_CSRF_TOKEN'] )
 	|| ! isset( $_SERVER['HTTP_X_CSRF_SEED'] )

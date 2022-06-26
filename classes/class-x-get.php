@@ -99,20 +99,80 @@ class X_Get extends X_Model {
 	}
 
 	/**
-	 * Returns an object of any Type of Content by any column name
+	 * Returns an array either merged relationship objects,
+	 * or an array of objects that are in a relationship representing one partner in the relationship.
 	 *
-	 * @todo while this might be useful, it needs massive revision.
+	 * @param string $relationship The Relationship (as stored in the database table "relationships").
+	 * @param array  $args         An array of arguments to get related objects and return data.
+	 * @return array $results      An array of objects representing the results.
 	 */
-	public function get_related_items( string $from = '', string $relation = '', string $on = '', string $from_on = '', string $what = '', string $result = '' ) {
-		// public function get_related_items( $from, $relation, $on, $from_on, $what, $result, $return_a, $return_b, $where_side, $where_col, $value ) {
-		// SELECT a.*, b.* FROM users a INNER JOIN user_role ab ON ab.userid = a.id INNER JOIN roles b ON b.id = ab.role
-		// 'users', 'user_role', 'userid', 'id', 'roles', 'id', '*','*'
-		$sql = 'SELECT a.*, b.* FROM ' . $from . ' a INNER JOIN ' . $relation . ' ab ON ab.' . $on . ' = a.' . $from_on . ' INNER JOIN ' . $what . ' b ON b.' . $result . ' = ab.' . $result;
-		// $sql = 'SELECT a.' . $return_a . ', b.' . $return_b . ' FROM ' . $from . ' a INNER JOIN ' . $relation . ' ab ON ab.' . $on . '= a.' . $from_on . ' INNER JOIN ' . $what . ' b ON b.' . $result . '= ab.' . $result . ' WHERE ' . $where_side . '.' . $where_col . ' = ' . $value;
-		// $sql = 'SELECT * FROM ' . $relation . ' WHERE ' . $by . ' = ' . $what;
-		$params = array();
+	public function get_related_items( string $relationship = '', array $args = array() ) {
 
-		$this->get( $sql, $params, false );
+		/**
+		 * Get the relationship's object.
+		 */
+		$relationship = $this->get_item_by( 'relationships', 'slug', $relationship );
+
+		/**
+		 * Validate the relationship table and partner tables to query.
+		 */
+		$relationship_table = $this->whitelist_tables( $relationship->slug );
+		$left = $this->whitelist_tables( $relationship->entity_a );
+		$right = $this->whitelist_tables( $relationship->entity_b );
+
+		/**
+		 * Allowed arguemnts for the $args parameter.
+		 */
+		$args_internal = array(
+			'return' => 'id', // What to return of the found objects. '*' for all columns, default 'id'.
+			'select' => 'both', // 'both', 'l', 'r'. Both returns both found objects in a relationship merged, l returns the left partner's object, r the right partner's object.
+			'query_by' => '', // By what column name to query by.
+			'query_in' => '', // In what partner to query by the column name value. Possible values 'l', 'r'.
+			's' => '', // The search term to query by in the specific partner's column.
+		);
+		$allowed_args = array( 'return', 'select', 'query_by', 'query_in', 's' );
+		$filtered_args = array_filter(
+			$args,
+			function ( $key ) use ( $allowed_args ) {
+				return in_array( $key, $allowed_args );
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+
+		/**
+		 * Merge user args into the default args.
+		 */
+		$args = array_merge( $args_internal, $filtered_args );
+
+		/**
+		 * Build placeholders for SQL Query.
+		 */
+		$return = 'id' === $args['return'] ? 'id' : '*';
+		$select = 'both' === $args['select'] ? 'SELECT l.' . $return . ', r.' . $return : 'SELECT ' . $args['select'] . '.' . $return;
+		$where = ! empty( $args['query_by'] ) && ! empty( $args['query_in'] ) ? 'WHERE ' . $args['query_in'] . '.' . $args['query_by'] . ' = ?' : '';
+		$l = rtrim( $left, 's' ); // column name in the relationship table for the entity_a.
+		$r = rtrim( $right, 's' ); // column name in the relationship table for the entity_b.
+
+		/**
+		 * Build SQL
+		 */
+		$sql2 = $select . '
+		    FROM ' . $left . ' l
+		        INNER JOIN ' . $relationship_table . ' lr
+		        ON lr.' . $l . ' = l.id
+		        INNER JOIN ' . $right . ' r
+		        ON r.id = lr.' . $r . ' ' .
+			$where;
+
+		/**
+		 * Pass the search params to PDO
+		 */
+		$params = array( $args['s'] );
+
+		/**
+		 * Get the results and return them.
+		 */
+		$this->get( $sql2, $params, false );
 
 		return $this->results;
 

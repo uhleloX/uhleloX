@@ -124,6 +124,7 @@ class X_Install {
 
 				$default_tables = $this->default_tables();
 				$this->setup_database( $default_tables );
+				$this->setup_default_settings();
 
 				header( 'Location: /?x_action=create_account' );
 
@@ -168,12 +169,17 @@ class X_Install {
 
 			$db = new X_Post();
 			$data = $_POST;
-			$data['joindate'] = date( 'Y/m/d' );
+			$data['joindate'] = gmdate( 'Y-m-d H:i:s' );
 			$data['passwordhash'] = password_hash( $_POST['password'], PASSWORD_DEFAULT );
 			$data['description'] = '';
 			$data['mugshot'] = '';
 			$db->setup_data( $data );
 			$new_user = $db->insert( 'users' );
+
+			if ( 1 === (int) $new_user ) {
+				$db->connect( 'user_role', $new_user, 1 );
+			}
+
 
 			if ( false !== $new_user ) {
 
@@ -258,7 +264,7 @@ class X_Install {
 				'firstname' => 'VARCHAR(255)',
 				'lastname' => 'VARCHAR(255)',
 				'email' => 'VARCHAR(100) NOT NULL',
-				'joindate' => 'DATE NOT NULL',
+				'joindate' => 'DATETIME NOT NULL',
 				'description' => 'LONGTEXT',
 				'mugshot' => 'VARCHAR(255)',
 			),
@@ -307,9 +313,126 @@ class X_Install {
 	}
 
 	/**
+	 * Set up default settings.
+	 *
+	 * When isntalling uhleloX, these settings are generally needed to run it.
+	 *
+	 * @since 1.0.0
+	 */
+	private function setup_default_settings() {
+		$post = new X_Post();
+		$fn = new X_Functions();
+		$default_settings = array(
+			'settings' => array(
+				array(
+					'slug' => 'x_site_url',
+					'title' => 'Website URL',
+					'value' => $fn->get_site_url(),
+					'description' => 'Defines Website URL',
+					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+				),
+				array(
+					'slug' => 'x_upload_max_size',
+					'title' => 'Maximum Upload Size',
+					'value' => '999999',
+					'description' => 'Defines Maximum Upload Size for media assets',
+					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+				),
+				array(
+					'slug' => 'x_active_template',
+					'title' => 'Active Template',
+					'value' => 'uhlelox-template',
+					'description' => 'Defines Active Template',
+					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+				),
+				array(
+					'slug' => 'x_field_type_mugshot',
+					'title' => 'Mugshot Field Type',
+					'value' => 'img',
+					'description' => 'Defines the "Mugshot" Field Input Type',
+					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+				),
+				array(
+					'slug' => 'x_field_type_owner',
+					'title' => 'Owner Field Type',
+					'value' => 'owner',
+					'description' => 'Defines the "Owner" Field Input Type',
+					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+				),
+			),
+			'extensions' => array(
+				array(
+					'slug' => 'x-ck-editor',
+					'title' => 'uhleloX CKEDitor Extension',
+					'description' => 'Enables CKEditor on Text Editors',
+					'status' => 'active',
+				),
+				array(
+					'slug' => 'x-media-browser',
+					'title' => 'uhleloX Media Browser Extension',
+					'description' => 'Enables Media Asset Browser',
+					'status' => 'active',
+				),
+				array(
+					'slug' => 'x-file-robot',
+					'title' => 'uhleloX Media Editor Extension',
+					'description' => 'Enables Media Editing',
+					'status' => 'active',
+				),
+			),
+			'templates' => array(
+				array(
+					'slug' => 'uhlelox-template',
+					'title' => 'uhleloX Default Template',
+					'description' => 'uheloX Default Template',
+					'status' => 'active',
+				),
+			),
+			'roles' => array(
+				array(
+					'role' => 'owner',
+					'title' => 'System Owner',
+					'description' => 'System Owner Role',
+				),
+			),
+			'relationships' => array(
+				array(
+					'slug' => 'user_page',
+					'name' => 'Users to Pages Relationship',
+					'type' => 'm2m',
+					'entity_a' => 'users',
+					'entity_b' => 'pages',
+				),
+				array(
+					'slug' => 'user_role',
+					'name' => 'Users Roles Relationship',
+					'type' => 'm2m',
+					'entity_a' => 'users',
+					'entity_b' => 'roles',
+				),
+			),
+		);
+
+		foreach ( $default_settings as $table => $row_array ) {
+			foreach ( $row_array as $row ) {
+				$post->id = null;
+				$post->setup_data( $row );
+				$post->insert( $table );
+			}
+		}
+
+	}
+
+	/**
 	 * Setup the Datbase Tables
 	 *
 	 * @todo get this out of there and put in install.
+	 * @param array $default_tables The Default tables of uhleloX.
 	 */
 	private function setup_database( $default_tables ) {
 

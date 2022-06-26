@@ -141,7 +141,6 @@ class X_Db {
 
 				$query = $this->connection->prepare( $query );
 				$query->execute( $parameters );
-
 				return $query->fetchAll();
 
 			} catch ( PDOException $e ) {

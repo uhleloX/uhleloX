@@ -374,7 +374,6 @@ class X_Functions {
 		if ( ! $site_url ) {
 			$site_url = 'https://' . $_SERVER['HTTP_HOST'];
 		} else {
-			error_log( print_r( $site_url, true ) );
 			$site_url = $site_url->value;
 		}
 
@@ -397,6 +396,37 @@ class X_Functions {
 			&& isset( $_SERVER['SCRIPT_NAME'] )
 			&& '/admin.php' === $_SERVER['SCRIPT_NAME']
 		) {
+			return true;
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * Get currrent user role
+	 *
+	 * Check if the current user has a certain role assigned
+	 *
+	 * @param  int    $user_id The user ID to check by.
+	 * @param  string $role The role to check for.
+	 * @return bool   true|false True if the user has that role. Default: false.
+	 */
+	public function current_user_has_role( $user_id, $role ) {
+
+		$get = new X_Get();
+		$roles = $get->get_related_items(
+			'user_role',
+			array(
+				'return' => '*',
+				'query_by' => 'id',
+				'query_in' => 'l',
+				's' => $user_id,
+				'select' => 'r',
+			)
+		);
+
+		if ( in_array( $role, array_column( $roles, 'role' ) ) ) {
 			return true;
 		}
 

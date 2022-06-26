@@ -43,24 +43,23 @@ location / {
 - Login to the CMS in the last prompt
 
 # Setup
+**Settings**
+All necessary settings for the default to work are added during setup
 Add new settings in `/admin.php?x_action=add&x_type=settings`
-- Slug: `x_site_url`, Value: `https://domain.tld` (your site URL)
-- Slug: `x_upload_max_size`, Value: `999999999` (value in bites defining max upload file size)
-- Slug: `x_active_template`, Value: `uhlelox-template` (unless you have a custom template, use that temlate's slug)
-- Slug: `x_field_type_mugshot`, Value: `img` (this is a dynamic setting defining the input type of a field in edit scree. Setting slug can be `x_field_type_{field_slug}`, value can be `img` [image input], `owner` [select2 with users])
 
+**Extensions**
+All currently existing core extensions are active by default.
 Activate extensions in `/admin.php?x_action=add&x_type=extensions`
-- Slug: `x-ck-editor`, Status: `active` (activates the CK Editor on edit screens)
-- Slug: `x-media-browser`, Status: `active` (activates a media browser in the Editors)
-- Slug: `x-file-robot`, Status: `active` (activates media editor)
+Deactivate existing extenstions in `/admin.php?x_action=list&x_type=extensions`
 
 # Relationships
 Add new relationships in `/admin.php?x_action=add&x_type=relationships`
-- Slug: `user_page` (SHOULD be singular database table names separated by underscores)
+- Slug: `{entity-a}_{entity-b}` (SHOULD be singular database table names separated by underscores)
 - Type: `m2m` (none else supported yet)
 - Entity_a: `database table name` (the "left" partner in a relationship, MUST be database table name)
 - Entity_b: `database table name` (the "right" partner in a relationship, MUST be database table name)
 You can now connect any item of "left" database table to any item of "right" database table name.
+NOTE: currently only inbuilt tables are accepted for new relationships. 
 
 # Todo and Future Plans
 *A lot, and many*
@@ -68,14 +67,6 @@ You can now connect any item of "left" database table to any item of "right" dat
 - finalise user management and role/capabilities
 - finalise API (`event()`, currently `add_action` and `add_filter`)
 - ... + ...
-
-# Changelog
-
-### 25-06-2022
-[Added] First Beta Release
-
-### 29-04-2022 
-[Added] Initial Commit
 
 # Contributing 
 

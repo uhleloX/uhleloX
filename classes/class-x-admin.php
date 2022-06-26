@@ -308,35 +308,56 @@ class X_Admin {
 
 		$user = $this->get->get_item_by( 'users', 'username', $this->username );
 
-		if ( empty( $this->username ) || false === $user ) {
+		if ( empty( $this->username )
+			|| false === $user
+		) {
 
 			$this->login();
 			exit;
 
-		} elseif ( ! empty( $this->username ) && false !== $user ) {
+		} elseif ( ! empty( $this->username )
+			&& false !== $user
+		) {
 
 			switch ( $this->action ) {
 
-				case 'login':
-					$this->login();
-					break;
 				case 'logout':
 					$this->logout();
 					break;
 				case 'add':
-					$this->insert();
+					if ( true === $this->functions->current_user_has_role( $user->id, 'owner' ) ) {
+						$this->insert();
+					} else {
+						$this->dashboard();
+					}
 					break;
 				case 'edit':
-					$this->edit();
+					if ( true === $this->functions->current_user_has_role( $user->id, 'owner' ) ) {
+						$this->edit();
+					} else {
+						$this->dashboard();
+					}
 					break;
 				case 'delete':
-					$this->delete();
+					if ( true === $this->functions->current_user_has_role( $user->id, 'owner' ) ) {
+						$this->delete();
+					} else {
+						$this->dashboard();
+					}
 					break;
 				case 'change_status':
-					$this->change_status();
+					if ( true === $this->functions->current_user_has_role( $user->id, 'owner' ) ) {
+						$this->change_status();
+					} else {
+						$this->dashboard();
+					}
 					break;
 				case 'list':
-					$this->list();
+					if ( true === $this->functions->current_user_has_role( $user->id, 'owner' ) ) {
+						$this->list();
+					} else {
+						$this->dashboard();
+					}
 					break;
 				default:
 					$this->dashboard();
