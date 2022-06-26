@@ -87,6 +87,8 @@ class X_Install {
 
 		$this->results['title'] = 'Database Connection | ' . X_NAME;
 
+		$hash = file_get_contents( 'hash.txt' );
+
 		if ( isset( $_REQUEST['x_token'] )
 			&& ! empty( $_REQUEST['x_token'] )
 			&& X_Functions::verify_token( '_x_setup', htmlspecialchars( stripslashes( $_REQUEST['x_token'] ) ), 'setup' )
@@ -97,6 +99,8 @@ class X_Install {
 			&& isset( $_POST['db_pwd'] )
 			&& isset( $_POST['db_charset'] )
 			&& isset( $_POST['db_port'] )
+			&& isset( $_POST['key_phrase'] )
+			&& X_Functions::verify_key_phrase( htmlspecialchars( stripslashes( $_POST['key_phrase'] ) ), $hash )
 		) {
 
 			$default_config = 'default-config.php';
@@ -148,6 +152,8 @@ class X_Install {
 
 		$this->results['title'] = 'Create Admin User | ' . X_NAME;
 
+		$hash = file_get_contents( 'hash.txt' );
+
 		if ( isset( $_REQUEST['x_token'] )
 			&& ! empty( $_REQUEST['x_token'] )
 			&& X_Functions::verify_token( '_x_newuser', htmlspecialchars( stripslashes( $_REQUEST['x_token'] ) ), 'newuser' )
@@ -156,13 +162,14 @@ class X_Install {
 			&& isset( $_POST['firstname'] )
 			&& isset( $_POST['lastname'] )
 			&& isset( $_POST['email'] )
+			&& isset( $_POST['key_phrase'] )
+			&& X_Functions::verify_key_phrase( htmlspecialchars( stripslashes( $_POST['key_phrase'] ) ), $hash )
 		) {
 
 			$db = new X_Post();
 			$data = $_POST;
 			$data['joindate'] = date( 'Y/m/d' );
 			$data['passwordhash'] = password_hash( $_POST['password'], PASSWORD_DEFAULT );
-			unset( $data['password'] );
 			$data['description'] = '';
 			$data['mugshot'] = '';
 			$db->setup_data( $data );

@@ -42,6 +42,11 @@
 		<input type="email" class="form-control" name="email" id="email" placeholder="Email" aria-label="Email" aria-describedby="emailHint" required>
 	</div>
 
+	<div class="input-group mb-3">
+		<span class="input-group-text" id="keyPhrase">Key Phrase</span>
+		<input type="text" class="form-control" name="key_phrase" id="key_phrase" placeholder="A lazy fox got eaten by a sturdy wolf" aria-label="Key Phrase" aria-describedby="keyPhrase" required>
+	</div>
+
 	<input type="hidden" name="x_token" value="<?php echo X_Functions::set_token( '_x_newuser', 'newuser' ); ?>">
 
 	<div class="d-flex">

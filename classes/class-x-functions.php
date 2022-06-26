@@ -117,6 +117,18 @@ class X_Functions {
 
 	}
 
+	public static function verify_key_phrase( string $key_phrase, string $hash ) {
+
+		$submitted_hash = hash( 'sha256', $key_phrase );
+
+		if ( $submitted_hash === $hash ) {
+			return true;
+		}
+
+		return false;
+
+	}
+
 	/**
 	 * Helper to enforce HTTPS everywhere.
 	 *

@@ -29,7 +29,7 @@ class X_Post extends X_Model {
 		}
 
 		$this->data = $data;
-		unset( $this->data['id'], $this->data['save'], $this->data['setup'], $this->data['x_token'] );
+		unset( $this->data['id'], $this->data['save'], $this->data['setup'], $this->data['x_token'], $this->data['password'], $this->data['key_phrase'] );
 
 	}
 
