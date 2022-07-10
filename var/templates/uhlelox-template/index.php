@@ -1,4 +1,15 @@
-<?php include TEMPLATE_PATH . '/' . $this->template->value . '/header.php';?>
+<?php
+/**
+ * The main template
+ *
+ * @package uhleloX\var\templates
+ */
+
+/**
+ * Include header
+ */
+require TEMPLATE_PATH . '/' . $this->template->value . '/header.php';
+?>
 
 <!-- bloc-1 -->
 <div class="bloc bg-br-edge bloc-bg-texture texture-paper l-bloc" id="bloc-1">

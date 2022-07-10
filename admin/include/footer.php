@@ -3,7 +3,7 @@
  * Renders the footer HTML
  *
  * @since 1.0.0
- * @package uhlelox\admin\include
+ * @package uhleloX\admin\include
  */
 
 ?>

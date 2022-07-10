@@ -5,7 +5,7 @@
  * This can be as plain HTML or with dynamic PHP Data as you like.
  *
  * @since 1.0.0
- * @package uhleloX\var\templates\uhlelox-template
+ * @package uhleloX\var\templates
  */
 
 ?>
