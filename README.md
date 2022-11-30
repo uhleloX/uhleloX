@@ -34,7 +34,7 @@ location / {
 -- Setup the install
 -- Create new users
 -- maybe in future log in to the system
-==> A possible online service to create an SHA256 hash is https://emn178.github.io/online-tools/sha512.html
+==> A possible online service to create an SHA256 hash is https://emn178.github.io/online-tools/sha256.html
 - Paste the SHA 256 hash of your passphrase in the `hash.txt` file and save it
 - Upload the entire folder *contents* to your webserver's *root*
 - Visit your website (i.g. https://domain.tld)
