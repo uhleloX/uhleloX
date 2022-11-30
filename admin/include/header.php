@@ -117,6 +117,7 @@
 									<a class="nav-link text-secondary" href="/admin.php?x_action=add&x_type=pages">Add Page</a>
 								</nav>
 							</div>
+							<?php $x_hooks->do_action( 'after_pages_menu' ); ?>
 							<a class="nav-link text-secondary collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#x_sidenav_collapse_relationships" aria-expanded="false" aria-controls="x_sidenav_collapse_relationships">
 								<div class="x-admin__sidebar-nav-icon"><span class="bi bi-file-post"></span></div>
 								Relationships
