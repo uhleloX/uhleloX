@@ -248,16 +248,16 @@ class X_Setup {
 
 		foreach ( $active_extensions as $active_extension ) {
 
-			if ( file_exists( EXTENSION_PATH . '/' . $active_extension->slug ) ) {
+			if ( file_exists( EXTENSION_PATH . '/' . $active_extension->uuid ) ) {
 				/**
 				 * This is a directory, because plugin slugs do not have a .php extension.
 				 */
-				require_once( EXTENSION_PATH . '/' . $active_extension->slug . '/' . $active_extension->slug . '.php' );
-			} elseif ( file_exists( EXTENSION_PATH . '/' . $active_extension->slug . '.php' ) ) {
+				require_once( EXTENSION_PATH . '/' . $active_extension->uuid . '/' . $active_extension->uuid . '.php' );
+			} elseif ( file_exists( EXTENSION_PATH . '/' . $active_extension->uuid . '.php' ) ) {
 				/**
 				 * This is a single plugin file, since it has an extension
 				 */
-				require_once( EXTENSION_PATH . '/' . $active_extension->slug . '.php' );
+				require_once( EXTENSION_PATH . '/' . $active_extension->uuid . '.php' );
 			}
 		}
 

@@ -25,7 +25,7 @@
 						data: { 'imgURL' : imageData.imageBase64, 'imgFullName' : imageData.fullName, 'mimeType' : imageData.mimeType },
 						headers: { 
 							'X-CSRF-TOKEN': 'x_add', 
-							'HTTP-X-CSRF-SEED': $( 'input[name=x_token]' ).val(), 
+							'X-CSRF-SEED': $( 'input[name=x_token]' ).val(), 
 							'X-REQUEST-SOURCE': 'filerobot-img-upl-editor', 
 						},
 					}
@@ -33,7 +33,7 @@
 					function( msg ) {
 						if ( 'true' === msg ) {
 							var d = new Date();
-							$( '#x_media_item_still' ).attr( 'src', window.location.origin + '/var/uploads/' + $( 'input[name=slug]' ).val() + '?' + d )
+							$( '#x_media_item_still' ).attr( 'src', window.location.origin + '/var/uploads/' + $( 'input[name=uuid]' ).val() + '?' + d )
 							$( '#x_filerobot_loading' ).hide();
 						}
 					}
@@ -46,7 +46,7 @@
 			 */
 			const { TABS, TOOLS } = window.FilerobotImageEditor;
 			const config = {
-				source: window.location.origin + '/var/uploads/' + $( 'input[name=slug]' ).val(),
+				source: window.location.origin + '/var/uploads/' + $( 'input[name=uuid]' ).val(),
 				onBeforeSave: function(info){
 					// Return false to interrupt default onSave operations.
 					return false

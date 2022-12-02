@@ -164,13 +164,13 @@ trait X_Relationship {
 				/**
 				 * Already connected partners
 				 */
-				$partners = $this->x_get()->get_items_in( $relationship->slug, array( rtrim( $this->x_type(), 's' ) ), $this->x_post()->id );
+				$partners = $this->x_get()->get_items_in( $relationship->uuid, array( rtrim( $this->x_type(), 's' ) ), $this->x_post()->id );
 				if ( false !== $partners ) {
 
 					$persisting_partners = array();
-					if ( isset( $_POST[ $relationship->slug ] ) ) {
+					if ( isset( $_POST[ $relationship->uuid ] ) ) {
 
-						$persisting_partners = $_POST[ $relationship->slug ];
+						$persisting_partners = $_POST[ $relationship->uuid ];
 
 					}
 
@@ -186,7 +186,7 @@ trait X_Relationship {
 						 * which shall be disconnencted. We simply delete that row, that's it.
 						 */
 						$couple = array_column( $partners, null, rtrim( $type, 's' ) )[ $divorced_partner ] ?? false;
-						$this->x_delete()->delete_by_id( $relationship->slug, $couple->id );
+						$this->x_delete()->delete_by_id( $relationship->uuid, $couple->id );
 
 					}
 					/**
@@ -194,9 +194,9 @@ trait X_Relationship {
 					 *
 					 * If $_POST is empty (all partners deleted or none set), skip.
 					 */
-					if ( isset( $_POST[ $relationship->slug ] ) ) {
+					if ( isset( $_POST[ $relationship->uuid ] ) ) {
 
-						$_POST[ $relationship->slug ] = array_diff( $_POST[ $relationship->slug ], $divorced_partners );
+						$_POST[ $relationship->uuid ] = array_diff( $_POST[ $relationship->uuid ], $divorced_partners );
 
 					}
 				}
@@ -221,14 +221,14 @@ trait X_Relationship {
 				$is_entity_a = $relationship->entity_a === $this->x_type() ? true : false;
 				$is_entity_b = $relationship->entity_b === $this->x_type() ? true : false;
 
-				if ( isset( $_POST[ $relationship->slug ] ) ) {
+				if ( isset( $_POST[ $relationship->uuid ] ) ) {
 
 					/**
 					 * Already connected partners
 					 */
-					$partners = $this->x_get()->get_items_in( $relationship->slug, array( rtrim( $this->x_type(), 's' ) ), $this->x_post()->id );
+					$partners = $this->x_get()->get_items_in( $relationship->uuid, array( rtrim( $this->x_type(), 's' ) ), $this->x_post()->id );
 
-					foreach ( $_POST[ $relationship->slug ] as $partner_id ) {
+					foreach ( $_POST[ $relationship->uuid ] as $partner_id ) {
 
 						/**
 						 * Skip if partner is already connected.
@@ -244,7 +244,7 @@ trait X_Relationship {
 						 */
 						$left = $is_entity_a ? $this->x_post()->id : $partner_id;
 						$right = $is_entity_b ? $this->x_post()->id : $partner_id;
-						$this->x_post()->connect( $relationship->slug, (int) $left, (int) $right );
+						$this->x_post()->connect( $relationship->uuid, (int) $left, (int) $right );
 
 					}
 
@@ -255,7 +255,7 @@ trait X_Relationship {
 					 *
 					 * @see $this->X_Post::setup_data()
 					 */
-					unset( $this->x_post()->data[ $relationship->slug ] );
+					unset( $this->x_post()->data[ $relationship->uuid ] );
 				}
 			}
 		}
@@ -282,15 +282,15 @@ trait X_Relationship {
 				 * Ex: if editing an item type 'page' which is in relation with an item type 'user',
 				 * $this->related_entity is 'users'
 				 */
-				$this->related_entities[ $relationship->slug ] = $relationship->entity_a === $this->x_type() ? $relationship->entity_b : $relationship->entity_a;
+				$this->related_entities[ $relationship->uuid ] = $relationship->entity_a === $this->x_type() ? $relationship->entity_b : $relationship->entity_a;
 
 				/**
 				 * Get all candidate partners (not yet connected items) of that type
 				 *
 				 * Ex: if editing an item type 'page' which is in relation with an item type 'user',
-				 * $this->parter_candidates[ $relationship->slug ] is a list of users not connected yet.
+				 * $this->parter_candidates[ $relationship->uuid ] is a list of users not connected yet.
 				 */
-				$this->parter_candidates[ $relationship->slug ] = $this->x_get()->get_items( $this->related_entities[ $relationship->slug ] );
+				$this->parter_candidates[ $relationship->uuid ] = $this->x_get()->get_items( $this->related_entities[ $relationship->uuid ] );
 
 				/**
 				 * Get all partners (already connected items) of that type.
@@ -299,10 +299,10 @@ trait X_Relationship {
 				 * we need to build the current item ID first.
 				 *
 				 * Ex: if editing an item type 'page' which is in relation with an item type 'user',
-				 * $this->partners[ $relationship->slug ] is a list of already connected users.
+				 * $this->partners[ $relationship->uuid ] is a list of already connected users.
 				 */
 				$current_item = isset( $_GET['id'] ) ? (int) $_GET['id'] : 0;
-				$this->partners[ $relationship->slug ] = $this->x_get()->get_items_in( $relationship->slug, array( rtrim( $this->x_type(), 's' ) ), $current_item );
+				$this->partners[ $relationship->uuid ] = $this->x_get()->get_items_in( $relationship->uuid, array( rtrim( $this->x_type(), 's' ) ), $current_item );
 			}
 		}
 
@@ -317,7 +317,7 @@ trait X_Relationship {
 
 			$entity_a = rtrim( X_Validate::str( stripslashes( $_POST['entity_a'] ) ), 's' );
 			$entity_b = rtrim( X_Validate::str( stripslashes( $_POST['entity_b'] ) ), 's' );
-			$this->post->add_rel_table( X_Validate::str( stripslashes( $_POST['slug'] ) ), $entity_a, $entity_b  );
+			$this->post->add_rel_table( X_Validate::str( stripslashes( $_POST['uuid'] ) ), $entity_a, $entity_b  );
 
 		}
 	}

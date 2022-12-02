@@ -55,15 +55,15 @@ trait X_File {
 				 * Pass the name of the file to the POSTed data column 'mugshot'
 				 * This then references the uploaded mugshot for this user.
 				 */
-				$_POST['mugshot'] = X_Validate::str( $this->media[ $inputname ]['success']['slug'] );
+				$_POST['mugshot'] = X_Validate::str( $this->media[ $inputname ]['success']['uuid'] );
 
 			} elseif ( 'media_asset' === $inputname ) {
 
 				/**
-				 * Pass the name of the file to the POSTed data column 'slug'
+				 * Pass the name of the file to the POSTed data column 'uuid'
 				 * This then references the uploaded media for this media item.
 				 */
-				$_POST['slug'] = X_Validate::str( $this->media[ $inputname ]['success']['slug'] );
+				$_POST['uuid'] = X_Validate::str( $this->media[ $inputname ]['success']['uuid'] );
 
 			} else {
 				/**

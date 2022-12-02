@@ -45,9 +45,9 @@ class X_Admin {
 	 * User trying to login.
 	 *
 	 * @since 1.0.0
-	 * @var string $user The username tryng to login.
+	 * @var string $user The useruuid tryng to login.
 	 */
-	private $username;
+	private $useruuid;
 
 	/**
 	 * Results of action.
@@ -183,16 +183,16 @@ class X_Admin {
 	 * @since 1.0.0
 	 * @param string $action The Action to be performed (Usually from $_GET param x_action).
 	 * @param string $type The Type (db table) requested (usually from $_GET param x_type).
-	 * @param string $username The Current User ( usually from $_SESSION x_username).
+	 * @param string $useruuid The Current User ( usually from $_SESSION x_useru_uid).
 	 */
-	public function __construct( string $action = '', string $type = '', string $username = '' ) {
+	public function __construct( string $action = '', string $type = '', string $useruuid = '' ) {
 
 		/**
 		 * Class Constructor arguments
 		 */
 		$this->action = $action;
 		$this->type = $type;
-		$this->username = $username;
+		$this->useruuid = $useruuid;
 
 		/**
 		 * Result/data of current operation
@@ -306,16 +306,16 @@ class X_Admin {
 	 */
 	public function load_template() {
 
-		$user = $this->get->get_item_by( 'users', 'username', $this->username );
+		$user = $this->get->get_item_by( 'users', 'uuid', $this->useruuid );
 
-		if ( empty( $this->username )
+		if ( empty( $this->useruuid )
 			|| false === $user
 		) {
 
 			$this->login();
 			exit;
 
-		} elseif ( ! empty( $this->username )
+		} elseif ( ! empty( $this->useruuid )
 			&& false !== $user
 		) {
 
@@ -401,14 +401,14 @@ class X_Admin {
 			&& X_Functions::verify_token( 'x_login', X_Validate::key( $_REQUEST['x_token'] ), 'login' )
 		) {
 
-			$user = $this->get->get_item_by( 'users', 'username', X_Validate::key( $_POST['username'] ) );
+			$user = $this->get->get_item_by( 'users', 'uuid', X_Validate::key( $_POST['uuid'] ) );
 
 			if ( false !== $user
 				&& isset( $user->passwordhash )
 				&& true === password_verify( X_Validate::str( $_POST['password'] ), $user->passwordhash )
 			) {
 
-				$_SESSION['x_username'] = $user->username;
+				$_SESSION['x_user_uuid'] = $user->uuid;
 				header( $this->admin_loc );
 				exit();
 
@@ -505,6 +505,7 @@ class X_Admin {
 			 *
 			 * @see X_Admin::handle_media_error()
 			 */
+			$this->functions->maybe_update_pwd();
 			$this->post->setup_data( $_POST );
 			$this->post->insert( $this->type );
 
@@ -576,6 +577,7 @@ class X_Admin {
 			 *
 			 * @see X_Admin::handle_media_error()
 			 */
+			$this->functions->maybe_update_pwd();
 			$this->post->setup_data( $_POST );
 			$this->maybe_disconnect_partners();
 			$this->maybe_connect_partners();

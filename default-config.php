@@ -36,9 +36,9 @@ define( 'DB_NAME', 'database_name' );
 /**
  * Set Database Username.
  *
- * @var string $DB_USERNAME An existing Database Username.
+ * @var string $DB_USERUUID An existing Database Username.
  */
-define( 'DB_USERNAME', 'database_user' );
+define( 'DB_USERUUID', 'database_user' );
 
 /**
  * Set Database Password.

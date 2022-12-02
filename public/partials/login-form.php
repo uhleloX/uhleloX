@@ -20,8 +20,8 @@
 	?>
 
 	<div class="input-group mb-3">
-		<span class="input-group-text" id="usernameHint">Username</span>
-		<input type="text" class="form-control" name="username" id="username" placeholder="username" aria-label="Username" aria-describedby="usernameHint" required autofocus>
+		<span class="input-group-text" id="uuidHint">Username</span>
+		<input type="text" class="form-control" name="uuid" id="uuid" placeholder="Username" aria-label="Username" aria-describedby="uuidHint" required autofocus>
 	</div>
 
 	<div class="input-group mb-3">

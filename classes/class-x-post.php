@@ -68,7 +68,7 @@ class X_Post extends X_Model {
 		$upload_ok = false;
 		$target_dir = SITE_ROOT . '/var/uploads/';
 		$get = new X_Get();
-		$upload_size = $get->get_item_by( 'settings', 'slug', 'x_upload_max_size' );
+		$upload_size = $get->get_item_by( 'settings', 'uuid', 'x_upload_max_size' );
 		$suffix = 1;
 		if ( false === $base_64 ) {
 			$name = $_FILES[ $input_name ]['name'];
@@ -176,7 +176,7 @@ class X_Post extends X_Model {
 				$media = new self();
 				$media_array = array(
 					'owner' => 1,
-					'slug' => pathinfo( $target_file, PATHINFO_FILENAME ) . '.' . strtolower( pathinfo( $target_file, PATHINFO_EXTENSION ) ),
+					'uuid' => pathinfo( $target_file, PATHINFO_FILENAME ) . '.' . strtolower( pathinfo( $target_file, PATHINFO_EXTENSION ) ),
 					'title' => pathinfo( $target_file, PATHINFO_FILENAME ) . '.' . strtolower( pathinfo( $target_file, PATHINFO_EXTENSION ) ),
 					'type' => $image_file_type,
 					'publicationdate' => '2022-01-01',
@@ -241,7 +241,7 @@ class X_Post extends X_Model {
 	public function connect( string $type = '', int $left = null, int $right = null ) {
 
 		if ( is_null( $left ) || is_null( $right ) ) {
-			trigger_error( 'Attempt to connect one or more items with ID NULL. You must pass a relationship slug, a "left" and "right" item to connect.', E_USER_ERROR );
+			trigger_error( 'Attempt to connect one or more items with ID NULL. You must pass a relationship uuid, a "left" and "right" item to connect.', E_USER_ERROR );
 		}
 
 		$entities = explode( '_', $this->whitelist_tables( $type ) );

@@ -14,8 +14,8 @@ function ck_editor_init(){
     $get = new X_Get();
     $current_screen = new X_Current_View();
     if ( $current_screen->is_request( 'edit' ) || $current_screen->is_request( 'add' ) ) {
-        $functions->add_script( 'ck-editor', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . '/var/extensions/x-ck-editor/ckeditor/ckeditor.js', array(), '', 'footer', 11 );
-        $functions->add_script( 'x-ck-editor', $get->get_item_by( 'settings', 'slug', 'x_site_url' )->value . '/var/extensions/x-ck-editor/ck-editor.js', array(), '', 'footer', 13 );
+        $functions->add_script( 'ck-editor', $get->get_item_by( 'settings', 'uuid', 'x_site_url' )->value . '/var/extensions/x-ck-editor/ckeditor/ckeditor.js', array(), '', 'footer', 11 );
+        $functions->add_script( 'x-ck-editor', $get->get_item_by( 'settings', 'uuid', 'x_site_url' )->value . '/var/extensions/x-ck-editor/ck-editor.js', array(), '', 'footer', 13 );
     }
 }
 ck_editor_init();

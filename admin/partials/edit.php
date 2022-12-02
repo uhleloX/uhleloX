@@ -51,7 +51,7 @@
 
 							$required = 'NO' === $column->Null ? 'required' : '';
 							$field = X_Sanitize::out_html( $column->Field );
-							$type = $this->get->get_item_by( 'settings', 'slug', 'x_field_type_' . $field );
+							$type = $this->get->get_item_by( 'settings', 'uuid', 'x_field_type_' . $field );
 
 							if ( empty( $type )
 								|| false === $type
@@ -123,7 +123,7 @@
 
 							$required = 'NO' === $column->Null ? 'required' : '';
 							$field = X_Sanitize::out_html( $column->Field );
-							$type = $this->get->get_item_by( 'settings', 'slug', 'x_field_type_' . $field );
+							$type = $this->get->get_item_by( 'settings', 'uuid', 'x_field_type_' . $field );
 
 							if ( ! empty( $type )
 								&& false !== $type
@@ -154,7 +154,7 @@
 
 												$selected = $user_object->id === $this->item->owner ? 'selected="selected"' : '';
 												?>
-												<option <?php echo $selected; ?> value="<?php echo $user_object->id; ?>"><?php echo $user_object->username; ?></option>
+												<option <?php echo $selected; ?> value="<?php echo $user_object->id; ?>"><?php echo $user_object->uuid; ?></option>
 												<?php
 
 											}
@@ -164,6 +164,16 @@
 									</div></div>
 									
 									<?php
+								} elseif ( 'pwd' === $type->value ) {
+									?>
+									<div class="draggable" id="<?php echo X_Sanitize::out_html( $column->Field ); ?>_container">
+											<div class="input-group mb-3" id="<?php echo X_Sanitize::out_html( $field ); ?>_group">
+												<span class="input-group-text x_drag_handle" id="<?php echo X_Sanitize::out_html( $field ); ?>Hint">Password</span>
+												<button id="pwd_new" class="">Set new password</button>
+												<input type="password" class="form-control d-none" name="<?php echo X_Sanitize::out_html( $field ); ?>" id="<?php echo X_Sanitize::out_html( $field ); ?>" placeholder="Password" aria-label="<?php echo strtoupper( X_Sanitize::out_html( $field ) ); ?>" aria-describedby="<?php echo X_Sanitize::out_html( $field ); ?>Hint" value="">
+											</div>
+										</div>
+										<?php
 								}
 							} else {
 								switch ( $column->Type ) {
@@ -208,25 +218,25 @@
 							foreach ( $this->relationships as $relationship_object ) {
 
 								?>
-								<div class="draggable" id="<?php echo X_Sanitize::out_html( $relationship_object->slug ); ?>_container"><div class="mb-3 input-group" id=<?php echo X_Sanitize::out_html( $relationship_object->slug ); ?>_group>
+								<div class="draggable" id="<?php echo X_Sanitize::out_html( $relationship_object->uuid ); ?>_container"><div class="mb-3 input-group" id=<?php echo X_Sanitize::out_html( $relationship_object->uuid ); ?>_group>
 
 									<?php if ( 'edit' === $this->results['action'] ) { ?>
-									<label for="<?php echo $relationship_object->slug; ?>" class="input-group-text x_drag_handle"><?php echo $this->related_entities[ $relationship_object->slug ]; ?></label>
-									<select multiple name="<?php echo $relationship_object->slug; ?>[]" id="<?php echo $relationship_object->slug; ?>"   class="x_select2 form-select" data-placeholder="Choose a <?php echo $this->related_entities[ $relationship_object->slug ]; ?>">
+									<label for="<?php echo X_Sanitize::out_html( $relationship_object->uuid ); ?>" class="input-group-text x_drag_handle"><?php echo strtoupper( X_Sanitize::out_html( $this->related_entities[ $relationship_object->uuid ] ) ); ?></label>
+									<select multiple name="<?php echo $relationship_object->uuid; ?>[]" id="<?php echo X_Sanitize::out_html( $relationship_object->uuid ); ?>"   class="x_select2 form-select" data-placeholder="Select <?php echo X_Sanitize::out_html( $this->related_entities[ $relationship_object->uuid ] ); ?>">
 										<option></option>
 										<?php
 										$selected_partners = array();
-										foreach ( $this->partners[ $relationship_object->slug ] as $related_partner_object ) {
+										foreach ( $this->partners[ $relationship_object->uuid ] as $related_partner_object ) {
 											/**
 											 * Returns objects of each "couple" in the specific table
 											 */
-											$selected_partners[] = $related_partner_object->{rtrim( $this->related_entities[ $relationship_object->slug ], 's' )};
+											$selected_partners[] = $related_partner_object->{rtrim( $this->related_entities[ $relationship_object->uuid ], 's' )};
 										}
-										foreach ( $this->parter_candidates[ $relationship_object->slug ] as $partner_candidate_object ) {
+										foreach ( $this->parter_candidates[ $relationship_object->uuid ] as $partner_candidate_object ) {
 
 											$selected = in_array( $partner_candidate_object->id, $selected_partners ) ? 'selected="selected"' : '';
 											?>
-											<option <?php echo $selected; ?>value="<?php echo $partner_candidate_object->id; ?>"><?php echo $partner_candidate_object->id; ?></option>
+											<option <?php echo $selected; ?>value="<?php echo $partner_candidate_object->id; ?>"><?php echo $partner_candidate_object->uuid; ?></option>
 											<?php
 
 										}
@@ -234,7 +244,7 @@
 									</select>
 									<?php } else { ?>
 										<div class="alert alert-warning w-100">
-											<p class="m-0">To connect <?php echo ucfirst( $this->related_entities[ $relationship_object->slug ] ); ?>, save the <?php echo rtrim( ucfirst( $this->type ), 's' ); ?> first.</p>
+											<p class="m-0">To connect <?php echo ucfirst( $this->related_entities[ $relationship_object->uuid ] ); ?>, save the <?php echo rtrim( ucfirst( $this->type ), 's' ); ?> first.</p>
 										</div>
 									<?php } ?>
 								</div></div>

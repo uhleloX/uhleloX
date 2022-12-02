@@ -158,7 +158,7 @@ class X_Install {
 		if ( isset( $_REQUEST['x_token'] )
 			&& ! empty( $_REQUEST['x_token'] )
 			&& X_Functions::verify_token( '_x_newuser', htmlspecialchars( stripslashes( $_REQUEST['x_token'] ) ), 'newuser' )
-			&& isset( $_POST['username'] )
+			&& isset( $_POST['uuid'] )
 			&& isset( $_POST['password'] )
 			&& isset( $_POST['firstname'] )
 			&& isset( $_POST['lastname'] )
@@ -208,7 +208,6 @@ class X_Install {
 	 * @since 1.0.0
 	 * @return array $tables The default Database Tables.
 	 * @todo use _ underscores for column names, it allwos oto later spearte the words beter
-	 * @todo use UUID insetad of slugs
 	 * @todo probably prefix all database tables.
 	 * @see https://treewebsolutions.com/articles/multilanguage-database-design-in-mysql-6 for translations
 	 */
@@ -217,7 +216,7 @@ class X_Install {
 		return array(
 			'settings' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'slug' => 'VARCHAR(255) NOT NULL',
+				'uuid' => 'VARCHAR(255) NOT NULL',
 				'title' => 'TEXT NOT NULL',
 				'value' => 'VARCHAR(255) NOT NULL',
 				'description' => 'LONGTEXT NOT NULL',
@@ -226,14 +225,14 @@ class X_Install {
 			),
 			'extensions' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'slug' => 'VARCHAR(255) NOT NULL',
+				'uuid' => 'VARCHAR(255) NOT NULL',
 				'title' => 'TEXT NOT NULL',
 				'description' => 'LONGTEXT NOT NULL',
 				'status' => 'TINYTEXT NOT NULL',
 			),
 			'templates' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'slug' => 'VARCHAR(255) NOT NULL',
+				'uuid' => 'VARCHAR(255) NOT NULL',
 				'title' => 'TEXT NOT NULL',
 				'description' => 'LONGTEXT NOT NULL',
 				'status' => 'TINYTEXT NOT NULL',
@@ -241,7 +240,7 @@ class X_Install {
 			'media' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'owner' => 'BIGINT UNSIGNED NOT NULL',
-				'slug' => 'VARCHAR(255) NOT NULL',
+				'uuid' => 'VARCHAR(255) NOT NULL',
 				'title' => 'TEXT NOT NULL',
 				'type' => 'VARCHAR(60) NOT NULL',
 				'publicationdate' => 'DATE NOT NULL',
@@ -250,7 +249,7 @@ class X_Install {
 			'pages' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'owner' => 'BIGINT UNSIGNED NOT NULL',
-				'slug' => 'VARCHAR(255) NOT NULL',
+				'uuid' => 'VARCHAR(255) NOT NULL',
 				'title' => 'TEXT NOT NULL',
 				'summary' => 'MEDIUMTEXT',
 				'content' => 'LONGTEXT',
@@ -259,7 +258,7 @@ class X_Install {
 			),
 			'users' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'username' => 'VARCHAR(60) NOT NULL',
+				'uuid' => 'VARCHAR(60) NOT NULL',
 				'passwordhash' => 'VARCHAR(255) NOT NULL',
 				'firstname' => 'VARCHAR(255)',
 				'lastname' => 'VARCHAR(255)',
@@ -270,10 +269,10 @@ class X_Install {
 			),
 			'roles' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
-				'role' => 'VARCHAR(20) NOT NULL',
+				'uuid' => 'VARCHAR(20) NOT NULL',
 				'title' => 'TEXT NOT NULL',
 				'description' => 'TEXT NOT NULL',
-				'PRIMARY KEY' => '(`id`, `role`)',
+				'PRIMARY KEY' => '(`id`, `uuid`)',
 			),
 			'user_page' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
@@ -290,7 +289,7 @@ class X_Install {
 			'languages' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'code' => 'VARCHAR(60) NOT NULL',
-				'slug' => 'VARCHAR(255) NOT NULL',
+				'uuid' => 'VARCHAR(255) NOT NULL',
 				'name' => 'VARCHAR(255) NOT NULL',
 				'flag' => 'VARCHAR(255) NOT NULL',
 			),
@@ -302,7 +301,7 @@ class X_Install {
 			),
 			'relationships' => array(
 				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'slug' => 'VARCHAR(255) NOT NULL',
+				'uuid' => 'VARCHAR(255) NOT NULL',
 				'name' => 'TEXT NOT NULL',
 				'type' => 'VARCHAR(60) NOT NULL',
 				'entity_a' => 'VARCHAR(60) NOT NULL',
@@ -325,7 +324,7 @@ class X_Install {
 		$default_settings = array(
 			'settings' => array(
 				array(
-					'slug' => 'x_site_url',
+					'uuid' => 'x_site_url',
 					'title' => 'Website URL',
 					'value' => $fn->get_site_url(),
 					'description' => 'Defines Website URL',
@@ -333,7 +332,7 @@ class X_Install {
 					'editdate' => gmdate( 'Y-m-d H:i:s' ),
 				),
 				array(
-					'slug' => 'x_upload_max_size',
+					'uuid' => 'x_upload_max_size',
 					'title' => 'Maximum Upload Size',
 					'value' => '999999',
 					'description' => 'Defines Maximum Upload Size for media assets',
@@ -341,7 +340,7 @@ class X_Install {
 					'editdate' => gmdate( 'Y-m-d H:i:s' ),
 				),
 				array(
-					'slug' => 'x_active_template',
+					'uuid' => 'x_active_template',
 					'title' => 'Active Template',
 					'value' => 'uhlelox-template',
 					'description' => 'Defines Active Template',
@@ -349,7 +348,7 @@ class X_Install {
 					'editdate' => gmdate( 'Y-m-d H:i:s' ),
 				),
 				array(
-					'slug' => 'x_field_type_mugshot',
+					'uuid' => 'x_field_type_mugshot',
 					'title' => 'Mugshot Field Type',
 					'value' => 'img',
 					'description' => 'Defines the "Mugshot" Field Input Type',
@@ -357,7 +356,15 @@ class X_Install {
 					'editdate' => gmdate( 'Y-m-d H:i:s' ),
 				),
 				array(
-					'slug' => 'x_field_type_owner',
+					'uuid' => 'x_field_type_passwordhash',
+					'title' => 'Password Field Type',
+					'value' => 'pwd',
+					'description' => 'Defines the "Password" Field Input Type',
+					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+				),
+				array(
+					'uuid' => 'x_field_type_owner',
 					'title' => 'Owner Field Type',
 					'value' => 'owner',
 					'description' => 'Defines the "Owner" Field Input Type',
@@ -367,19 +374,19 @@ class X_Install {
 			),
 			'extensions' => array(
 				array(
-					'slug' => 'x-ck-editor',
+					'uuid' => 'x-ck-editor',
 					'title' => 'uhleloX CKEDitor Extension',
 					'description' => 'Enables CKEditor on Text Editors',
 					'status' => 'active',
 				),
 				array(
-					'slug' => 'x-media-browser',
+					'uuid' => 'x-media-browser',
 					'title' => 'uhleloX Media Browser Extension',
 					'description' => 'Enables Media Asset Browser',
 					'status' => 'active',
 				),
 				array(
-					'slug' => 'x-file-robot',
+					'uuid' => 'x-file-robot',
 					'title' => 'uhleloX Media Editor Extension',
 					'description' => 'Enables Media Editing',
 					'status' => 'active',
@@ -387,7 +394,7 @@ class X_Install {
 			),
 			'templates' => array(
 				array(
-					'slug' => 'uhlelox-template',
+					'uuid' => 'uhlelox-template',
 					'title' => 'uhleloX Default Template',
 					'description' => 'uheloX Default Template',
 					'status' => 'active',
@@ -395,21 +402,21 @@ class X_Install {
 			),
 			'roles' => array(
 				array(
-					'role' => 'owner',
+					'uuid' => 'owner',
 					'title' => 'System Owner',
 					'description' => 'System Owner Role',
 				),
 			),
 			'relationships' => array(
 				array(
-					'slug' => 'user_page',
+					'uuid' => 'user_page',
 					'name' => 'Users to Pages Relationship',
 					'type' => 'm2m',
 					'entity_a' => 'users',
 					'entity_b' => 'pages',
 				),
 				array(
-					'slug' => 'user_role',
+					'uuid' => 'user_role',
 					'name' => 'Users Roles Relationship',
 					'type' => 'm2m',
 					'entity_a' => 'users',

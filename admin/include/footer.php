@@ -10,7 +10,7 @@
 				<footer class="py-4 bg-light fixed-bottom">
 					<div class="container-fluid px-4 d-flex align-items-center justify-content-between">
 						<div class="d-flex align-items-center justify-content-between">
-							<div class="small">Logged in as: <?php echo X_Sanitize::out_html( $_SESSION['x_username'] ); ?></div>
+							<div class="small">Logged in as: <?php echo X_Sanitize::out_html( $_SESSION['x_user_uuid'] ); ?></div>
 						</div>
 						<div class="d-flex align-items-center justify-content-end">
 							<div class="text-muted">Copyright &copy; <?php echo X_Sanitize::out_html( X_NAME );?> <?php echo date("Y");?></div>

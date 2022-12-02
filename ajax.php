@@ -93,7 +93,7 @@ try {
 				$i = 0;
 				foreach ( $results as $media_object ) {
 					$response[] = array(
-						'url' => $functions->get_site_url() . '/var/uploads/' . $media_object->slug,
+						'url' => $functions->get_site_url() . '/var/uploads/' . $media_object->uuid,
 						'name' => $media_object->title,
 						'id' => $media_object->id,
 					);

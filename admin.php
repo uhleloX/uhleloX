@@ -58,10 +58,10 @@ $x_type = isset( $_GET['x_type'] ) ? X_Validate::key( $_GET['x_type'] ) : '';
 
 /**
  * Get and check $_SESSION param.
- * We expect `x_username` param.
+ * We expect `x_user_uuid` param.
  * No other params allowed.
  */
-$x_username = isset( $_SESSION['x_username'] ) ? X_Validate::key( $_SESSION['x_username'] ) : '';
+$x_user_uuid = isset( $_SESSION['x_user_uuid'] ) ? X_Validate::key( $_SESSION['x_user_uuid'] ) : '';
 
 /**
  * Load uhleloX Admin
@@ -71,7 +71,7 @@ $x_username = isset( $_SESSION['x_username'] ) ? X_Validate::key( $_SESSION['x_u
  *
  * @see X_Admin::load_template()
  */
-$x_admin = new X_Admin( $x_action, $x_type, $x_username );
+$x_admin = new X_Admin( $x_action, $x_type, $x_user_uuid );
 $x_admin->load_styles();
 $x_admin->load_scripts();
 $x_admin->load_template();

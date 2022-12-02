@@ -90,7 +90,7 @@ class X_Template_Loader {
 
 		$get = new X_Get();
 		$functions = new X_Functions();
-		$this->template = $get->get_item_by( 'settings', 'slug', 'x_active_template' );
+		$this->template = $get->get_item_by( 'settings', 'uuid', 'x_active_template' );
 		$this->x_list = $get->get_items( $this->request['archive'] );
 
 		require_once TEMPLATE_PATH . '/' . $this->template->value . '/list.php';
@@ -106,7 +106,7 @@ class X_Template_Loader {
 	private function view_single() {
 
 		$get = new X_Get();
-		$this->template = $get->get_item_by( 'settings', 'slug', 'x_active_template' );
+		$this->template = $get->get_item_by( 'settings', 'uuid', 'x_active_template' );
 
 		try {
 
@@ -116,7 +116,7 @@ class X_Template_Loader {
 
 			} elseif ( array_key_exists( 'type', $this->request ) ) {
 
-				$this->x_item = $get->get_item_by( $this->request['type'], 'slug', $this->request['item'] );
+				$this->x_item = $get->get_item_by( $this->request['type'], 'uuid', $this->request['item'] );
 
 			} else {
 
@@ -126,7 +126,7 @@ class X_Template_Loader {
 
 				} else {
 
-					$this->x_item = $get->get_item_by( 'pages', 'slug', $this->request['item'] );
+					$this->x_item = $get->get_item_by( 'pages', 'uuid', $this->request['item'] );
 
 				}
 			}
@@ -154,7 +154,7 @@ class X_Template_Loader {
 	private function index() {
 
 		$get = new X_Get();
-		$this->template = $get->get_item_by( 'settings', 'slug', 'x_active_template' );
+		$this->template = $get->get_item_by( 'settings', 'uuid', 'x_active_template' );
 
 		/**
 		 * If for some reason the template setting is missing (during setup for example)

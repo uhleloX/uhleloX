@@ -113,12 +113,12 @@ class X_Get extends X_Model {
 		/**
 		 * Get the relationship's object.
 		 */
-		$relationship = $this->get_item_by( 'relationships', 'slug', $relationship );
+		$relationship = $this->get_item_by( 'relationships', 'uuid', $relationship );
 
 		/**
 		 * Validate the relationship table and partner tables to query.
 		 */
-		$relationship_table = $this->whitelist_tables( $relationship->slug );
+		$relationship_table = $this->whitelist_tables( $relationship->uuid );
 		$left = $this->whitelist_tables( $relationship->entity_a );
 		$right = $this->whitelist_tables( $relationship->entity_b );
 
@@ -126,7 +126,7 @@ class X_Get extends X_Model {
 		 * Allowed arguemnts for the $args parameter.
 		 */
 		$args_internal = array(
-			'return' => 'id', // What to return of the found objects. '*' for all columns, default 'id'.
+			'return' => 'uuid', // What to return of the found objects. '*' for all columns, default 'id'.
 			'select' => 'both', // 'both', 'l', 'r'. Both returns both found objects in a relationship merged, l returns the left partner's object, r the right partner's object.
 			'query_by' => '', // By what column name to query by.
 			'query_in' => '', // In what partner to query by the column name value. Possible values 'l', 'r'.

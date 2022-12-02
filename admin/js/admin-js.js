@@ -62,7 +62,7 @@
 				 * This will also fill the field with Title (slugified) on first typing (when creating an item)
 				 * Later the user is free to change the slug, but it will be keeping sluggiying.
 				 */
-				const input_target = 'input[name="slug"]';
+				const input_target = 'input[name="uuid"]';
 				const input_source = 'input[name="title"]';
 				if ( $( input_target ) && $( input_source ) ) {
 					if ( '' === $( input_target ).val() ) {
@@ -86,6 +86,14 @@
 				    .replace(/^-+/, "")
 				    .replace(/-+$/, "");
 				}
+
+				/**
+				 * Toggle the Set Password Field.
+				 */
+				$( "#pwd_new" ).click(function() {
+				  $( "input#passwordhash" ).removeClass('d-none').prop('required',true);
+				  $( "#pwd_new" ).addClass('d-none');
+				});
 
 			}
 		);

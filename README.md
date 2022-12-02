@@ -54,7 +54,7 @@ Deactivate existing extenstions in `/admin.php?x_action=list&x_type=extensions`
 
 # Relationships
 Add new relationships in `/admin.php?x_action=add&x_type=relationships`
-- Slug: `{entity-a}_{entity-b}` (SHOULD be singular database table names separated by underscores)
+- UUID: `{entity-a}_{entity-b}` (SHOULD be singular database table names separated by underscores)
 - Type: `m2m` (none else supported yet)
 - Entity_a: `database table name` (the "left" partner in a relationship, MUST be database table name)
 - Entity_b: `database table name` (the "right" partner in a relationship, MUST be database table name)

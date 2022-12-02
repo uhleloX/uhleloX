@@ -38,7 +38,7 @@
 					<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 						<?php
 						$x_get = new X_Get();
-						$x_user = $x_get->get_item_by( 'users', 'username', $_SESSION['x_username'] );
+						$x_user = $x_get->get_item_by( 'users', 'uuid', $_SESSION['x_user_uuid'] );
 						?>
 						<li><a class="dropdown-item" href="admin.php?x_action=edit&x_type=users&id=<?php echo intval( $x_user->id ); ?>">Edit User</a></li>
 						<li><a class="dropdown-item" href="#!">Activity Log (@todo)</a></li>

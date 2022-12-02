@@ -327,8 +327,8 @@ class X_Functions {
 			$item = $get->get_item_by_id( $type, $item );
 
 			if ( is_object( $item )
-				&& property_exists( $item, 'slug' ) ) {
-				$item = $item->slug;
+				&& property_exists( $item, 'uuid' ) ) {
+				$item = $item->uuid;
 			} else {
 				$item = '';
 			}
@@ -347,7 +347,7 @@ class X_Functions {
 	public function get_domain( string $subdomain = '' ) {
 
 		$get = new X_Get();
-		$site_url = $get->get_item_by( 'settings', 'slug', 'x_site_url' );
+		$site_url = $get->get_item_by( 'settings', 'uuid', 'x_site_url' );
 		$subdomain = empty( $subdomain ) ? '' : $subdomain . '.';
 
 		if ( false === $site_url ) {
@@ -369,7 +369,7 @@ class X_Functions {
 	public function get_site_url() {
 
 		$get = new X_Get();
-		$site_url = $get->get_item_by( 'settings', 'slug', 'x_site_url' );
+		$site_url = $get->get_item_by( 'settings', 'uuid', 'x_site_url' );
 
 		if ( ! $site_url ) {
 			$site_url = 'https://' . $_SERVER['HTTP_HOST'];
@@ -426,7 +426,7 @@ class X_Functions {
 			)
 		);
 
-		if ( in_array( $role, array_column( $roles, 'role' ) ) ) {
+		if ( in_array( $role, array_column( $roles, 'uuid' ) ) ) {
 			return true;
 		}
 
@@ -448,6 +448,33 @@ class X_Functions {
 			}
 		}
 
+	}
+
+	/**
+	 * Helper to maybe update password.
+	 *
+	 * @param  string $value  The password to hash.
+	 * @return string| false $return The hash or bool true if passed to POST, false if not hashed.
+	 */
+	public function maybe_update_pwd( $value = null ) {
+
+		if ( null === $value ) {
+			if ( isset( $_POST['passwordhash'] )
+				&& ! empty( $_POST['passwordhash'] )
+			) {
+				$_POST['passwordhash'] = password_hash( $_POST['passwordhash'], PASSWORD_DEFAULT );
+				return true;
+			} elseif ( ! isset( $_POST['passwordhash'] )
+				|| empty( $_POST['passwordhash'] )
+			) {
+				unset( $_POST['passwordhash'] );
+				return false;
+			}
+		} else {
+			$hash = password_hash( $value, PASSWORD_DEFAULT );
+			return $hash;
+		}
+		
 	}
 
 }
