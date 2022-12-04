@@ -6,6 +6,13 @@
  */
 
 /**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+/**
  * Include header
  */
 require TEMPLATE_PATH . '/' . $this->template->value . '/header.php';

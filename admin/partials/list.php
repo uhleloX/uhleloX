@@ -6,6 +6,13 @@
  * @package uhleloX\admin\partials
  */
 
+/**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
 ?>
 <?php include ADMIN_PATH . '/include/header.php'; ?>
 			<div class="x-admin-content">

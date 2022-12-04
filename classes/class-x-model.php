@@ -8,6 +8,14 @@
  */
 
 /**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
+/**
  * The Class to implement a model for database post, delete and get.
  *
  * @since 1.0.0

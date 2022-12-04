@@ -6,6 +6,13 @@
  * @package uhleloX\public\include
  */
 
+/**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
 ?>
 			<div class="d-flex mb-0 m-auto">
 				<a href="https://www.uhlelox.com" class="me-1">uhleloX</a>&copy; 2011. All rights reserved.

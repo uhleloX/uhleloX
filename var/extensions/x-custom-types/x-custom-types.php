@@ -3,6 +3,13 @@
  * Register some new CPTs
  */
 
+/**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
 $custom_types  = array(
 	'posts' => array(
 		'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',

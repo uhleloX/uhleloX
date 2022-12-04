@@ -7,6 +7,14 @@
  * @package uhleloX\var\extensions\ckeditor
  */
 
+/**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+    echo 'Direct access not allowed';
+    exit();
+}
+
 function ck_editor_init(){
     $hooks = new X_Hooks();
     $functions = new X_Functions();

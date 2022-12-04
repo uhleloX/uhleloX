@@ -34,6 +34,8 @@ if ( ! isset( $_SERVER )
 		),
 	);
 	http_response_code( 401 );
+	session_destroy();
+	die();
 }
 try {
 	if ( isset( $_SERVER['REQUEST_METHOD'] ) ) {
@@ -74,16 +76,24 @@ try {
 				 * We do not allow it from anywhere else.
 				 * So check on the actor first.
 				 */
-				if ( 'filerobot-img-upl-editor' !== $_SERVER['HTTP_X_REQUEST_SOURCE'] ) {
+				if ( 'filerobot-img-upl-editor' === $_SERVER['HTTP_X_REQUEST_SOURCE'] ) {
+					$file = $handler->upload( $_POST['imgURL'], true );
+					$response = $file;
+				} elseif( 'uhlelox-core' === $_SERVER['HTTP_X_REQUEST_SOURCE'] ){
+					if( 'download_update' === $_POST['action'] ) {
+						$update = new X_Update();
+						$response = array( 'response' => $update->download_update() );
+					}
+					if( 'install_update' === $_POST['action'] ) {
+						$update = new X_Update();
+						$response = array( 'response' => $update->install_update() );
+					}
+				} else {
 					$errors['base64'] = array(
 						'error' => array(
 							'message' => 'Agent not allowed.',
 						),
 					);
-				} else {
-
-					$file = $handler->upload( $_POST['imgURL'], true );
-					$response = $file;
 				}
 			}
 		} elseif ( 'GET' === $_SERVER['REQUEST_METHOD'] ) {

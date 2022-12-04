@@ -8,6 +8,14 @@
  * @package uhleloX\var\extensions\filerobot
  */
 
+/**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
 $hooks = new X_Hooks();
 $functions = new X_Functions();
 $post = new X_Post();

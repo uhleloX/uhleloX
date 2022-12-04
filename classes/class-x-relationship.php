@@ -7,6 +7,14 @@
  */
 
 /**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
+/**
  * Trait to connect, disconnect, gather partners in a relationship and add (new) relationship tables.
  *
  * @since 1.0.0

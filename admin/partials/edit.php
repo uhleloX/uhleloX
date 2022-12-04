@@ -6,9 +6,16 @@
  * @package uhleloX\admin\partials
  */
 
+/**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
 ?>
 
-<?php include ADMIN_PATH . '/include/header.php'; ?>
+<?php require ADMIN_PATH . '/include/header.php'; ?>
 
 <div class="x-admin-content">
 	<main>
@@ -50,8 +57,8 @@
 						foreach ( $this->columns as $key => $column ) {
 
 							$required = 'NO' === $column->Null ? 'required' : '';
-							$field = X_Sanitize::out_html( $column->Field );
-							$type = $this->get->get_item_by( 'settings', 'uuid', 'x_field_type_' . $field );
+							$field    = X_Sanitize::out_html( $column->Field );
+							$type     = $this->get->get_item_by( 'settings', 'uuid', 'x_field_type_' . $field );
 
 							if ( empty( $type )
 								|| false === $type
@@ -122,8 +129,8 @@
 						foreach ( $this->columns as $key => $column ) {
 
 							$required = 'NO' === $column->Null ? 'required' : '';
-							$field = X_Sanitize::out_html( $column->Field );
-							$type = $this->get->get_item_by( 'settings', 'uuid', 'x_field_type_' . $field );
+							$field    = X_Sanitize::out_html( $column->Field );
+							$type     = $this->get->get_item_by( 'settings', 'uuid', 'x_field_type_' . $field );
 
 							if ( ! empty( $type )
 								&& false !== $type
@@ -147,7 +154,7 @@
 									?>
 									<div class="draggable" id="<?php echo X_Sanitize::out_html( $field ); ?>_container"><div class="mb-3 input-group" id=<?php echo X_Sanitize::out_html( $field ); ?>_group>
 										<label for="<?php echo $field; ?>" class="input-group-text x_drag_handle"><?php echo $field; ?></label>
-										<select required name="<?php echo $field ?>" id="<?php echo $field; ?>"   class="form-select x_select2" data-placeholder="Choose a <?php echo $field; ?>">
+										<select required name="<?php echo $field; ?>" id="<?php echo $field; ?>"   class="form-select x_select2" data-placeholder="Choose a <?php echo $field; ?>">
 											<option></option>
 											<?php
 											foreach ( $users as $user_object ) {
@@ -286,4 +293,4 @@
 
 		</div>
 	</main>
-<?php include ADMIN_PATH . '/include/footer.php'; ?>
+<?php require ADMIN_PATH . '/include/footer.php'; ?>

@@ -6,6 +6,13 @@
  * @package uhleloX\public\partials
  */
 
+/**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
 ?>
 
 <?php

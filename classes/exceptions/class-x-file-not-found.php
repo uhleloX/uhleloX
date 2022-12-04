@@ -7,6 +7,14 @@
  */
 
 /**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
+/**
  * Custom Exception Class for File Not Found case.
  *
  * @since 1.0.0

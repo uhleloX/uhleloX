@@ -7,6 +7,14 @@
  */
 
 /**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
+/**
  * Class to handle admin area
  *
  * Loads adequate backend templates,
@@ -239,6 +247,7 @@ class X_Admin {
 			'edit_path' => '/partials/edit.php',
 			'list_path' => '/partials/list.php',
 			'dash_path' => '/partials/dashboard.php',
+			'update_path' => '/partials/update.php',
 			'error_path' => '/partials/error.php',
 		);
 
@@ -279,6 +288,7 @@ class X_Admin {
 		$this->functions->add_script( 'image-upload', $this->functions->get_site_url() . '/admin/js/image-upload.js', array(), '', 'footer' );
 		$this->functions->add_script( 'add-edit-layout', $this->functions->get_site_url() . '/admin/js/add-edit-layout.js', array(), '', 'footer' );
 		$this->functions->add_script( 'admin-js', $this->functions->get_site_url() . '/admin/js/admin-js.js', array(), '', 'footer' );
+		$this->functions->add_script( 'update-js', $this->functions->get_site_url() . '/admin/js/update.js', array(), '', 'footer' );
 
 	}
 
@@ -355,6 +365,13 @@ class X_Admin {
 				case 'list':
 					if ( true === $this->functions->current_user_has_role( $user->id, 'owner' ) ) {
 						$this->list();
+					} else {
+						$this->dashboard();
+					}
+					break;
+				case 'update':
+					if ( true === $this->functions->current_user_has_role( $user->id, 'owner' ) ) {
+						$this->update();
 					} else {
 						$this->dashboard();
 					}
@@ -710,6 +727,21 @@ class X_Admin {
 		$this->hooks->add_action( 'x_dashboard_errors', array( $this, 'display_errors' ) );
 
 		require( ADMIN_PATH . $this->paths['dash_path'] );
+
+	}
+
+	/**
+	 * The main Dashboard.
+	 */
+	private function update() {
+
+		/**
+		 * Setup Page title
+		 */
+		$this->results['title'] = 'Update uhleloX';
+
+		$x_update = new X_Update();
+		require( ADMIN_PATH . $this->paths['update_path'] );
 
 	}
 

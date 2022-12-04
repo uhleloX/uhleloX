@@ -7,6 +7,14 @@
  */
 
 /**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
+/**
  * Class to provide several methods used overall the project.
  *
  * @since 1.0.0
@@ -46,9 +54,9 @@ class X_Functions {
 	 */
 	public function __construct() {
 
-		$this->src = '';
+		$this->src     = '';
 		$this->version = '';
-		$this->rel = '';
+		$this->rel     = '';
 
 	}
 
@@ -63,9 +71,9 @@ class X_Functions {
 	 */
 	public static function set_token( string $key = KEY, string $action = '', string $referer = '' ) {
 
-		$seed = bin2hex( random_bytes( 35 ) );
-		$data = $key . $action . $referer;
-		$token = hash_hmac( 'sha256', $data, $seed );
+		$seed             = bin2hex( random_bytes( 35 ) );
+		$data             = $key . $action . $referer;
+		$token            = hash_hmac( 'sha256', $data, $seed );
 		$_SESSION[ $key ] = $token;
 
 		return $seed;
@@ -103,7 +111,7 @@ class X_Functions {
 
 		if ( isset( $_SESSION[ $key ] ) ) {
 
-			$data = $key . $action . $referer;
+			$data  = $key . $action . $referer;
 			$token = hash_hmac( 'sha256', $data, $seed );
 
 			if ( $token === $_SESSION[ $key ] ) {
@@ -173,14 +181,14 @@ class X_Functions {
 	public static function timezones_select() {
 
 		$regions = array(
-			'Africa' => DateTimeZone::AFRICA,
-			'America' => DateTimeZone::AMERICA,
+			'Africa'     => DateTimeZone::AFRICA,
+			'America'    => DateTimeZone::AMERICA,
 			'Antarctica' => DateTimeZone::ANTARCTICA,
-			'Asia' => DateTimeZone::ASIA,
-			'Atlantic' => DateTimeZone::ATLANTIC,
-			'Europe' => DateTimeZone::EUROPE,
-			'Indian' => DateTimeZone::INDIAN,
-			'Pacific' => DateTimeZone::PACIFIC,
+			'Asia'       => DateTimeZone::ASIA,
+			'Atlantic'   => DateTimeZone::ATLANTIC,
+			'Europe'     => DateTimeZone::EUROPE,
+			'Indian'     => DateTimeZone::INDIAN,
+			'Pacific'    => DateTimeZone::PACIFIC,
 		);
 
 		$timezones = array();
@@ -233,7 +241,7 @@ class X_Functions {
 	public function add_script( string $handle = '', string $src = '', array $dep = array(), string $version = '', string $loc = '', int $priority = 10 ) {
 
 		$GLOBALS['x_scripts'] = array();
-		$scriptss = new self();
+		$scriptss             = new self();
 
 		if ( ! array_key_exists( $handle, $GLOBALS['x_scripts'] ) ) {
 			$GLOBALS['x_scripts'] = array( $handle => $src );
@@ -253,7 +261,7 @@ class X_Functions {
 			}
 		}
 		$scriptss->src = $src;
-		$plugin = new X_Hooks();
+		$plugin        = new X_Hooks();
 
 		$plugin->add_action( 'x_' . $loc, array( $scriptss, 'render_script' ), $priority );
 
@@ -274,7 +282,7 @@ class X_Functions {
 	public function add_link( string $handle = '', string $src = '', array $dep = array(), string $version = '', string $rel = 'stylesheet', string $loc = '', int $priority = 10 ) {
 
 		$GLOBALS['x_links'] = array();
-		$scriptss = new self();
+		$scriptss           = new self();
 
 		if ( ! array_key_exists( $handle, $GLOBALS['x_links'] ) ) {
 			$GLOBALS['x_links'] = array( $handle => $src );
@@ -310,7 +318,7 @@ class X_Functions {
 	 */
 	public function get_url( string $type = null, $item = null ) {
 
-		$get = new X_Get();
+		$get      = new X_Get();
 		$site_url = $this->get_site_url();
 		$fragment = '';
 
@@ -346,8 +354,8 @@ class X_Functions {
 	 */
 	public function get_domain( string $subdomain = '' ) {
 
-		$get = new X_Get();
-		$site_url = $get->get_item_by( 'settings', 'uuid', 'x_site_url' );
+		$get       = new X_Get();
+		$site_url  = $get->get_item_by( 'settings', 'uuid', 'x_site_url' );
 		$subdomain = empty( $subdomain ) ? '' : $subdomain . '.';
 
 		if ( false === $site_url ) {
@@ -368,7 +376,7 @@ class X_Functions {
 	 */
 	public function get_site_url() {
 
-		$get = new X_Get();
+		$get      = new X_Get();
 		$site_url = $get->get_item_by( 'settings', 'uuid', 'x_site_url' );
 
 		if ( ! $site_url ) {
@@ -414,15 +422,15 @@ class X_Functions {
 	 */
 	public function current_user_has_role( $user_id, $role ) {
 
-		$get = new X_Get();
+		$get   = new X_Get();
 		$roles = $get->get_related_items(
 			'user_role',
 			array(
-				'return' => '*',
+				'return'   => '*',
 				'query_by' => 'id',
 				'query_in' => 'l',
-				's' => $user_id,
-				'select' => 'r',
+				's'        => $user_id,
+				'select'   => 'r',
 			)
 		);
 
@@ -474,7 +482,62 @@ class X_Functions {
 			$hash = password_hash( $value, PASSWORD_DEFAULT );
 			return $hash;
 		}
-		
+
+	}
+
+	/**
+	 * Move files and folders recursively from source to target.
+	 *
+	 * @param string $source_path The path of source folder with files.
+	 * @param string $target_path The path to target folder.
+	 * @param bool   $overwrite   If to overwrite or not existing files.
+	 */
+	public function move_recursive( $source_path, $target_path, $overwrite ) {
+
+		clearstatcache(); // Clear cache (fileoperations are affected).
+		$dir = opendir( $source_path );
+
+		while ( false !== ( $file = readdir( $dir ) ) ) {
+
+			if ( '.' !== $file
+				&& '..' !== $file
+			) {
+				if ( true === is_dir( $source_path . '/' . $file ) ) {
+					if ( false === is_dir( $target_path . '/' . $file ) ) {
+
+						/**
+						 * Rename does the same as copy + unlink.
+						 */
+						rename( $source_path . '/' . $file, $target_path . '/' . $file );
+
+					} else {
+
+						/**
+						 * Regressive
+						 */
+						$this->move_recursive( $source_path . '/' . $file, $target_path . '/' . $file, $overwrite );
+						if ( $files = glob( $source_path . '/*' ) ) {
+							// remove the empty directory.
+							@rmdir( $source_path . '/' . $file );
+						}
+					}
+				} else {
+					if ( file_exists( $target_path . '/' . $file ) ) {
+
+						if ( true === $overwrite ) {
+							// overwrite the file.
+							rename( $source_path . '/' . $file, $target_path . '/' . $file );
+						}
+					} else {
+						// if the target file does not exist, simply move the file.
+						rename( $source_path . '/' . $file, $target_path . '/' . $file );
+					}
+				}
+			}
+		}
+
+		closedir( $dir );
+
 	}
 
 }

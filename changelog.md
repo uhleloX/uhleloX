@@ -1,5 +1,9 @@
 # Changelog
 
+### 03-12-2022
+[Added] Update mechanism with remote API
+[Added] Security logic to avoid direct file access
+
 ### 02-12-2022
 [Fixed] Show related item UUID instead of ID in relationship controls 
 [Fixed] Fix problem where X_CSRF_SEED Token key jad double HTTP_ prefix.

@@ -6,8 +6,16 @@
  * @package uhleloX\admin\partials
  */
 
+/**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
 ?>
-<?php include ADMIN_PATH . '/include/header.php'; ?>
+<?php require ADMIN_PATH . '/include/header.php'; ?>
 
 			<div class="x-admin-content">
 				<main>
@@ -39,9 +47,10 @@
 									<h5 class="card-title">Quick Links</h5>
 									<p class="card-text">
 										<ul>
-											<li><a href="/admin.php?action=add&type=pages">New Page</a></li>
-											<li><a href="/admin.php?action=add&type=users">New User</a></li>
-											<li><a href="/admin.php?action=add&type=settings">New Setting</a></li>
+											<li><a href="/admin.php?x_action=add&x_type=pages">New Page</a></li>
+											<li><a href="/admin.php?x_action=add&x_type=users">New User</a></li>
+											<li><a href="/admin.php?x_action=add&x_type=settings">New Setting</a></li>
+											<li><a href="/admin.php?x_action=update">Check for Updates</a></li>
 										</ul>
 									</p>
 								  </div>
@@ -54,8 +63,8 @@
 									<p class="card-text">
 										<ul>
 											<?php
-											$setup = new X_Setup();
-											$props = (array) $setup;
+											$setup   = new X_Setup();
+											$props   = (array) $setup;
 											$garbage = array_shift( $props );
 											foreach ( $props as $key => $value ) {
 												echo '<li>' . $key . ' ' . $value . '</li>';
@@ -72,4 +81,4 @@
 					</div>
 				</main>
 
-<?php include ADMIN_PATH . '/include/footer.php'; ?>
+<?php require ADMIN_PATH . '/include/footer.php'; ?>

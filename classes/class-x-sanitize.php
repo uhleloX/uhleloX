@@ -7,6 +7,14 @@
  */
 
 /**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
+/**
  * Class to sanitise output in all kind of ways and formats.
  *
  * @since 1.0.0

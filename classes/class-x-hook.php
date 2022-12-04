@@ -9,6 +9,14 @@
  */
 
 /**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
+/**
  * Class X_Hook is basically a copy of X_Hook
  *
  * @since 1.0.0

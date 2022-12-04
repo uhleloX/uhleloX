@@ -6,6 +6,13 @@
  * @package uhleloX\admin\include
  */
 
+/**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
 ?>
 				<footer class="py-4 bg-light fixed-bottom">
 					<div class="container-fluid px-4 d-flex align-items-center justify-content-between">

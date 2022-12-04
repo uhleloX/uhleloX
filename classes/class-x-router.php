@@ -7,6 +7,14 @@
  */
 
 /**
+ * Security: Do not access directly.
+ */
+if ( count( get_included_files() ) === 1 ) {
+	echo 'Direct access not allowed';
+	exit();
+}
+
+/**
  * Class to create routes based on request
  * and build base for "pretty" URLs such as /type/item instead of ?type=my-type&item=8
  *
