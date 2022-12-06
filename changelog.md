@@ -1,5 +1,8 @@
 # Changelog
 
+### 06-12-2022
+[Fixed] cURL was not verifying remote SSL host Certificate
+
 ### 03-12-2022
 [Added] Update mechanism with remote API
 [Added] Security logic to avoid direct file access

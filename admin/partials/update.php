@@ -56,7 +56,10 @@ if ( count( get_included_files() ) === 1 ) {
 													<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
 												    Download Update
 												</button>
-												<button id="x_install_update" class="btn btn-warning" disabled>INstall Update</button>
+												<button id="x_install_update" class="btn btn-warning" disabled>
+													<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+												    Install Update
+												</button>
 												<?php
 											} else {
 												?>

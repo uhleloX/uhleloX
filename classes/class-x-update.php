@@ -159,8 +159,8 @@ class X_Update {
 	private function test_connection( $url ) {
 
 		$ch = curl_init( $url . '?operation=test' );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0 );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
+		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 2 );
+		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 2 );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 		$content  = @curl_exec( $ch );
 
@@ -245,8 +245,8 @@ class X_Update {
 		curl_setopt( $ch, CURLOPT_FILE, $fp );
 		curl_setopt( $ch, CURLOPT_TIMEOUT, 20 );
 		curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0 );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
+		curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 2 );
+		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 2 );
 		@curl_exec( $ch );
 		if( curl_errno( $ch ) ){
 		  return curl_error( $ch );
