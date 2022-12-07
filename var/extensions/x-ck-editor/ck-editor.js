@@ -193,7 +193,7 @@
             watchdog.on( 'error', handleError );
 
             watchdog.create( document.querySelector( '#content' ), {
-
+                
                 extraPlugins: [ x_upload_adapter_plugin ],
                 removePlugins: ["MediaEmbedToolbar"],// follow https://github.com/ckeditor/ckeditor5/issues/9824 and https://github.com/ckeditor/ckeditor5-react/issues/267
                 toolbar: {

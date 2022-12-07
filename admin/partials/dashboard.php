@@ -33,48 +33,53 @@ if ( count( get_included_files() ) === 1 ) {
 						?>
 						<div class="row row-cols-1 row-cols-md-3 g-3">
 							<?php $this->hooks->do_action( 'x_start_dashboard' ); ?>
-							  <div class="col">
+							<div class="col">
 								<div class="card h-100 alert alert-success">
-								  <div class="card-body">
-									<h5 class="card-title"><a class="stretched-link" href="https://www.uhlelox.com/documentation" target="_blank" rel="noopener">Documentation</a></h5>
-									<p class="card-text">Access all uhleloX Documentation in one place.</p>
-								  </div>
+									<div class="card-body">
+										<h5 class="card-title"><a class="stretched-link" href="https://www.uhlelox.com/documentation" target="_blank" rel="noopener">Documentation</a></h5>
+										<p class="card-text">Access all uhleloX Documentation in one place.</p>
+									</div>
 								</div>
-							  </div>
-							  <div class="col">
+							</div>
+							<div class="col">
 								<div class="card h-100 alert alert-info">
-								  <div class="card-body">
-									<h5 class="card-title">Quick Links</h5>
-									<p class="card-text">
-										<ul>
-											<li><a href="/admin.php?x_action=add&x_type=pages">New Page</a></li>
-											<li><a href="/admin.php?x_action=add&x_type=users">New User</a></li>
-											<li><a href="/admin.php?x_action=add&x_type=settings">New Setting</a></li>
-											<li><a href="/admin.php?x_action=update">Check for Updates</a></li>
-										</ul>
-									</p>
-								  </div>
+									<div class="card-body">
+										<h5 class="card-title">Quick Links</h5>
+										<p class="card-text">
+											<ul>
+												<li><a href="/admin.php?x_action=add&x_type=pages">New Page</a></li>
+												<li><a href="/admin.php?x_action=add&x_type=users">New User</a></li>
+												<li><a href="/admin.php?x_action=add&x_type=settings">New Setting</a></li>
+												<li><a href="/admin.php?x_action=update">Check for Updates</a></li>
+											</ul>
+										</p>
+									</div>
 								</div>
-							  </div>
-							  <div class="col">
+							</div>
+							<div class="col">
 								<div class="card h-100">
-								  <div class="card-body">
-									<h5 class="card-title">System Information</h5>
-									<p class="card-text">
-										<ul>
-											<?php
-											$setup   = new X_Setup();
-											$props   = (array) $setup;
-											$garbage = array_shift( $props );
-											foreach ( $props as $key => $value ) {
-												echo '<li>' . $key . ' ' . $value . '</li>';
-											}
-											?>
-										</ul>
-									</p>
-								  </div>
+									<div class="card-body">
+										<h5 class="card-title">System Information</h5>
+										<p class="card-text">
+											<ul>
+												<?php
+												/**
+												 * We should get Details more dynamically.
+												 *
+												 * @todo Get this from the database/API instead
+												 */
+												$setup   = new X_Setup();
+												$props   = (array) $setup;
+												$garbage = array_shift( $props );
+												foreach ( $props as $key => $value ) {
+													echo '<li>' . X_Sanitize::out_html( $key ) . ' ' . X_Sanitize::out_html( $value ) . '</li>';
+												}
+												?>
+											</ul>
+										</p>
+									</div>
 								</div>
-							  </div>
+							</div>
 							<?php $this->hooks->do_action( 'x_end_dashboard' ); ?>
 						</div>
 						<?php $this->hooks->do_action( 'x_after_dashboard' ); ?>

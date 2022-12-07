@@ -124,6 +124,23 @@ class X_Update {
 	}
 
 	/**
+	 * Get roadmap
+	 *
+	 * @return array | bool The new version data array or bool false.
+	 */
+	public function get_roadmap() {
+
+		$current_version = $this->get_current_version();
+		$new_ver_url     = $this->update_url . '?operation=update&buildid=' . ( $current_version['buildid'] - 1 );
+		$test            = $this->test_connection( $new_ver_url );
+		if ( 200 === $test[0] ) {
+			return json_decode( $test[1], true );
+		}
+		return false;
+
+	}
+
+	/**
 	 * Get the new version update data
 	 *
 	 * @since 1.0.0
@@ -131,15 +148,12 @@ class X_Update {
 	 */
 	public function get_version_update() {
 
-		$current_version = $this->get_current_version();
-		$test            = $this->test_connection( $this->update_url );
+		$test = $this->test_connection( $this->update_url );
 
 		if ( 202 !== $test[0] ) {
-			/**
-			 * Return error message.
-			 *
-			 * @todo handle this error with a hook (see edit/dashboard error action)
-			 */
+
+			return 'Could not connect';
+
 		} else {
 
 			return $this->get_new_version();

@@ -8,6 +8,8 @@
 
 /**
  * Security: Do not access directly.
+ *
+ * @since 1.0.0
  */
 if ( count( get_included_files() ) === 1 ) {
 	echo 'Direct access not allowed';
@@ -34,6 +36,15 @@ class X_Template_Loader {
 	private $request = array();
 
 	/**
+	 * The template.
+	 *
+	 * @since 1.0.0
+	 * @see X_Router()
+	 * @var string The installed and active template.
+	 */
+	private $template = null;
+
+	/**
 	 * The requested list of items.
 	 *
 	 * @since 1.0.0
@@ -52,6 +63,33 @@ class X_Template_Loader {
 	private $x_item = null;
 
 	/**
+	 * The default home page.
+	 *
+	 * @since 1.0.0
+	 * @see X_Router()
+	 * @var obj $x_home_uuid The page (uuid) set as homepage.
+	 */
+	private $x_home_id = null;
+
+	/**
+	 * The GET Class
+	 *
+	 * @since 1.0.0
+	 * @see X_Get()
+	 * @var obj $get The GET Class.
+	 */
+	private $get = null;
+
+	/**
+	 * The Functions Class
+	 *
+	 * @since 1.0.0
+	 * @see X_Functions()
+	 * @var obj $functions The Functions class.
+	 */
+	private $functions = null;
+
+	/**
 	 * Construct the request array.
 	 *
 	 * @since 1.0.0
@@ -59,7 +97,10 @@ class X_Template_Loader {
 	 */
 	public function __construct( array $request = array() ) {
 
-		$this->request = $request;
+		$this->request   = $request;
+		$this->get       = new X_Get();
+		$this->functions = new X_Functions();
+		$this->template  = $this->get->get_item_by( 'settings', 'uuid', 'x_active_template' );
 
 	}
 
@@ -96,10 +137,7 @@ class X_Template_Loader {
 	 */
 	private function view_list() {
 
-		$get = new X_Get();
-		$functions = new X_Functions();
-		$this->template = $get->get_item_by( 'settings', 'uuid', 'x_active_template' );
-		$this->x_list = $get->get_items( $this->request['archive'] );
+		$this->x_list = $this->get->get_items( $this->request['archive'] );
 
 		require_once TEMPLATE_PATH . '/' . $this->template->value . '/list.php';
 
@@ -113,34 +151,36 @@ class X_Template_Loader {
 	 */
 	private function view_single() {
 
-		$get = new X_Get();
-		$this->template = $get->get_item_by( 'settings', 'uuid', 'x_active_template' );
-
 		try {
 
 			if ( is_numeric( $this->request['item'] ) && array_key_exists( 'type', $this->request ) ) {
 
-				$this->x_item = $get->get_item_by_id( $this->request['type'], $this->request['item'] );
+				$this->x_item = $this->get->get_item_by_id( $this->request['type'], $this->request['item'] );
 
 			} elseif ( array_key_exists( 'type', $this->request ) ) {
 
-				$this->x_item = $get->get_item_by( $this->request['type'], 'uuid', $this->request['item'] );
+				$this->x_item = $this->get->get_item_by( $this->request['type'], 'uuid', $this->request['item'] );
 
 			} else {
 
 				if ( is_numeric( $this->request['item'] ) ) {
 
-					$this->x_item = $get->get_item_by_id( 'pages', $this->request['item'] );
+					$this->x_item = $this->get->get_item_by_id( 'pages', $this->request['item'] );
 
 				} else {
 
-					$this->x_item = $get->get_item_by( 'pages', 'uuid', $this->request['item'] );
+					$this->x_item = $this->get->get_item_by( 'pages', 'uuid', $this->request['item'] );
 
 				}
 			}
 
 			if ( false === $this->x_item ) {
 
+				/**
+				 * Provide a proper 404 handling.
+				 *
+				 * @todo This needs to be refactored.
+				 */
 				throw new Exception( 'The Item does not exist', 1 );
 
 			}
@@ -161,19 +201,7 @@ class X_Template_Loader {
 	 */
 	private function index() {
 
-		$get = new X_Get();
-		$this->template = $get->get_item_by( 'settings', 'uuid', 'x_active_template' );
-
-		/**
-		 * If for some reason the template setting is missing (during setup for example)
-		 *
-		 * @todo rather move this to a set of default settings, so the user can later edit it.
-		 */
-		if ( ! $this->template ) {
-			$temp_template = new stdClass();
-			$temp_template->value = 'uhlelox-template';
-			$this->template = $temp_template;
-		}
+		$this->x_home_id = $this->get->get_item_by( 'settings', 'uuid', 'x_home_page' )->value;
 
 		require_once TEMPLATE_PATH . '/' . $this->template->value . '/index.php';
 

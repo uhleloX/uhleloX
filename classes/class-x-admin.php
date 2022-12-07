@@ -198,18 +198,18 @@ class X_Admin {
 		/**
 		 * Class Constructor arguments
 		 */
-		$this->action = $action;
-		$this->type = $type;
+		$this->action   = $action;
+		$this->type     = $type;
 		$this->useruuid = $useruuid;
 
 		/**
 		 * Result/data of current operation
 		 */
 		$this->results = array(
-			'title' => '',
-			'action' => '',
-			'error_message' => '',
-			'not_found' => 'The Item was not found',
+			'title'              => '',
+			'action'             => '',
+			'error_message'      => '',
+			'not_found'          => 'The Item was not found',
 			'invalid_submission' => 'Invalid Form submission. Try refreshing the page.',
 		);
 
@@ -236,37 +236,37 @@ class X_Admin {
 		 * Location redirects.
 		 */
 		$this->admin_loc = 'Location: admin.php';
-		$this->add_loc = '?x_action=add&x_type=';
-		$this->edit_loc = '?x_action=edit&id=';
+		$this->add_loc   = '?x_action=add&x_type=';
+		$this->edit_loc  = '?x_action=edit&id=';
 
 		/**
 		 * Partials Paths
 		 */
 		$this->paths = array(
-			'login_path' => '/partials/login-form.php',
-			'edit_path' => '/partials/edit.php',
-			'list_path' => '/partials/list.php',
-			'dash_path' => '/partials/dashboard.php',
+			'login_path'  => '/partials/login-form.php',
+			'edit_path'   => '/partials/edit.php',
+			'list_path'   => '/partials/list.php',
+			'dash_path'   => '/partials/dashboard.php',
 			'update_path' => '/partials/update.php',
-			'error_path' => '/partials/error.php',
+			'error_path'  => '/partials/error.php',
 		);
 
 		/**
 		 * Results from queries
 		 */
-		$this->item = null;
+		$this->item  = null;
 		$this->items = array();
 		$this->media = array();
 
 		/**
 		 * Dependencies
 		 */
-		$this->functions = new X_Functions();
+		$this->functions      = new X_Functions();
 		$this->current_screen = new X_Current_View();
-		$this->get = new X_Get();
-		$this->post = new X_Post();
-		$this->delete = new X_Delete();
-		$this->hooks = new X_Hooks();
+		$this->get            = new X_Get();
+		$this->post           = new X_Post();
+		$this->delete         = new X_Delete();
+		$this->hooks          = new X_Hooks();
 
 	}
 
@@ -433,7 +433,7 @@ class X_Admin {
 
 				$this->results['error_message'] = 'Login Failed. Please try again.';
 				$this->hooks->add_action( 'x_login_form_errors', array( $this, 'display_errors' ) );
-				require( PUBLIC_PATH . $this->paths['login_path'] );
+				require PUBLIC_PATH . $this->paths['login_path'];
 
 			}
 		} elseif ( ! empty( $_POST ) ) {
@@ -443,11 +443,11 @@ class X_Admin {
 			 */
 			$this->results['error_message'] = 'Login Form Token Invalid.';
 			$this->hooks->add_action( 'x_login_form_errors', array( $this, 'display_errors' ) );
-			require( PUBLIC_PATH . $this->paths['login_path'] );
+			require PUBLIC_PATH . $this->paths['login_path'];
 
 		} else {
 
-			require( PUBLIC_PATH . $this->paths['login_path'] );
+			require PUBLIC_PATH . $this->paths['login_path'];
 
 		}
 
@@ -475,7 +475,7 @@ class X_Admin {
 	 */
 	private function insert() {
 
-		$this->results['title'] = 'New ' . rtrim( ucfirst( $this->type ), 's' );
+		$this->results['title']  = 'New ' . rtrim( ucfirst( $this->type ), 's' );
 		$this->results['action'] = 'add';
 
 		/**
@@ -485,7 +485,7 @@ class X_Admin {
 		 * we use the available columns to generate the item's object.
 		 */
 		$this->columns = $this->get->show_columns( $this->type, true );
-		$this->item = $this->post->set_columns( $this->columns );
+		$this->item    = $this->post->set_columns( $this->columns );
 
 		/**
 		 * We need to gather potential relations and their entities,
@@ -544,14 +544,14 @@ class X_Admin {
 			 */
 			$this->results['error_message'] = 'Insert Form Token Invalid.';
 			$this->hooks->add_action( 'x_edit_screen_errors', array( $this, 'display_errors' ) );
-			require( ADMIN_PATH . $this->paths['edit_path'] );
+			require ADMIN_PATH . $this->paths['edit_path'];
 
 		} else {
 
 			/**
 			 * Require the Edit Template.
 			 */
-			require( ADMIN_PATH . $this->paths['edit_path'] );
+			require ADMIN_PATH . $this->paths['edit_path'];
 
 		}
 
@@ -567,10 +567,10 @@ class X_Admin {
 	 */
 	private function edit() {
 
-		$this->results['title'] = 'Edit ' . rtrim( ucfirst( $this->type ), 's' );
+		$this->results['title']  = 'Edit ' . rtrim( ucfirst( $this->type ), 's' );
 		$this->results['action'] = 'edit';
 
-		$this->columns = $this->get->show_columns( $this->type, true );
+		$this->columns       = $this->get->show_columns( $this->type, true );
 		$this->relationships = $this->get->get_items_in( 'relationships', array( 'entity_a', 'entity_b' ), $this->type );
 		$this->gather_parter_candidates();
 		/**
@@ -704,10 +704,10 @@ class X_Admin {
 		 * Get all items and columns.
 		 * (Note, by default gets only 100)
 		 */
-		$this->items = $this->get->get_items( $this->type );
+		$this->items   = $this->get->get_items( $this->type );
 		$this->columns = $this->get->show_columns( $this->type );
 
-		require( ADMIN_PATH . $this->paths['list_path'] );
+		require ADMIN_PATH . $this->paths['list_path'];
 
 	}
 
@@ -726,7 +726,7 @@ class X_Admin {
 		 */
 		$this->hooks->add_action( 'x_dashboard_errors', array( $this, 'display_errors' ) );
 
-		require( ADMIN_PATH . $this->paths['dash_path'] );
+		require ADMIN_PATH . $this->paths['dash_path'];
 
 	}
 
@@ -741,7 +741,7 @@ class X_Admin {
 		$this->results['title'] = 'Update uhleloX';
 
 		$x_update = new X_Update();
-		require( ADMIN_PATH . $this->paths['update_path'] );
+		require ADMIN_PATH . $this->paths['update_path'];
 
 	}
 

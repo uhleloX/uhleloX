@@ -1,5 +1,10 @@
 # Changelog
 
+### 07-12-2022
+[Added] First front end template implementation using core methods
+[Added] CodeMirror Extension
+[Changed] Slight refactoring of code
+
 ### 06-12-2022
 [Fixed] cURL was not verifying remote SSL host Certificate
 

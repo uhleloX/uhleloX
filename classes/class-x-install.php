@@ -50,9 +50,9 @@ class X_Install {
 	 */
 	public function __construct( string $action = '' ) {
 
-		$this->action = $action;
+		$this->action  = $action;
 		$this->results = array(
-			'title' => '',
+			'title'         => '',
 			'error_message' => '',
 		);
 
@@ -112,14 +112,14 @@ class X_Install {
 		) {
 
 			$default_config = 'default-config.php';
-			$contents = file_get_contents( $default_config );
-			$contents = str_replace( 'Default/Timezone', htmlspecialchars( $_POST['timezone'] ), $contents );
-			$contents = str_replace( 'localhost', htmlspecialchars( $_POST['host'] ), $contents );
-			$contents = str_replace( 'database_name', htmlspecialchars( $_POST['db'] ), $contents );
-			$contents = str_replace( 'database_user', htmlspecialchars( $_POST['db_usr'] ), $contents );
-			$contents = str_replace( 'database_password', htmlspecialchars( $_POST['db_pwd'] ), $contents );
-			$contents = str_replace( 'utf8mb4', htmlspecialchars( $_POST['db_charset'] ), $contents );
-			$contents = str_replace( '3306', htmlspecialchars( $_POST['db_port'] ), $contents );
+			$contents       = file_get_contents( $default_config );
+			$contents       = str_replace( 'Default/Timezone', htmlspecialchars( $_POST['timezone'] ), $contents );
+			$contents       = str_replace( 'localhost', htmlspecialchars( $_POST['host'] ), $contents );
+			$contents       = str_replace( 'database_name', htmlspecialchars( $_POST['db'] ), $contents );
+			$contents       = str_replace( 'database_user', htmlspecialchars( $_POST['db_usr'] ), $contents );
+			$contents       = str_replace( 'database_password', htmlspecialchars( $_POST['db_pwd'] ), $contents );
+			$contents       = str_replace( 'utf8mb4', htmlspecialchars( $_POST['db_charset'] ), $contents );
+			$contents       = str_replace( '3306', htmlspecialchars( $_POST['db_port'] ), $contents );
 
 			$config = file_put_contents( 'config.php', $contents );
 
@@ -128,7 +128,7 @@ class X_Install {
 				session_unset();
 				session_destroy();
 
-				require_once( 'config.php' );
+				require_once 'config.php';
 
 				$default_tables = $this->default_tables();
 				$this->setup_database( $default_tables );
@@ -143,7 +143,7 @@ class X_Install {
 			}
 		} else {
 
-			require_once( dirname( __DIR__, 1 ) . '/public/partials/setup-form.php' );
+			require_once dirname( __DIR__, 1 ) . '/public/partials/setup-form.php';
 
 		}
 
@@ -175,19 +175,18 @@ class X_Install {
 			&& X_Functions::verify_key_phrase( htmlspecialchars( stripslashes( $_POST['key_phrase'] ) ), $hash )
 		) {
 
-			$db = new X_Post();
-			$data = $_POST;
-			$data['joindate'] = gmdate( 'Y-m-d H:i:s' );
+			$db                   = new X_Post();
+			$data                 = $_POST;
+			$data['joindate']     = gmdate( 'Y-m-d H:i:s' );
 			$data['passwordhash'] = password_hash( $_POST['password'], PASSWORD_DEFAULT );
-			$data['description'] = '';
-			$data['mugshot'] = '';
+			$data['description']  = '';
+			$data['mugshot']      = '';
 			$db->setup_data( $data );
 			$new_user = $db->insert( 'users' );
 
 			if ( 1 === (int) $new_user ) {
 				$db->connect( 'user_role', $new_user, 1 );
 			}
-
 
 			if ( false !== $new_user ) {
 
@@ -197,11 +196,11 @@ class X_Install {
 
 			} else {
 				$this->results['error_message'] = 'Could not create new user.';
-				require( dirname( __DIR__, 1 ) . '/public/partials/create-user-form.php' );
+				require dirname( __DIR__, 1 ) . '/public/partials/create-user-form.php';
 			}
 		} else {
 
-			require( dirname( __DIR__, 1 ) . '/public/partials/create-user-form.php' );
+			require dirname( __DIR__, 1 ) . '/public/partials/create-user-form.php';
 
 		}
 	}
@@ -222,96 +221,96 @@ class X_Install {
 	private function default_tables() {
 
 		return array(
-			'settings' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'uuid' => 'VARCHAR(255) NOT NULL',
-				'title' => 'TEXT NOT NULL',
-				'value' => 'VARCHAR(255) NOT NULL',
-				'description' => 'LONGTEXT NOT NULL',
+			'settings'             => array(
+				'id'              => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+				'uuid'            => 'VARCHAR(255) NOT NULL',
+				'title'           => 'TEXT NOT NULL',
+				'value'           => 'VARCHAR(255) NOT NULL',
+				'description'     => 'LONGTEXT NOT NULL',
 				'publicationdate' => 'DATETIME NOT NULL',
-				'editdate' => 'DATETIME NOT NULL',
+				'editdate'        => 'DATETIME NOT NULL',
 			),
-			'extensions' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'uuid' => 'VARCHAR(255) NOT NULL',
-				'title' => 'TEXT NOT NULL',
+			'extensions'           => array(
+				'id'          => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+				'uuid'        => 'VARCHAR(255) NOT NULL',
+				'title'       => 'TEXT NOT NULL',
 				'description' => 'LONGTEXT NOT NULL',
-				'status' => 'TINYTEXT NOT NULL',
+				'status'      => 'TINYTEXT NOT NULL',
 			),
-			'templates' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'uuid' => 'VARCHAR(255) NOT NULL',
-				'title' => 'TEXT NOT NULL',
+			'templates'            => array(
+				'id'          => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+				'uuid'        => 'VARCHAR(255) NOT NULL',
+				'title'       => 'TEXT NOT NULL',
 				'description' => 'LONGTEXT NOT NULL',
-				'status' => 'TINYTEXT NOT NULL',
+				'status'      => 'TINYTEXT NOT NULL',
 			),
-			'media' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'owner' => 'BIGINT UNSIGNED NOT NULL',
-				'uuid' => 'VARCHAR(255) NOT NULL',
-				'title' => 'TEXT NOT NULL',
-				'type' => 'VARCHAR(60) NOT NULL',
+			'media'                => array(
+				'id'              => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+				'owner'           => 'BIGINT UNSIGNED NOT NULL',
+				'uuid'            => 'VARCHAR(255) NOT NULL',
+				'title'           => 'TEXT NOT NULL',
+				'type'            => 'VARCHAR(60) NOT NULL',
 				'publicationdate' => 'DATE NOT NULL',
-				'editdate' => 'DATE NOT NULL',
+				'editdate'        => 'DATE NOT NULL',
 			),
-			'pages' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'owner' => 'BIGINT UNSIGNED NOT NULL',
-				'uuid' => 'VARCHAR(255) NOT NULL',
-				'title' => 'TEXT NOT NULL',
-				'summary' => 'MEDIUMTEXT',
-				'content' => 'LONGTEXT',
+			'pages'                => array(
+				'id'              => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+				'owner'           => 'BIGINT UNSIGNED NOT NULL',
+				'uuid'            => 'VARCHAR(255) NOT NULL',
+				'title'           => 'TEXT NOT NULL',
+				'summary'         => 'MEDIUMTEXT',
+				'content'         => 'LONGTEXT',
 				'publicationdate' => 'DATETIME NOT NULL',
-				'editdate' => 'DATETIME NOT NULL',
+				'editdate'        => 'DATETIME NOT NULL',
 			),
-			'users' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'uuid' => 'VARCHAR(60) NOT NULL',
+			'users'                => array(
+				'id'           => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+				'uuid'         => 'VARCHAR(60) NOT NULL',
 				'passwordhash' => 'VARCHAR(255) NOT NULL',
-				'firstname' => 'VARCHAR(255)',
-				'lastname' => 'VARCHAR(255)',
-				'email' => 'VARCHAR(100) NOT NULL',
-				'joindate' => 'DATETIME NOT NULL',
-				'description' => 'LONGTEXT',
-				'mugshot' => 'VARCHAR(255)',
+				'firstname'    => 'VARCHAR(255)',
+				'lastname'     => 'VARCHAR(255)',
+				'email'        => 'VARCHAR(100) NOT NULL',
+				'joindate'     => 'DATETIME NOT NULL',
+				'description'  => 'LONGTEXT',
+				'mugshot'      => 'VARCHAR(255)',
 			),
-			'roles' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
-				'uuid' => 'VARCHAR(20) NOT NULL',
-				'title' => 'TEXT NOT NULL',
+			'roles'                => array(
+				'id'          => 'BIGINT UNSIGNED AUTO_INCREMENT',
+				'uuid'        => 'VARCHAR(20) NOT NULL',
+				'title'       => 'TEXT NOT NULL',
 				'description' => 'TEXT NOT NULL',
 				'PRIMARY KEY' => '(`id`, `uuid`)',
 			),
-			'user_page' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
-				'user' => 'BIGINT UNSIGNED',
-				'page' => 'BIGINT UNSIGNED',
+			'user_page'            => array(
+				'id'          => 'BIGINT UNSIGNED AUTO_INCREMENT',
+				'user'        => 'BIGINT UNSIGNED',
+				'page'        => 'BIGINT UNSIGNED',
 				'PRIMARY KEY' => '(`id`, `user`, `page`)',
 			),
-			'user_role' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT',
-				'user' => 'BIGINT UNSIGNED',
-				'role' => 'BIGINT UNSIGNED',
+			'user_role'            => array(
+				'id'          => 'BIGINT UNSIGNED AUTO_INCREMENT',
+				'user'        => 'BIGINT UNSIGNED',
+				'role'        => 'BIGINT UNSIGNED',
 				'PRIMARY KEY' => '(`id`, `user`, `role`)',
 			),
-			'languages' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+			'languages'            => array(
+				'id'   => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
 				'code' => 'VARCHAR(60) NOT NULL',
 				'uuid' => 'VARCHAR(255) NOT NULL',
 				'name' => 'VARCHAR(255) NOT NULL',
 				'flag' => 'VARCHAR(255) NOT NULL',
 			),
 			'language_translation' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'origin' => 'VARCHAR(60) NOT NULL',
-				'target' => 'VARCHAR(60) NOT NULL',
+				'id'          => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+				'origin'      => 'VARCHAR(60) NOT NULL',
+				'target'      => 'VARCHAR(60) NOT NULL',
 				'translation' => 'VARCHAR(255) NOT NULL',
 			),
-			'relationships' => array(
-				'id' => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
-				'uuid' => 'VARCHAR(255) NOT NULL',
-				'name' => 'TEXT NOT NULL',
-				'type' => 'VARCHAR(60) NOT NULL',
+			'relationships'        => array(
+				'id'       => 'BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY',
+				'uuid'     => 'VARCHAR(255) NOT NULL',
+				'name'     => 'TEXT NOT NULL',
+				'type'     => 'VARCHAR(60) NOT NULL',
 				'entity_a' => 'VARCHAR(60) NOT NULL',
 				'entity_b' => 'VARCHAR(60) NOT NULL',
 			),
@@ -327,106 +326,128 @@ class X_Install {
 	 * @since 1.0.0
 	 */
 	private function setup_default_settings() {
-		$post = new X_Post();
-		$fn = new X_Functions();
+		$post             = new X_Post();
+		$fn               = new X_Functions();
 		$default_settings = array(
-			'settings' => array(
+			'settings'      => array(
 				array(
-					'uuid' => 'x_site_url',
-					'title' => 'Website URL',
-					'value' => $fn->get_site_url(),
-					'description' => 'Defines Website URL',
+					'uuid'            => 'x_site_url',
+					'title'           => 'Website URL',
+					'value'           => $fn->get_site_url(),
+					'description'     => 'Defines Website URL',
 					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
-					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate'        => gmdate( 'Y-m-d H:i:s' ),
 				),
 				array(
-					'uuid' => 'x_upload_max_size',
-					'title' => 'Maximum Upload Size',
-					'value' => '999999',
-					'description' => 'Defines Maximum Upload Size for media assets',
+					'uuid'            => 'x_upload_max_size',
+					'title'           => 'Maximum Upload Size',
+					'value'           => '999999',
+					'description'     => 'Defines Maximum Upload Size for media assets',
 					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
-					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate'        => gmdate( 'Y-m-d H:i:s' ),
 				),
 				array(
-					'uuid' => 'x_active_template',
-					'title' => 'Active Template',
-					'value' => 'uhlelox-template',
-					'description' => 'Defines Active Template',
+					'uuid'            => 'x_active_template',
+					'title'           => 'Active Template',
+					'value'           => 'uhlelox-template',
+					'description'     => 'Defines Active Template',
 					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
-					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate'        => gmdate( 'Y-m-d H:i:s' ),
 				),
 				array(
-					'uuid' => 'x_field_type_mugshot',
-					'title' => 'Mugshot Field Type',
-					'value' => 'img',
-					'description' => 'Defines the "Mugshot" Field Input Type',
+					'uuid'            => 'x_field_type_mugshot',
+					'title'           => 'Mugshot Field Type',
+					'value'           => 'img',
+					'description'     => 'Defines the "Mugshot" Field Input Type',
 					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
-					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate'        => gmdate( 'Y-m-d H:i:s' ),
 				),
 				array(
-					'uuid' => 'x_field_type_passwordhash',
-					'title' => 'Password Field Type',
-					'value' => 'pwd',
-					'description' => 'Defines the "Password" Field Input Type',
+					'uuid'            => 'x_field_type_passwordhash',
+					'title'           => 'Password Field Type',
+					'value'           => 'pwd',
+					'description'     => 'Defines the "Password" Field Input Type',
 					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
-					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate'        => gmdate( 'Y-m-d H:i:s' ),
 				),
 				array(
-					'uuid' => 'x_field_type_owner',
-					'title' => 'Owner Field Type',
-					'value' => 'owner',
-					'description' => 'Defines the "Owner" Field Input Type',
+					'uuid'            => 'x_home_page',
+					'title'           => 'Home Page UUID',
+					'value'           => '',
+					'description'     => 'Defines the Homepage used on the main URL',
 					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
-					'editdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate'        => gmdate( 'Y-m-d H:i:s' ),
+				),
+				array(
+					'uuid'            => 'x_logo_id',
+					'title'           => 'Website Logo ID',
+					'value'           => '',
+					'description'     => 'Defines the Website Logo Media ID',
+					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate'        => gmdate( 'Y-m-d H:i:s' ),
+				),
+				array(
+					'uuid'            => 'x_field_type_owner',
+					'title'           => 'Owner Field Type',
+					'value'           => 'owner',
+					'description'     => 'Defines the "Owner" Field Input Type',
+					'publicationdate' => gmdate( 'Y-m-d H:i:s' ),
+					'editdate'        => gmdate( 'Y-m-d H:i:s' ),
 				),
 			),
-			'extensions' => array(
+			'extensions'    => array(
 				array(
-					'uuid' => 'x-ck-editor',
-					'title' => 'uhleloX CKEDitor Extension',
+					'uuid'        => 'x-ck-editor',
+					'title'       => 'uhleloX CKEDitor Extension',
 					'description' => 'Enables CKEditor on Text Editors',
-					'status' => 'active',
+					'status'      => 'active',
 				),
 				array(
-					'uuid' => 'x-media-browser',
-					'title' => 'uhleloX Media Browser Extension',
+					'uuid'        => 'x-media-browser',
+					'title'       => 'uhleloX Media Browser Extension',
 					'description' => 'Enables Media Asset Browser',
-					'status' => 'active',
+					'status'      => 'active',
 				),
 				array(
-					'uuid' => 'x-file-robot',
-					'title' => 'uhleloX Media Editor Extension',
+					'uuid'        => 'x-file-robot',
+					'title'       => 'uhleloX Media Editor Extension',
 					'description' => 'Enables Media Editing',
-					'status' => 'active',
+					'status'      => 'active',
+				),
+				array(
+					'uuid'        => 'x-codemirror',
+					'title'       => 'uhleloX CodeMirror Extension',
+					'description' => 'Enables CodeMIrror on Text Editors',
+					'status'      => 'inactive',
 				),
 			),
-			'templates' => array(
+			'templates'     => array(
 				array(
-					'uuid' => 'uhlelox-template',
-					'title' => 'uhleloX Default Template',
+					'uuid'        => 'uhlelox-template',
+					'title'       => 'uhleloX Default Template',
 					'description' => 'uheloX Default Template',
-					'status' => 'active',
+					'status'      => 'active',
 				),
 			),
-			'roles' => array(
+			'roles'         => array(
 				array(
-					'uuid' => 'owner',
-					'title' => 'System Owner',
+					'uuid'        => 'owner',
+					'title'       => 'System Owner',
 					'description' => 'System Owner Role',
 				),
 			),
 			'relationships' => array(
 				array(
-					'uuid' => 'user_page',
-					'name' => 'Users to Pages Relationship',
-					'type' => 'm2m',
+					'uuid'     => 'user_page',
+					'name'     => 'Users to Pages Relationship',
+					'type'     => 'm2m',
 					'entity_a' => 'users',
 					'entity_b' => 'pages',
 				),
 				array(
-					'uuid' => 'user_role',
-					'name' => 'Users Roles Relationship',
-					'type' => 'm2m',
+					'uuid'     => 'user_role',
+					'name'     => 'Users Roles Relationship',
+					'type'     => 'm2m',
 					'entity_a' => 'users',
 					'entity_b' => 'roles',
 				),

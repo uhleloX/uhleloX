@@ -23,18 +23,12 @@ if ( count( get_included_files() ) === 1 ) {
 						<ol class="breadcrumb mb-4">
 							<li class="breadcrumb-item active">Update uhleloX</li>
 						</ol>
-						<?php
-							/**
-							 * Add hooks prior to main Dashboard
-							 */
-
-						?>
 						<div class="row row-cols-1 row-cols-md-3 g-3">
 							<div class="col">
 								<div class="card h-100 alert alert-success">
 									<div class="card-body">
 										<h5 class="card-title">Currently Installed Version</h5>
-										<p class="card-text"><?php echo $x_update->get_current_version()['version']; ?></p>
+										<p class="card-text"><?php echo X_Sanitize::out_html( $x_update->get_current_version()['version'] ); ?></p>
 									</div>
 								</div>
 							</div>
@@ -47,18 +41,18 @@ if ( count( get_included_files() ) === 1 ) {
 
 											if ( false !== $x_update->get_version_update() ) {
 												?>
-												 
-												<p class="card-text">Newer version found : <?php echo $x_update->get_version_update()['version']; ?></p>
+
+												<p class="card-text">Newer version found : <?php echo X_Sanitize::out_html( $x_update->get_version_update()['version'] ); ?></p>
 												<p class="card-text">Release Notes:<br>
 													<?php echo $x_update->get_version_update()['releasenotes']; ?>
 												</p>
 												<button type="button" id="x_download_update" class="btn btn-warning" data-token="<?php echo X_Functions::set_token( 'x_add', 'add' ); ?>">
 													<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-												    Download Update
+													Download Update
 												</button>
 												<button id="x_install_update" class="btn btn-warning" disabled>
 													<span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-												    Install Update
+													Install Update
 												</button>
 												<?php
 											} else {
@@ -90,7 +84,7 @@ if ( count( get_included_files() ) === 1 ) {
 											} else {
 												?>
 												<p class="card-text">
-													No roadmap
+													<?php echo $x_update->get_roadmap()['roadmap']; ?>
 												</p>
 												<?php
 											}

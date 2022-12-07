@@ -1,0 +1,11 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+.cm-s-default .cm-shortcode {
+    color: orange;
+}
+.CodeMirror {
+    /*height: auto; use this for auto-resizing*/
+    margin-top: 37px;
+}

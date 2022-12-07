@@ -57,7 +57,17 @@ if ( count( get_included_files() ) === 1 ) {
 			<div class="col">
 				<nav class="navbar navbar-light row navbar-expand-md" role="navigation">
 					<div class="container-fluid ">
-						<a class="navbar-brand" href="index.php">Company</a>
+						<a class="navbar-brand" href="/">
+						<?php
+						$logo  = $this->get->get_item_by( 'settings', 'uuid', 'x_logo_id' );
+						$media = $this->get->get_item_by( 'media', 'id', $logo->value );
+						if ( false !== $media ) {
+							?>
+							<img src="<?php echo $this->functions->get_site_url() . '/var/uploads/' . $media->uuid;?>">
+							<?php
+						}
+						?>
+					</a>
 						<button id="nav-toggle" type="button" class="ui-navbar-toggler navbar-toggler border-0 p-0 ms-auto" aria-expanded="false" aria-label="Toggle navigation" data-bs-toggle="collapse" data-bs-target=".navbar-27890">
 							<span class="navbar-toggler-icon"></span>
 						</button>

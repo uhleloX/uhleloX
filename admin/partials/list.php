@@ -14,7 +14,7 @@ if ( count( get_included_files() ) === 1 ) {
 	exit();
 }
 ?>
-<?php include ADMIN_PATH . '/include/header.php'; ?>
+<?php require ADMIN_PATH . '/include/header.php'; ?>
 			<div class="x-admin-content">
 				<main>
 					<div class="container-fluid px-4">
@@ -67,8 +67,9 @@ if ( count( get_included_files() ) === 1 ) {
 												<td class="x_table x_table__td">
 													<div class="x_table__td-actions d-flex justify-content-between align-items-center">
 														<a href="/admin.php?x_action=delete&id=<?php echo intval( $item->id ); ?>&x_type=<?php echo X_Sanitize::out_html( $this->type ); ?>"><span class="bi bi-trash text-danger"></span></a>
-														<?php if ( 'extensions' === X_Sanitize::out_html( $this->type ) ) {
-															if ( 'active' === X_Sanitize::out_html( $item->status )  ) {
+														<?php
+														if ( 'extensions' === X_Sanitize::out_html( $this->type ) ) {
+															if ( 'active' === X_Sanitize::out_html( $item->status ) ) {
 																?>
 																<a href="/admin.php?x_action=change_status&id=<?php echo intval( $item->id ); ?>&x_type=<?php echo X_Sanitize::out_html( $this->type ); ?>&status=inactive"><span class="bi bi-toggle2-on text-success"></span></a>
 																<?php
@@ -91,4 +92,4 @@ if ( count( get_included_files() ) === 1 ) {
 					</div>
 				</main>
 
-<?php include ADMIN_PATH . '/include/footer.php'; ?>
+<?php require ADMIN_PATH . '/include/footer.php'; ?>
