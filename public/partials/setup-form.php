@@ -20,7 +20,7 @@ if ( count( get_included_files() ) === 1 ) {
  * At this point config file does not exist yet.
  * Thus, constants are undefined (and install folders should not be modified).
  */
-include dirname( __DIR__, 1 ) . '/include/header.php';
+require_once dirname( __DIR__, 1 ) . '/include/header.php';
 ?>
 
 <form action="/index.php?x_action=setup" method="post">
@@ -98,5 +98,4 @@ include dirname( __DIR__, 1 ) . '/include/header.php';
  * At this point config file does not exist yet.
  * Thus, constants are undefined (and install folders should not be modified).
  */
- include( dirname( __DIR__, 1 ) . '/include/footer.php' );
-?>
+require_once dirname( __DIR__, 1 ) . '/include/footer.php';

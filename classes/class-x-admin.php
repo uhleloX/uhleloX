@@ -433,7 +433,7 @@ class X_Admin {
 
 				$this->results['error_message'] = 'Login Failed. Please try again.';
 				$this->hooks->add_action( 'x_login_form_errors', array( $this, 'display_errors' ) );
-				require PUBLIC_PATH . $this->paths['login_path'];
+				require_once PUBLIC_PATH . $this->paths['login_path'];
 
 			}
 		} elseif ( ! empty( $_POST ) ) {
@@ -443,11 +443,11 @@ class X_Admin {
 			 */
 			$this->results['error_message'] = 'Login Form Token Invalid.';
 			$this->hooks->add_action( 'x_login_form_errors', array( $this, 'display_errors' ) );
-			require PUBLIC_PATH . $this->paths['login_path'];
+			require_once PUBLIC_PATH . $this->paths['login_path'];
 
 		} else {
 
-			require PUBLIC_PATH . $this->paths['login_path'];
+			require_once PUBLIC_PATH . $this->paths['login_path'];
 
 		}
 
@@ -544,14 +544,14 @@ class X_Admin {
 			 */
 			$this->results['error_message'] = 'Insert Form Token Invalid.';
 			$this->hooks->add_action( 'x_edit_screen_errors', array( $this, 'display_errors' ) );
-			require ADMIN_PATH . $this->paths['edit_path'];
+			require_once ADMIN_PATH . $this->paths['edit_path'];
 
 		} else {
 
 			/**
 			 * Require the Edit Template.
 			 */
-			require ADMIN_PATH . $this->paths['edit_path'];
+			require_once ADMIN_PATH . $this->paths['edit_path'];
 
 		}
 
