@@ -1,5 +1,8 @@
 # Changelog
 
+### 08-12-2022
+[Changed] SonarCloud Scanner compliance refactoring
+
 ### 07-12-2022
 [Added] First front end template implementation using core methods
 [Added] CodeMirror Extension

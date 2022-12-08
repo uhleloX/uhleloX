@@ -394,7 +394,7 @@ class X_Admin {
 		if ( isset( $this->results['error_message'] )
 			&& ! empty( $this->results['error_message'] )
 		) {
-			include ADMIN_PATH . $this->paths['error_path'];
+			include_once ADMIN_PATH . $this->paths['error_path'];
 		}
 	}
 
@@ -707,7 +707,7 @@ class X_Admin {
 		$this->items   = $this->get->get_items( $this->type );
 		$this->columns = $this->get->show_columns( $this->type );
 
-		require ADMIN_PATH . $this->paths['list_path'];
+		require_once ADMIN_PATH . $this->paths['list_path'];
 
 	}
 
@@ -726,7 +726,7 @@ class X_Admin {
 		 */
 		$this->hooks->add_action( 'x_dashboard_errors', array( $this, 'display_errors' ) );
 
-		require ADMIN_PATH . $this->paths['dash_path'];
+		require_once ADMIN_PATH . $this->paths['dash_path'];
 
 	}
 
@@ -741,7 +741,7 @@ class X_Admin {
 		$this->results['title'] = 'Update uhleloX';
 
 		$x_update = new X_Update();
-		require ADMIN_PATH . $this->paths['update_path'];
+		require_once ADMIN_PATH . $this->paths['update_path'];
 
 	}
 

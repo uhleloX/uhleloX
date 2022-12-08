@@ -15,7 +15,7 @@ if ( count( get_included_files() ) === 1 ) {
 }
 ?>
 
-<?php include PUBLIC_PATH . '/include/header.php'; ?>
+<?php require_once PUBLIC_PATH . '/include/header.php'; ?>
 
 <form action="admin.php?x_action=login" method="post">
 
@@ -44,4 +44,4 @@ if ( count( get_included_files() ) === 1 ) {
 
 </form>
 
-<?php include PUBLIC_PATH . '/include/footer.php'; ?>
+<?php require_once PUBLIC_PATH . '/include/footer.php'; ?>

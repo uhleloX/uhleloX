@@ -196,11 +196,11 @@ class X_Install {
 
 			} else {
 				$this->results['error_message'] = 'Could not create new user.';
-				require dirname( __DIR__, 1 ) . '/public/partials/create-user-form.php';
+				require_once dirname( __DIR__, 1 ) . '/public/partials/create-user-form.php';
 			}
 		} else {
 
-			require dirname( __DIR__, 1 ) . '/public/partials/create-user-form.php';
+			require_once dirname( __DIR__, 1 ) . '/public/partials/create-user-form.php';
 
 		}
 	}

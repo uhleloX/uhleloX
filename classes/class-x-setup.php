@@ -235,7 +235,7 @@ class X_Setup {
 		if ( ! is_null( $class ) ) {
 
 			$class = strtolower( str_replace( '_', '-', $class ) );
-			include 'class-' . $class . '.php';
+			include_once 'class-' . $class . '.php';
 
 		}
 

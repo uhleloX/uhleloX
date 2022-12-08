@@ -15,7 +15,7 @@ if ( count( get_included_files() ) === 1 ) {
 }
 ?>
 
-<?php include PUBLIC_PATH . '/include/header.php'; ?>
+<?php require_once PUBLIC_PATH . '/include/header.php'; ?>
 
 <form action="/index.php?x_action=create_account" method="post">
 	<?php if ( isset( $this->results['error_message'] ) && ! empty( $this->results['error_message'] ) ) { ?>
@@ -62,4 +62,4 @@ if ( count( get_included_files() ) === 1 ) {
 
 </form>
 
-<?php include PUBLIC_PATH . '/include/footer.php'; ?>
+<?php require_once PUBLIC_PATH . '/include/footer.php'; ?>

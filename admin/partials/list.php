@@ -14,7 +14,7 @@ if ( count( get_included_files() ) === 1 ) {
 	exit();
 }
 ?>
-<?php require ADMIN_PATH . '/include/header.php'; ?>
+<?php require_once ADMIN_PATH . '/include/header.php'; ?>
 			<div class="x-admin-content">
 				<main>
 					<div class="container-fluid px-4">
@@ -92,4 +92,4 @@ if ( count( get_included_files() ) === 1 ) {
 					</div>
 				</main>
 
-<?php require ADMIN_PATH . '/include/footer.php'; ?>
+<?php require_once ADMIN_PATH . '/include/footer.php'; ?>

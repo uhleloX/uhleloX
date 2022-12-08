@@ -311,7 +311,7 @@ class X_Update {
 				 */
 				if ( file_exists( $this->triggers_file ) ) {
 
-					include $this->triggers_file;
+					include_once $this->triggers_file;
 
 				}
 

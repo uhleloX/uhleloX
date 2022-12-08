@@ -63,7 +63,7 @@ if ( count( get_included_files() ) === 1 ) {
 						$media = $this->get->get_item_by( 'media', 'id', $logo->value );
 						if ( false !== $media ) {
 							?>
-							<img src="<?php echo $this->functions->get_site_url() . '/var/uploads/' . $media->uuid;?>">
+							<img src="<?php echo $this->functions->get_site_url() . '/var/uploads/' . $media->uuid;?>" alt="Alt Value">
 							<?php
 						}
 						?>

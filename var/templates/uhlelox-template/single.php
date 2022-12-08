@@ -15,7 +15,7 @@ if ( count( get_included_files() ) === 1 ) {
 /**
  * Include header
  */
-require TEMPLATE_PATH . '/' . $this->template->value . '/header.php';
+require_once TEMPLATE_PATH . '/' . $this->template->value . '/header.php';
 ?>
 
 <!-- bloc-2 -->
@@ -43,4 +43,4 @@ require TEMPLATE_PATH . '/' . $this->template->value . '/header.php';
 <a class="bloc-button btn btn-d scrollToTop" onclick="scrollToTarget('1',this)"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 32 32"><path class="scroll-to-top-btn-icon" d="M30,22.656l-14-13-14,13"/></svg></a>
 <!-- ScrollToTop Button END-->
 
-<?php include TEMPLATE_PATH . '/' . $this->template->value . '/footer.php';?>
+<?php require_once TEMPLATE_PATH . '/' . $this->template->value . '/footer.php';?>

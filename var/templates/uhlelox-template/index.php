@@ -15,7 +15,7 @@ if ( count( get_included_files() ) === 1 ) {
 /**
  * Include header
  */
-require TEMPLATE_PATH . '/' . $this->template->value . '/header.php';
+require_once TEMPLATE_PATH . '/' . $this->template->value . '/header.php';
 ?>
 
 <!-- bloc-1 -->
@@ -28,4 +28,4 @@ require TEMPLATE_PATH . '/' . $this->template->value . '/header.php';
 </div>
 <!-- bloc-1 END -->
 
-<?php include TEMPLATE_PATH . '/' . $this->template->value . '/footer.php';?>
+<?php require_once TEMPLATE_PATH . '/' . $this->template->value . '/footer.php';?>
