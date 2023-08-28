@@ -1,5 +1,8 @@
 # Changelog
 
+### 08-28-2023
+[Fixed] Deprecation notices on PHP8.x
+
 ### 08-12-2022
 [Changed] SonarCloud Scanner compliance refactoring
 
