@@ -1,5 +1,8 @@
 # Changelog
 
+### 08-29-2023
+[Changed] Extracted extensions in standalone repositories
+
 ### 08-28-2023
 [Fixed] Deprecation notices on PHP8.x
 
