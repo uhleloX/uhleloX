@@ -22,8 +22,8 @@ if ( count( get_included_files() ) === 1 ) {
 	<input type="hidden" name="login" value="true" />
 
 	<?php
-	$this->hooks->do_action('x_login_form_errors');
-	$this->hooks->do_action('x_pre_login_form');
+	$this->hooks->do_action( 'x_login_form_errors' );
+	$this->hooks->do_action( 'x_pre_login_form' );
 	?>
 
 	<div class="input-group mb-3">

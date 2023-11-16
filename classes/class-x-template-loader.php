@@ -202,7 +202,7 @@ class X_Template_Loader {
 	private function index() {
 
 		$this->x_home_id = $this->get->get_item_by( 'settings', 'uuid', 'x_home_page' )->value;
-
+		$this->x_item = $this->get->get_item_by( 'pages', 'id', $this->x_home_id );
 		require_once TEMPLATE_PATH . '/' . $this->template->value . '/index.php';
 
 	}

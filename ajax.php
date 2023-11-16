@@ -8,11 +8,11 @@
 
 require_once __DIR__ . '/config.php';
 
-$response = array();
-$errors = array();
-$to_json = array();
+$response  = array();
+$errors    = array();
+$to_json   = array();
 $functions = new X_Functions();
-$validate = new X_Validate();
+$validate  = new X_Validate();
 session_start();
 
 /**
@@ -63,7 +63,7 @@ try {
 							),
 						);
 					} else {
-						$functions = new X_Functions();
+						$functions              = new X_Functions();
 						$response[ $inputname ] = array(
 							'url' => $functions->get_site_url() . '/var/uploads/' . $validate->str( $file_array['name'] ),
 						);
@@ -77,15 +77,15 @@ try {
 				 * So check on the actor first.
 				 */
 				if ( 'filerobot-img-upl-editor' === $_SERVER['HTTP_X_REQUEST_SOURCE'] ) {
-					$file = $handler->upload( $_POST['imgURL'], true );
+					$file     = $handler->upload( $_POST['imgURL'], true );
 					$response = $file;
-				} elseif( 'uhlelox-core' === $_SERVER['HTTP_X_REQUEST_SOURCE'] ){
-					if( 'download_update' === $_POST['action'] ) {
-						$update = new X_Update();
+				} elseif ( 'uhlelox-core' === $_SERVER['HTTP_X_REQUEST_SOURCE'] ) {
+					if ( 'download_update' === $_POST['action'] ) {
+						$update   = new X_Update();
 						$response = array( 'response' => $update->download_update() );
 					}
-					if( 'install_update' === $_POST['action'] ) {
-						$update = new X_Update();
+					if ( 'install_update' === $_POST['action'] ) {
+						$update   = new X_Update();
 						$response = array( 'response' => $update->install_update() );
 					}
 				} else {
@@ -103,9 +103,9 @@ try {
 				$i = 0;
 				foreach ( $results as $media_object ) {
 					$response[] = array(
-						'url' => $functions->get_site_url() . '/var/uploads/' . $media_object->uuid,
+						'url'  => $functions->get_site_url() . '/var/uploads/' . $media_object->uuid,
 						'name' => $media_object->title,
-						'id' => $media_object->id,
+						'id'   => $media_object->id,
 					);
 				}
 			} else {

@@ -35,7 +35,7 @@ try {
  *
  * @since 1.0.0
  */
-require_once( 'config.php' );
+require_once 'config.php';
 
 /**
  * Everything ready to run uhleloX backend
@@ -54,7 +54,7 @@ session_start(
  * No other params allowed
  */
 $x_action = isset( $_GET['x_action'] ) ? X_Validate::key( $_GET['x_action'] ) : '';
-$x_type = isset( $_GET['x_type'] ) ? X_Validate::key( $_GET['x_type'] ) : '';
+$x_type   = isset( $_GET['x_type'] ) ? X_Validate::key( $_GET['x_type'] ) : '';
 
 /**
  * Get and check $_SESSION param.

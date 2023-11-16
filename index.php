@@ -36,7 +36,7 @@ try {
 		 * Instantiate X_Setup (version, db_version and name).
 		 * Run uhleloX Setup (autoloader, enforce https)
 		 */
-		require_once( __DIR__ . '/classes/class-x-setup.php' );
+		require_once __DIR__ . '/classes/class-x-setup.php';
 		$x_setup = new X_Setup( 'uhleloX', true );
 		$x_setup->run();
 
@@ -101,7 +101,7 @@ try {
 		/**
 		 * Require configurations
 		 */
-		require_once( 'config.php' );
+		require_once 'config.php';
 
 		/**
 		 * Get and check $_GET param.
@@ -151,8 +151,8 @@ try {
 			 * A Front end content is requested
 			 * Route to the appropriate template
 			 */
-			$x_router = new X_Router();
-			$x_request = $x_router->route();
+			$x_router   = new X_Router();
+			$x_request  = $x_router->route();
 			$x_template = new X_Template_Loader( $x_request );
 			$x_template->load_template();
 

@@ -12,20 +12,18 @@ if ( count( get_included_files() ) === 1 ) {
 	echo 'Direct access not allowed';
 	exit();
 }
+
 /**
  * Include header
  */
 require_once TEMPLATE_PATH . '/' . $this->template->value . '/header.php';
-?>
 
-<!-- bloc-1 -->
-<div class="bloc bg-br-edge bloc-bg-texture texture-paper l-bloc" id="bloc-1">
-	<div class="container bloc-xl">
-		<div class="row">
-			<?php echo $this->get->get_item_by( 'pages', 'id', $this->x_home_id )->content; ?>
-		</div>
-	</div>
-</div>
-<!-- bloc-1 END -->
+/**
+ * Output body
+ */
+echo $this->x_item->content;
 
-<?php require_once TEMPLATE_PATH . '/' . $this->template->value . '/footer.php';?>
+/**
+ * Include footer
+ */
+require_once TEMPLATE_PATH . '/' . $this->template->value . '/footer.php';?>
